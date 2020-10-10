@@ -3,17 +3,15 @@ package com.c0destudy;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-public class Sokoban extends JFrame {
-
+public class Sokoban extends JFrame
+{
     private final int OFFSET = 30;
 
     public Sokoban() {
-
         initUI();
     }
 
     private void initUI() {
-        
         Board board = new Board();
         add(board);
 
@@ -27,9 +25,7 @@ public class Sokoban extends JFrame {
     }
 
     public static void main(String[] args) {
-        
         EventQueue.invokeLater(() -> {
-            
             Sokoban game = new Sokoban();
             game.setVisible(true);
         });

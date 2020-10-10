@@ -15,5 +15,4 @@ public class Player extends Movable
         Image image = iicon.getImage();
         setImage(image);
     }
-
 }

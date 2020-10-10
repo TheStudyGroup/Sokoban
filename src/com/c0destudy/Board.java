@@ -14,9 +14,9 @@ public class Board extends JPanel
     private final int OFFSET = 30;
     private final int SPACE = 20;
 
-    private ArrayList<Wall>    walls = new ArrayList<>();
-    private ArrayList<Baggage> baggs = new ArrayList<>();
-    private ArrayList<Goal>    goals = new ArrayList<>();
+    private final ArrayList<Wall>    walls = new ArrayList<>();
+    private final ArrayList<Baggage> baggs = new ArrayList<>();
+    private final ArrayList<Goal>    goals = new ArrayList<>();
     private Player             player;
     private int remainingBaggages = 0;
 
@@ -106,9 +106,11 @@ public class Board extends JPanel
             g.drawImage(block.getImage(), drawX, drawY, this);
         }
 
+        g.setColor(new Color(0, 0, 0));
         if (isCompleted()) {
-            g.setColor(new Color(0, 0, 0));
             g.drawString("Completed", 25, 20);
+        } else {
+            g.drawString("Remaining : " + remainingBaggages, 25, 20);
         }
     }
 
@@ -155,34 +157,40 @@ public class Board extends JPanel
                     return;
             }
 
-            // 플레이어가 이동할 새로운 좌표 계산
-            int newX = player.getX() + dx;
-            int newY = player.getY() + dy;
-
-            if (isWallAt(newX, newY)) {
-                return; // 벽이 있으면 이동 불가
-            }
-
-            Baggage nearBaggage = getBaggageAt(newX, newY);
-            if (nearBaggage != null) {
-                if (isWallAt(newX + dx, newY + dy)) {
-                    return; // 짐 옆에 벽이 있어서 밀 수 없음
-                }
-                if (getBaggageAt(newX + dx, newY + dy) != null) {
-                    return; // 짐이 연속으로 2개 있어서 밀 수 없음
-                }
-                if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
-                    remainingBaggages++; // 이동 전에 짐이 골에 있는 경우
-                }
-                nearBaggage.move(dx, dy); // 짐이 하나만 있고 움직일 수 있는 공간이 있으면 짐을 민다
-                if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
-                    remainingBaggages--; // 이동 후에 짐이 골에 있는 경우
-                }
-            }
-            player.move(dx, dy); // 플레이어를 이동시킨다
-
+            movePlayerAndBaggage(player, dx, dy);
             repaint();
         }
+    }
+
+    private boolean movePlayerAndBaggage(final Player player, final int dx, final int dy) {
+        // 플레이어가 이동할 새로운 좌표 계산
+        final int newX = player.getX() + dx;
+        final int newY = player.getY() + dy;
+
+        if (isWallAt(newX, newY)) {
+            return false; // 벽이 있으면 이동 불가
+        }
+
+        // 플레이어가 짐을 미는 경우
+        Baggage nearBaggage = getBaggageAt(newX, newY);
+        if (nearBaggage != null) {
+            if (isWallAt(newX + dx, newY + dy)) {
+                return false; // 짐 옆에 벽이 있어서 밀 수 없음
+            }
+            if (getBaggageAt(newX + dx, newY + dy) != null) {
+                return false; // 짐이 연속으로 2개 있어서 밀 수 없음
+            }
+            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
+                remainingBaggages++; // 이동 전에 짐이 골에 있는 경우
+            }
+            nearBaggage.move(dx, dy); // 짐이 하나만 있고 움직일 수 있는 공간이 있으면 짐을 민다
+            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
+                remainingBaggages--; // 이동 후에 짐이 골에 있는 경우
+            }
+        }
+
+        player.move(dx, dy); // 플레이어 이동
+        return true;
     }
 
     private boolean isWallAt(int x, int y) {
