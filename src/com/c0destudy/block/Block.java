@@ -2,9 +2,8 @@ package com.c0destudy.block;
 
 import java.awt.Image;
 
-public class Block {
-    private final int SPACE = 20;
-
+public class Block
+{
     private int x;
     private int y;
     private Image image;
@@ -34,23 +33,7 @@ public class Block {
         this.y = y;
     }
 
-    public void setImage(Image img) {
-        image = img;
-    }
-
-    public boolean isLeftCollision(Block block) {
-        return getX() - SPACE == block.getX() && getY() == block.getY();
-    }
-
-    public boolean isRightCollision(Block block) {
-        return getX() + SPACE == block.getX() && getY() == block.getY();
-    }
-
-    public boolean isTopCollision(Block block) {
-        return getY() - SPACE == block.getY() && getX() == block.getX();
-    }
-
-    public boolean isBottomCollision(Block block) {
-        return getY() + SPACE == block.getY() && getX() == block.getX();
+    public void setImage(Image image) {
+        this.image = image;
     }
 }
