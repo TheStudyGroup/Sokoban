@@ -1,25 +1,25 @@
-package com.zetcode;
+package com.c0destudy;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Player extends Actor {
+public class Baggage extends Actor {
 
-    public Player(int x, int y) {
+    public Baggage(int x, int y) {
         super(x, y);
-
-        initPlayer();
+        
+        initBaggage();
     }
-
-    private void initPlayer() {
-
-        ImageIcon iicon = new ImageIcon("src/resources/sokoban.png");
+    
+    private void initBaggage() {
+        
+        ImageIcon iicon = new ImageIcon("src/resources/baggage.png");
         Image image = iicon.getImage();
         setImage(image);
     }
 
     public void move(int x, int y) {
-
+        
         int dx = x() + x;
         int dy = y() + y;
         
