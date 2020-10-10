@@ -3,14 +3,14 @@ package com.c0destudy.block;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Area extends Block {
+public class Goal extends Block {
 
-    public Area(int x, int y) {
+    public Goal(int x, int y) {
         super(x, y);
-        
+
         initArea();
     }
-    
+
     private void initArea() {
 
         ImageIcon iicon = new ImageIcon("src/resources/area.png");

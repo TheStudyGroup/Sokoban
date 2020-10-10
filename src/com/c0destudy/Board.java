@@ -20,7 +20,7 @@ public class Board extends JPanel {
 
     private ArrayList<Wall> walls;
     private ArrayList<Baggage> baggs;
-    private ArrayList<Area> areas;
+    private ArrayList<Goal> goals;
     
     private Player soko;
     private int w = 0;
@@ -65,14 +65,14 @@ public class Board extends JPanel {
         
         walls = new ArrayList<>();
         baggs = new ArrayList<>();
-        areas = new ArrayList<>();
+        goals = new ArrayList<>();
 
         int x = OFFSET;
         int y = OFFSET;
 
         Wall wall;
         Baggage b;
-        Area a;
+        Goal a;
 
         for (int i = 0; i < level.length(); i++) {
 
@@ -103,8 +103,8 @@ public class Board extends JPanel {
                     break;
 
                 case '.':
-                    a = new Area(x, y);
-                    areas.add(a);
+                    a = new Goal(x, y);
+                    goals.add(a);
                     x += SPACE;
                     break;
 
@@ -133,7 +133,7 @@ public class Board extends JPanel {
         ArrayList<Block> world = new ArrayList<>();
 
         world.addAll(walls);
-        world.addAll(areas);
+        world.addAll(goals);
         world.addAll(baggs);
         world.add(soko);
 
@@ -461,9 +461,9 @@ public class Board extends JPanel {
             
             for (int j = 0; j < nOfBags; j++) {
                 
-                Area area =  areas.get(j);
+                Goal goal =  goals.get(j);
                 
-                if (bag.getX() == area.getX() && bag.getY() == area.getY()) {
+                if (bag.getX() == goal.getX() && bag.getY() == goal.getY()) {
                     
                     finishedBags += 1;
                 }
@@ -479,7 +479,7 @@ public class Board extends JPanel {
 
     private void restartLevel() {
 
-        areas.clear();
+        goals.clear();
         baggs.clear();
         walls.clear();
 
