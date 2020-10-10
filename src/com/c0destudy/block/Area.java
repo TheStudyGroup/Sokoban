@@ -1,9 +1,9 @@
-package com.c0destudy;
+package com.c0destudy.block;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Area extends Actor {
+public class Area extends Block {
 
     public Area(int x, int y) {
         super(x, y);

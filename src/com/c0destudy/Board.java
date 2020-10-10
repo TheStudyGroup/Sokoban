@@ -1,5 +1,7 @@
 package com.c0destudy;
 
+import com.c0destudy.block.*;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
@@ -128,7 +130,7 @@ public class Board extends JPanel {
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        ArrayList<Actor> world = new ArrayList<>();
+        ArrayList<Block> world = new ArrayList<>();
 
         world.addAll(walls);
         world.addAll(areas);
@@ -137,14 +139,14 @@ public class Board extends JPanel {
 
         for (int i = 0; i < world.size(); i++) {
 
-            Actor item = world.get(i);
+            Block item = world.get(i);
 
             if (item instanceof Player || item instanceof Baggage) {
                 
-                g.drawImage(item.getImage(), item.x() + 2, item.y() + 2, this);
+                g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
             } else {
                 
-                g.drawImage(item.getImage(), item.x(), item.y(), this);
+                g.drawImage(item.getImage(), item.getX(), item.getY(), this);
             }
 
             if (isCompleted) {
@@ -247,7 +249,7 @@ public class Board extends JPanel {
         }
     }
 
-    private boolean checkWallCollision(Actor actor, int type) {
+    private boolean checkWallCollision(Block block, int type) {
 
         switch (type) {
             
@@ -257,7 +259,7 @@ public class Board extends JPanel {
                     
                     Wall wall = walls.get(i);
                     
-                    if (actor.isLeftCollision(wall)) {
+                    if (block.isLeftCollision(wall)) {
                         
                         return true;
                     }
@@ -271,7 +273,7 @@ public class Board extends JPanel {
                     
                     Wall wall = walls.get(i);
                     
-                    if (actor.isRightCollision(wall)) {
+                    if (block.isRightCollision(wall)) {
                         return true;
                     }
                 }
@@ -284,7 +286,7 @@ public class Board extends JPanel {
                     
                     Wall wall = walls.get(i);
                     
-                    if (actor.isTopCollision(wall)) {
+                    if (block.isTopCollision(wall)) {
                         
                         return true;
                     }
@@ -298,7 +300,7 @@ public class Board extends JPanel {
                     
                     Wall wall = walls.get(i);
                     
-                    if (actor.isBottomCollision(wall)) {
+                    if (block.isBottomCollision(wall)) {
                         
                         return true;
                     }
@@ -461,7 +463,7 @@ public class Board extends JPanel {
                 
                 Area area =  areas.get(j);
                 
-                if (bag.x() == area.x() && bag.y() == area.y()) {
+                if (bag.getX() == area.getX() && bag.getY() == area.getY()) {
                     
                     finishedBags += 1;
                 }

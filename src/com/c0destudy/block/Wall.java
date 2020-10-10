@@ -1,9 +1,9 @@
-package com.c0destudy;
+package com.c0destudy.block;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Wall extends Actor {
+public class Wall extends Block {
 
     private Image image;
 
