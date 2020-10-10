@@ -10,20 +10,4 @@ public class Movable extends Block
         setX(getX() + dx);
         setY(getY() + dy);
     }
-
-    public boolean isLeftCollision(Block block) {
-        return getX() - 1 == block.getX() && getY() == block.getY();
-    }
-
-    public boolean isRightCollision(Block block) {
-        return getX() + 1 == block.getX() && getY() == block.getY();
-    }
-
-    public boolean isTopCollision(Block block) {
-        return getY() - 1 == block.getY() && getX() == block.getX();
-    }
-
-    public boolean isBottomCollision(Block block) {
-        return getY() + 1 == block.getY() && getX() == block.getX();
-    }
 }
