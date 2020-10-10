@@ -25,7 +25,7 @@ public class Board extends JPanel
     }
 
     private void initLevel() {
-        String path = "src/resources/levels/Level 2.txt";
+        String path = "src/resources/levels/Level 1.txt";
         level = LevelLoader.loadLevelFromFile(path);
     }
 
@@ -103,27 +103,26 @@ public class Board extends JPanel
             }
 
             // 방향 선택
-            int dx = 0;
-            int dy = 0;
+            Point delta = null;
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_A:
-                    dx = -1;
+                    delta = new Point(-1, 0);
                     break;
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_D:
-                    dx = 1;
+                    delta = new Point(1, 0);
                     break;
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
-                    dy = -1;
+                    delta = new Point(0, -1);
                     break;
                 case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
-                    dy = 1;
+                    delta = new Point(0, 1);
                     break;
             }
-            level.movePlayerAndBaggage(playerIndex, dx, dy);
+            level.movePlayerAndBaggage(playerIndex, delta);
             repaint();
         }
     }

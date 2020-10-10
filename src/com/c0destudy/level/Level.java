@@ -1,5 +1,6 @@
 package com.c0destudy.level;
 
+import com.c0destudy.Point;
 import com.c0destudy.block.*;
 
 import java.util.ArrayList;
@@ -51,68 +52,63 @@ public class Level
      * 플레이어의 좌표 변화량을 입력받아 플레이어를 이동하고,
      * 물건을 미는 경우 물건도 이동시킵니다.
      *
-     * 플레이어를 왼쪽으로 이동시키는 경우 dx는 -1이고 dy는 0입니다.
      * 이동하는 방향에 물건이 있으면 물건도 같이 이동시킵니다.
      * 단, 물건이 연속으로 2개 있거나 벽이 있는 경우에는 이동할 수 없습니다.
      *
      * @param  playerIndex 이동할 플레이어 번호 (0-based)
-     * @param  dx          플레이어의 x 좌표 변화량
-     * @param  dy          플레이어의 y 좌표 변화량
+     * @param  delta       플레이어의 좌표 변화량
      * @return             이동 여부 (이동 실패시 false)
      */
-    public boolean movePlayerAndBaggage(final int playerIndex, final int dx, final int dy) {
+    public boolean movePlayerAndBaggage(final int playerIndex, final Point delta) {
         // 플레이어가 이동할 새로운 좌표 계산
-        final Player player = getPlayer(playerIndex);
-        final int newPlayerX = player.getX() + dx;
-        final int newPlayerY = player.getY() + dy;
+        final Player player       = getPlayer(playerIndex);
+        final Point  newPlayerPos = Point.add(player.getPoint(), delta);
 
         // 이동할 위치에 벽이 있는 경우 => 이동 불가
-        if (isWallAt(newPlayerX, newPlayerY)) return false;
+        if (isWallAt(newPlayerPos)) return false;
 
         // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
-        if (isPlayerAt(newPlayerX, newPlayerY)) return false;
+        if (isPlayerAt(newPlayerPos)) return false;
 
         // 플레이어가 물건(baggage)을 미는 경우
-        Baggage nearBaggage = getBaggageAt(newPlayerX, newPlayerY);
+        Baggage nearBaggage = getBaggageAt(newPlayerPos);
         if (nearBaggage != null) {
             // 물건이 이동될 새로운 좌표 계산
-            final int newBaggageX = nearBaggage.getX() + dx;
-            final int newBaggageY = nearBaggage.getY() + dy;
+            final Point newBaggagePos = Point.add(nearBaggage.getPoint(), delta);
 
             // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
-            if (isWallAt(newBaggageX, newBaggageY)) return false;
+            if (isWallAt(newBaggagePos)) return false;
 
             // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
-            if (getBaggageAt(newBaggageX, newBaggageY) != null) return false;
+            if (getBaggageAt(newBaggagePos) != null) return false;
 
             // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
-            if (isPlayerAt(newBaggageX, newBaggageY)) return false;
+            if (isPlayerAt(newBaggagePos)) return false;
 
             // 이동 전에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) remainingBaggages++;
+            if (isGoalAt(nearBaggage.getPoint())) remainingBaggages++;
 
             // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
-            nearBaggage.move(dx, dy);
+            nearBaggage.moveDelta(delta);
 
             // 이동 후에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) remainingBaggages--;
+            if (isGoalAt(nearBaggage.getPoint())) remainingBaggages--;
         }
 
         // 플레이어 이동
-        player.move(dx, dy);
+        player.moveDelta(delta);
         return true;
     }
 
     /**
      * 해당 좌표에 벽이 있는지 확인합니다.
      *
-     * @param  x x 좌표
-     * @param  y y 좌표
-     * @return   벽의 존재 여부
+     * @param  point 좌표
+     * @return       벽의 존재 여부
      */
-    private boolean isWallAt(int x, int y) {
+    private boolean isWallAt(final Point point) {
         for (final Wall wall: walls) {
-            if (wall.isLocatedAt(x, y)) {
+            if (wall.isLocatedAt(point)) {
                 return true;
             }
         }
@@ -122,13 +118,12 @@ public class Level
     /**
      * 해당 좌표에 목적지가 있는지 확인합니다.
      *
-     * @param  x x 좌표
-     * @param  y y 좌표
-     * @return   목적지의 존재 여부
+     * @param  point 좌표
+     * @return       목적지의 존재 여부
      */
-    private boolean isGoalAt(int x, int y) {
+    private boolean isGoalAt(final Point point) {
         for (final Goal goal: goals) {
-            if (goal.isLocatedAt(x, y)) {
+            if (goal.isLocatedAt(point)) {
                 return true;
             }
         }
@@ -138,13 +133,12 @@ public class Level
     /**
      * 해당 좌표에 플레이어가 있는지 확인합니다.
      *
-     * @param  x x 좌표
-     * @param  y y 좌표
-     * @return   플레이어의 존재 여부
+     * @param  point 좌표
+     * @return       플레이어의 존재 여부
      */
-    private boolean isPlayerAt(int x, int y) {
+    private boolean isPlayerAt(final Point point) {
         for (final Player player: players) {
-            if (player.isLocatedAt(x, y)) {
+            if (player.isLocatedAt(point)) {
                 return true;
             }
         }
@@ -154,13 +148,12 @@ public class Level
     /**
      * 해당 좌표에 있는 물건 객체를 가져옵니다.
      *
-     * @param  x x 좌표
-     * @param  y y 좌표
-     * @return   물건 객체 (없는 경우 null)
+     * @param  point 좌표
+     * @return       물건 객체 (없는 경우 null)
      */
-    private Baggage getBaggageAt(int x, int y) {
+    private Baggage getBaggageAt(final Point point) {
         for (final Baggage baggage: baggages) {
-            if (baggage.isLocatedAt(x, y)) {
+            if (baggage.isLocatedAt(point)) {
                 return baggage;
             }
         }
