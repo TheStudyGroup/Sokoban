@@ -17,7 +17,8 @@ public class Board extends JPanel
     private final ArrayList<Wall>    walls = new ArrayList<>();
     private final ArrayList<Baggage> baggs = new ArrayList<>();
     private final ArrayList<Goal>    goals = new ArrayList<>();
-    private Player             player;
+    private Player                   player1;
+    private Player                   player2;
     private int remainingBaggages = 0;
 
     private int boardWidth  = 0;
@@ -33,11 +34,12 @@ public class Board extends JPanel
             + "##   # ## #####  ..#\n"
             + "## $  $          ..#\n"
             + "###### ### #@##  ..#\n"
-            + "    ##     #########\n"
+            + "    ## %   #########\n"
             + "    ########\n";
 
     public Board() {
         initBoard();
+        System.out.println(level);
     }
 
     private void initBoard() {
@@ -58,7 +60,7 @@ public class Board extends JPanel
      * 문자열로부터 맵을 불러옵니다.
      *
      * 맵 크기는 자동으로 계산되고, 맵을 불러온 뒤에는 보드 크기를 계산합니다.
-     * 블럭 코드: 벽(#), 물건($), 목적지(.), 플레이어(@)
+     * 블럭 코드: 벽(#), 물건($), 목적지(.), 플레이어1(@), 플레이어2(%)
      *
      * @param map 문자열로 된 맵 데이터
      */
@@ -86,7 +88,10 @@ public class Board extends JPanel
                         goals.add(new Goal(x, y));
                         break;
                     case '@':
-                        player = new Player(x, y);
+                        player1 = new Player(x, y);
+                        break;
+                    case '%':
+                        player2 = new Player(x, y);
                         break;
                     default:
                         break;
@@ -117,7 +122,8 @@ public class Board extends JPanel
         blocks.addAll(walls);
         blocks.addAll(goals);
         blocks.addAll(baggs);
-        blocks.add(player);
+        if (player1 != null) blocks.add(player1);
+        if (player2 != null) blocks.add(player2);
 
         for (final Block block : blocks) {
             final int drawX = OFFSET + block.getX() * BLOCK_SIZE;
@@ -150,26 +156,46 @@ public class Board extends JPanel
                 return;
             }
 
-            int dx = 0;
-            int dy = 0;
-
+            // 플레이어 선택
+            Player player;
             switch (keyCode) {
-                case KeyEvent.VK_LEFT:
-                    dx = -1;
-                    break;
+                case KeyEvent.VK_LEFT: // Player1
                 case KeyEvent.VK_RIGHT:
-                    dx = 1;
-                    break;
                 case KeyEvent.VK_UP:
-                    dy = -1;
-                    break;
                 case KeyEvent.VK_DOWN:
-                    dy = 1;
+                    player = player1;
+                    break;
+                case KeyEvent.VK_A: // Player 2
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_W:
+                case KeyEvent.VK_S:
+                    player = player2;
                     break;
                 default:
                     return;
             }
 
+            // 방향 선택
+            int dx = 0;
+            int dy = 0;
+            switch (keyCode) {
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_A:
+                    dx = -1;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_D:
+                    dx = 1;
+                    break;
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    dy = -1;
+                    break;
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                    dy = 1;
+                    break;
+            }
             movePlayerAndBaggage(player, dx, dy);
             repaint();
         }
@@ -190,33 +216,45 @@ public class Board extends JPanel
      */
     private boolean movePlayerAndBaggage(final Player player, final int dx, final int dy) {
         // 플레이어가 이동할 새로운 좌표 계산
-        final int newX = player.getX() + dx;
-        final int newY = player.getY() + dy;
+        final int newPlayerX = player.getX() + dx;
+        final int newPlayerY = player.getY() + dy;
 
-        if (isWallAt(newX, newY)) {
-            return false; // 벽이 있으면 이동 불가
-        }
+        // 이동할 위치에 벽이 있는 경우 => 이동 불가
+        if (isWallAt(newPlayerX, newPlayerY)) return false;
+
+        // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
+        if (player1 != null && player1.isLocatedAt(newPlayerX, newPlayerY)) return false;
+        if (player2 != null && player2.isLocatedAt(newPlayerX, newPlayerY)) return false;
 
         // 플레이어가 물건(baggage)을 미는 경우
-        Baggage nearBaggage = getBaggageAt(newX, newY);
+        Baggage nearBaggage = getBaggageAt(newPlayerX, newPlayerY);
         if (nearBaggage != null) {
-            if (isWallAt(newX + dx, newY + dy)) {
-                return false; // 물건 옆에 벽이 있어서 밀 수 없음
-            }
-            if (getBaggageAt(newX + dx, newY + dy) != null) {
-                return false; // 물건이 연속으로 2개 있어서 밀 수 없음
-            }
-            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
-                remainingBaggages++; // 이동 전에 물건이 목적지에 있는 경우
-            }
-            // 물건이 하나만 있고 공간이 있으면 물건을 민다
+            // 물건이 이동될 새로운 좌표 계산
+            final int newBaggageX = nearBaggage.getX() + dx;
+            final int newBaggageY = nearBaggage.getY() + dy;
+
+            // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
+            if (isWallAt(newBaggageX, newBaggageY)) return false;
+
+            // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
+            if (getBaggageAt(newBaggageX, newBaggageY) != null) return false;
+
+            // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
+            if (player1 != null && player1.isLocatedAt(newBaggageX, newBaggageY)) return false;
+            if (player2 != null && player2.isLocatedAt(newBaggageX, newBaggageY)) return false;
+
+            // 이동 전에 물건이 목적지에 있는 경우
+            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) remainingBaggages++;
+
+            // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
             nearBaggage.move(dx, dy);
-            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
-                remainingBaggages--; // 이동 후에 물건이 목적지에 있는 경우
-            }
+
+            // 이동 후에 물건이 목적지에 있는 경우
+            if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) remainingBaggages--;
         }
 
-        player.move(dx, dy); // 플레이어 이동
+        // 플레이어 이동
+        player.move(dx, dy);
         return true;
     }
 
@@ -229,7 +267,7 @@ public class Board extends JPanel
      */
     private boolean isWallAt(int x, int y) {
         for (final Wall wall: walls) {
-            if (wall.getX() == x && wall.getY() == y) {
+            if (wall.isLocatedAt(x, y)) {
                 return true;
             }
         }
@@ -245,7 +283,7 @@ public class Board extends JPanel
      */
     private boolean isGoalAt(int x, int y) {
         for (final Goal goal: goals) {
-            if (goal.getX() == x && goal.getY() == y) {
+            if (goal.isLocatedAt(x, y)) {
                 return true;
             }
         }
@@ -261,7 +299,7 @@ public class Board extends JPanel
      */
     private Baggage getBaggageAt(int x, int y) {
         for (final Baggage bagg: baggs) {
-            if (bagg.getX() == x && bagg.getY() == y) {
+            if (bagg.isLocatedAt(x, y)) {
                 return bagg;
             }
         }
