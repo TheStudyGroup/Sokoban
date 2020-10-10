@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-public class Board extends JPanel {
-
+public class Board extends JPanel
+{
     private final int OFFSET = 30;
     private final int SPACE = 20;
     private final int LEFT_COLLISION = 1;
@@ -18,13 +18,14 @@ public class Board extends JPanel {
     private final int TOP_COLLISION = 3;
     private final int BOTTOM_COLLISION = 4;
 
-    private ArrayList<Wall> walls;
-    private ArrayList<Baggage> baggs;
-    private ArrayList<Goal> goals;
-    
-    private Player soko;
-    private int w = 0;
-    private int h = 0;
+    private ArrayList<Wall>    walls = new ArrayList<>();
+    private ArrayList<Baggage> baggs = new ArrayList<>();
+    private ArrayList<Goal>    goals = new ArrayList<>();
+
+
+    private Player player;
+    private int boardWidth  = 0;
+    private int boardHeight = 0;
     
     private boolean isCompleted = false;
 
@@ -42,203 +43,143 @@ public class Board extends JPanel {
             + "    ########\n";
 
     public Board() {
-
         initBoard();
     }
 
     private void initBoard() {
-
         addKeyListener(new TAdapter());
         setFocusable(true);
-        initWorld();
+        initWorld(level);
     }
 
     public int getBoardWidth() {
-        return this.w;
+        return this.boardWidth;
     }
 
     public int getBoardHeight() {
-        return this.h;
+        return this.boardHeight;
     }
 
-    private void initWorld() {
-        
-        walls = new ArrayList<>();
-        baggs = new ArrayList<>();
-        goals = new ArrayList<>();
+    private void initWorld(final String map) {
+        final String[] lines = map.split("\n");
+        int longestWidth = 0;
+        walls.clear();
+        baggs.clear();
+        goals.clear();
 
-        int x = OFFSET;
-        int y = OFFSET;
-
-        Wall wall;
-        Baggage b;
-        Goal a;
-
-        for (int i = 0; i < level.length(); i++) {
-
-            char item = level.charAt(i);
-
-            switch (item) {
-
-                case '\n':
-                    y += SPACE;
-
-                    if (this.w < x) {
-                        this.w = x;
-                    }
-
-                    x = OFFSET;
-                    break;
-
-                case '#':
-                    wall = new Wall(x, y);
-                    walls.add(wall);
-                    x += SPACE;
-                    break;
-
-                case '$':
-                    b = new Baggage(x, y);
-                    baggs.add(b);
-                    x += SPACE;
-                    break;
-
-                case '.':
-                    a = new Goal(x, y);
-                    goals.add(a);
-                    x += SPACE;
-                    break;
-
-                case '@':
-                    soko = new Player(x, y);
-                    x += SPACE;
-                    break;
-
-                case ' ':
-                    x += SPACE;
-                    break;
-
-                default:
-                    break;
+        for (int y = 0; y < lines.length; y++) {
+            for (int x = 0; x < lines[y].length(); x++) {
+                longestWidth = Math.max(longestWidth, lines[y].length());
+                final char blockCode = lines[y].charAt(x);
+                switch (blockCode) {
+                    case '#':
+                        walls.add(new Wall(x, y));
+                        break;
+                    case '$':
+                        baggs.add(new Baggage(x, y));
+                        break;
+                    case '.':
+                        goals.add(new Goal(x, y));
+                        break;
+                    case '@':
+                        player = new Player(x, y);
+                        break;
+                    default:
+                        break;
+                }
             }
-
-            h = y;
         }
+
+        boardWidth  = OFFSET + longestWidth * SPACE;
+        boardHeight = OFFSET + lines.length * SPACE;
     }
 
     private void buildWorld(Graphics g) {
-
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        ArrayList<Block> world = new ArrayList<>();
+        ArrayList<Block> blocks = new ArrayList<>();
+        blocks.addAll(walls);
+        blocks.addAll(goals);
+        blocks.addAll(baggs);
+        blocks.add(player);
 
-        world.addAll(walls);
-        world.addAll(goals);
-        world.addAll(baggs);
-        world.add(soko);
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            int drawX = OFFSET + block.getX() * SPACE;
+            int drawY = OFFSET + block.getY() * SPACE;
 
-        for (int i = 0; i < world.size(); i++) {
-
-            Block item = world.get(i);
-
-            if (item instanceof Player || item instanceof Baggage) {
-                
-                g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
-            } else {
-                
-                g.drawImage(item.getImage(), item.getX(), item.getY(), this);
+            if (block instanceof Player || block instanceof Baggage) {
+                drawX += 2;
+                drawY += 2;
             }
 
+            g.drawImage(block.getImage(), drawX, drawY, this);
+
             if (isCompleted) {
-                
                 g.setColor(new Color(0, 0, 0));
                 g.drawString("Completed", 25, 20);
             }
-
         }
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         buildWorld(g);
     }
 
-    private class TAdapter extends KeyAdapter {
-
+    private class TAdapter extends KeyAdapter
+    {
         @Override
         public void keyPressed(KeyEvent e) {
-
             if (isCompleted) {
                 return;
             }
 
-            int key = e.getKeyCode();
-
-            switch (key) {
-                
+            switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    
-                    if (checkWallCollision(soko,
-                            LEFT_COLLISION)) {
+                    if (checkWallCollision(player, LEFT_COLLISION)) {
                         return;
                     }
-                    
                     if (checkBagCollision(LEFT_COLLISION)) {
                         return;
                     }
-                    
-                    soko.move(-SPACE, 0);
-                    
+                    player.move(-1, 0);
                     break;
                     
                 case KeyEvent.VK_RIGHT:
-                    
-                    if (checkWallCollision(soko, RIGHT_COLLISION)) {
+                    if (checkWallCollision(player, RIGHT_COLLISION)) {
                         return;
                     }
-                    
                     if (checkBagCollision(RIGHT_COLLISION)) {
                         return;
                     }
-                    
-                    soko.move(SPACE, 0);
-                    
+                    player.move(1, 0);
                     break;
                     
                 case KeyEvent.VK_UP:
-                    
-                    if (checkWallCollision(soko, TOP_COLLISION)) {
+                    if (checkWallCollision(player, TOP_COLLISION)) {
                         return;
                     }
-                    
                     if (checkBagCollision(TOP_COLLISION)) {
                         return;
                     }
-                    
-                    soko.move(0, -SPACE);
-                    
+                    player.move(0, -1);
                     break;
                     
                 case KeyEvent.VK_DOWN:
-                    
-                    if (checkWallCollision(soko, BOTTOM_COLLISION)) {
+                    if (checkWallCollision(player, BOTTOM_COLLISION)) {
                         return;
                     }
-                    
                     if (checkBagCollision(BOTTOM_COLLISION)) {
                         return;
                     }
-                    
-                    soko.move(0, SPACE);
-                    
+                    player.move(0, 1);
                     break;
                     
                 case KeyEvent.VK_R:
-                    
                     restartLevel();
-                    
                     break;
                     
                 default:
@@ -249,63 +190,42 @@ public class Board extends JPanel {
         }
     }
 
-    private boolean checkWallCollision(Block block, int type) {
-
+    private boolean checkWallCollision(Movable block, int type) {
         switch (type) {
-            
             case LEFT_COLLISION:
-                
                 for (int i = 0; i < walls.size(); i++) {
-                    
                     Wall wall = walls.get(i);
-                    
                     if (block.isLeftCollision(wall)) {
-                        
                         return true;
                     }
                 }
-                
                 return false;
                 
             case RIGHT_COLLISION:
-                
                 for (int i = 0; i < walls.size(); i++) {
-                    
                     Wall wall = walls.get(i);
-                    
                     if (block.isRightCollision(wall)) {
                         return true;
                     }
                 }
-                
                 return false;
                 
             case TOP_COLLISION:
-                
                 for (int i = 0; i < walls.size(); i++) {
-                    
                     Wall wall = walls.get(i);
-                    
                     if (block.isTopCollision(wall)) {
-                        
                         return true;
                     }
                 }
-                
                 return false;
                 
             case BOTTOM_COLLISION:
-                
                 for (int i = 0; i < walls.size(); i++) {
-                    
                     Wall wall = walls.get(i);
-                    
                     if (block.isBottomCollision(wall)) {
-                        
                         return true;
                     }
                 }
-                
                 return false;
                 
             default:
@@ -316,131 +236,89 @@ public class Board extends JPanel {
     }
 
     private boolean checkBagCollision(int type) {
-
         switch (type) {
-            
             case LEFT_COLLISION:
-                
                 for (int i = 0; i < baggs.size(); i++) {
-
                     Baggage bag = baggs.get(i);
-
-                    if (soko.isLeftCollision(bag)) {
-
+                    if (player.isLeftCollision(bag)) {
                         for (int j = 0; j < baggs.size(); j++) {
-                            
                             Baggage item = baggs.get(j);
-                            
                             if (!bag.equals(item)) {
-                                
                                 if (bag.isLeftCollision(item)) {
                                     return true;
                                 }
                             }
-                            
                             if (checkWallCollision(bag, LEFT_COLLISION)) {
                                 return true;
                             }
                         }
-                        
-                        bag.move(-SPACE, 0);
+                        bag.move(-1, 0);
                         isCompleted();
                     }
                 }
-                
                 return false;
                 
             case RIGHT_COLLISION:
-                
                 for (int i = 0; i < baggs.size(); i++) {
-
                     Baggage bag = baggs.get(i);
-                    
-                    if (soko.isRightCollision(bag)) {
-                        
+                    if (player.isRightCollision(bag)) {
                         for (int j = 0; j < baggs.size(); j++) {
-
                             Baggage item = baggs.get(j);
-                            
                             if (!bag.equals(item)) {
-                                
                                 if (bag.isRightCollision(item)) {
                                     return true;
                                 }
                             }
-                            
                             if (checkWallCollision(bag, RIGHT_COLLISION)) {
                                 return true;
                             }
                         }
-                        
-                        bag.move(SPACE, 0);
+                        bag.move(1, 0);
                         isCompleted();
                     }
                 }
                 return false;
-                
+
             case TOP_COLLISION:
-                
                 for (int i = 0; i < baggs.size(); i++) {
-
                     Baggage bag = baggs.get(i);
-                    
-                    if (soko.isTopCollision(bag)) {
-                        
+                    if (player.isTopCollision(bag)) {
                         for (int j = 0; j < baggs.size(); j++) {
-
                             Baggage item = baggs.get(j);
-
                             if (!bag.equals(item)) {
-                                
                                 if (bag.isTopCollision(item)) {
                                     return true;
                                 }
                             }
-                            
                             if (checkWallCollision(bag, TOP_COLLISION)) {
                                 return true;
                             }
                         }
-                        
-                        bag.move(0, -SPACE);
+                        bag.move(0, -1);
                         isCompleted();
                     }
                 }
-
                 return false;
                 
             case BOTTOM_COLLISION:
-                
                 for (int i = 0; i < baggs.size(); i++) {
-
                     Baggage bag = baggs.get(i);
-                    
-                    if (soko.isBottomCollision(bag)) {
-                        
+                    if (player.isBottomCollision(bag)) {
                         for (int j = 0; j < baggs.size(); j++) {
-
                             Baggage item = baggs.get(j);
-                            
                             if (!bag.equals(item)) {
-                                
                                 if (bag.isBottomCollision(item)) {
                                     return true;
                                 }
                             }
-                            
                             if (checkWallCollision(bag,BOTTOM_COLLISION)) {
-                                
                                 return true;
                             }
                         }
-                        
-                        bag.move(0, SPACE);
+                        bag.move(0, 1);
                         isCompleted();
                     }
                 }
-                
                 break;
                 
             default:
@@ -451,39 +329,33 @@ public class Board extends JPanel {
     }
 
     public void isCompleted() {
-
         int nOfBags = baggs.size();
         int finishedBags = 0;
 
         for (int i = 0; i < nOfBags; i++) {
-            
             Baggage bag = baggs.get(i);
             
             for (int j = 0; j < nOfBags; j++) {
-                
-                Goal goal =  goals.get(j);
-                
+                Goal goal = goals.get(j);
+
                 if (bag.getX() == goal.getX() && bag.getY() == goal.getY()) {
-                    
                     finishedBags += 1;
                 }
             }
         }
 
         if (finishedBags == nOfBags) {
-            
             isCompleted = true;
             repaint();
         }
     }
 
     private void restartLevel() {
-
         goals.clear();
         baggs.clear();
         walls.clear();
 
-        initWorld();
+        initWorld(level);
 
         if (isCompleted) {
             isCompleted = false;
