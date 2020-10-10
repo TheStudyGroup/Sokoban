@@ -13,21 +13,15 @@ public class Board extends JPanel
 {
     private final int OFFSET = 30;
     private final int SPACE = 20;
-    private final int LEFT_COLLISION = 1;
-    private final int RIGHT_COLLISION = 2;
-    private final int TOP_COLLISION = 3;
-    private final int BOTTOM_COLLISION = 4;
 
     private ArrayList<Wall>    walls = new ArrayList<>();
     private ArrayList<Baggage> baggs = new ArrayList<>();
     private ArrayList<Goal>    goals = new ArrayList<>();
+    private Player             player;
+    private int remainingBaggages = 0;
 
-
-    private Player player;
     private int boardWidth  = 0;
     private int boardHeight = 0;
-    
-    private boolean isCompleted = false;
 
     private String level
             = "    ######\n"
@@ -61,12 +55,13 @@ public class Board extends JPanel
     }
 
     private void initWorld(final String map) {
-        final String[] lines = map.split("\n");
-        int longestWidth = 0;
         walls.clear();
         baggs.clear();
         goals.clear();
+        remainingBaggages = 0;
 
+        final String[] lines = map.split("\n");
+        int longestWidth = 0;
         for (int y = 0; y < lines.length; y++) {
             for (int x = 0; x < lines[y].length(); x++) {
                 longestWidth = Math.max(longestWidth, lines[y].length());
@@ -77,6 +72,7 @@ public class Board extends JPanel
                         break;
                     case '$':
                         baggs.add(new Baggage(x, y));
+                        remainingBaggages++;
                         break;
                     case '.':
                         goals.add(new Goal(x, y));
@@ -110,10 +106,9 @@ public class Board extends JPanel
             g.drawImage(block.getImage(), drawX, drawY, this);
         }
 
-            if (isCompleted) {
-                g.setColor(new Color(0, 0, 0));
-                g.drawString("Completed", 25, 20);
-            }
+        if (isCompleted()) {
+            g.setColor(new Color(0, 0, 0));
+            g.drawString("Completed", 25, 20);
         }
     }
 
@@ -127,232 +122,102 @@ public class Board extends JPanel
     {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (isCompleted) {
+            int keyCode = e.getKeyCode();
+
+            // 항상 입력받을 수 있는 키
+            switch (keyCode) {
+                case KeyEvent.VK_R:
+                    restartLevel();
+                    return;
+            }
+
+            if (isCompleted()) { // 게임 클리어시 이동 불가
                 return;
             }
 
-            switch (e.getKeyCode()) {
+            int dx = 0;
+            int dy = 0;
+
+            switch (keyCode) {
                 case KeyEvent.VK_LEFT:
-                    if (checkWallCollision(player, LEFT_COLLISION)) {
-                        return;
-                    }
-                    if (checkBagCollision(LEFT_COLLISION)) {
-                        return;
-                    }
-                    player.move(-1, 0);
+                    dx = -1;
                     break;
-                    
                 case KeyEvent.VK_RIGHT:
-                    if (checkWallCollision(player, RIGHT_COLLISION)) {
-                        return;
-                    }
-                    if (checkBagCollision(RIGHT_COLLISION)) {
-                        return;
-                    }
-                    player.move(1, 0);
+                    dx = 1;
                     break;
-                    
                 case KeyEvent.VK_UP:
-                    if (checkWallCollision(player, TOP_COLLISION)) {
-                        return;
-                    }
-                    if (checkBagCollision(TOP_COLLISION)) {
-                        return;
-                    }
-                    player.move(0, -1);
+                    dy = -1;
                     break;
-                    
                 case KeyEvent.VK_DOWN:
-                    if (checkWallCollision(player, BOTTOM_COLLISION)) {
-                        return;
-                    }
-                    if (checkBagCollision(BOTTOM_COLLISION)) {
-                        return;
-                    }
-                    player.move(0, 1);
+                    dy = 1;
                     break;
-                    
-                case KeyEvent.VK_R:
-                    restartLevel();
-                    break;
-                    
                 default:
-                    break;
+                    return;
             }
+
+            // 플레이어가 이동할 새로운 좌표 계산
+            int newX = player.getX() + dx;
+            int newY = player.getY() + dy;
+
+            if (isWallAt(newX, newY)) {
+                return; // 벽이 있으면 이동 불가
+            }
+
+            Baggage nearBaggage = getBaggageAt(newX, newY);
+            if (nearBaggage != null) {
+                if (isWallAt(newX + dx, newY + dy)) {
+                    return; // 짐 옆에 벽이 있어서 밀 수 없음
+                }
+                if (getBaggageAt(newX + dx, newY + dy) != null) {
+                    return; // 짐이 연속으로 2개 있어서 밀 수 없음
+                }
+                if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
+                    remainingBaggages++; // 이동 전에 짐이 골에 있는 경우
+                }
+                nearBaggage.move(dx, dy); // 짐이 하나만 있고 움직일 수 있는 공간이 있으면 짐을 민다
+                if (isGoalAt(nearBaggage.getX(), nearBaggage.getY())) {
+                    remainingBaggages--; // 이동 후에 짐이 골에 있는 경우
+                }
+            }
+            player.move(dx, dy); // 플레이어를 이동시킨다
 
             repaint();
         }
     }
 
-    private boolean checkWallCollision(Movable block, int type) {
-        switch (type) {
-            case LEFT_COLLISION:
-                for (int i = 0; i < walls.size(); i++) {
-                    Wall wall = walls.get(i);
-                    if (block.isLeftCollision(wall)) {
-                        return true;
-                    }
-                }
-                return false;
-                
-            case RIGHT_COLLISION:
-                for (int i = 0; i < walls.size(); i++) {
-                    Wall wall = walls.get(i);
-                    if (block.isRightCollision(wall)) {
-                        return true;
-                    }
-                }
-                return false;
-                
-            case TOP_COLLISION:
-                for (int i = 0; i < walls.size(); i++) {
-                    Wall wall = walls.get(i);
-                    if (block.isTopCollision(wall)) {
-                        return true;
-                    }
-                }
-                return false;
-                
-            case BOTTOM_COLLISION:
-                for (int i = 0; i < walls.size(); i++) {
-                    Wall wall = walls.get(i);
-                    if (block.isBottomCollision(wall)) {
-                        return true;
-                    }
-                }
-                return false;
-                
-            default:
-                break;
-        }
-        
-        return false;
-    }
-
-    private boolean checkBagCollision(int type) {
-        switch (type) {
-            case LEFT_COLLISION:
-                for (int i = 0; i < baggs.size(); i++) {
-                    Baggage bag = baggs.get(i);
-                    if (player.isLeftCollision(bag)) {
-                        for (int j = 0; j < baggs.size(); j++) {
-                            Baggage item = baggs.get(j);
-                            if (!bag.equals(item)) {
-                                if (bag.isLeftCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            if (checkWallCollision(bag, LEFT_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        bag.move(-1, 0);
-                        isCompleted();
-                    }
-                }
-                return false;
-                
-            case RIGHT_COLLISION:
-                for (int i = 0; i < baggs.size(); i++) {
-                    Baggage bag = baggs.get(i);
-                    if (player.isRightCollision(bag)) {
-                        for (int j = 0; j < baggs.size(); j++) {
-                            Baggage item = baggs.get(j);
-                            if (!bag.equals(item)) {
-                                if (bag.isRightCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            if (checkWallCollision(bag, RIGHT_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        bag.move(1, 0);
-                        isCompleted();
-                    }
-                }
-                return false;
-
-            case TOP_COLLISION:
-                for (int i = 0; i < baggs.size(); i++) {
-                    Baggage bag = baggs.get(i);
-                    if (player.isTopCollision(bag)) {
-                        for (int j = 0; j < baggs.size(); j++) {
-                            Baggage item = baggs.get(j);
-                            if (!bag.equals(item)) {
-                                if (bag.isTopCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            if (checkWallCollision(bag, TOP_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        bag.move(0, -1);
-                        isCompleted();
-                    }
-                }
-                return false;
-                
-            case BOTTOM_COLLISION:
-                for (int i = 0; i < baggs.size(); i++) {
-                    Baggage bag = baggs.get(i);
-                    if (player.isBottomCollision(bag)) {
-                        for (int j = 0; j < baggs.size(); j++) {
-                            Baggage item = baggs.get(j);
-                            if (!bag.equals(item)) {
-                                if (bag.isBottomCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            if (checkWallCollision(bag,BOTTOM_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        bag.move(0, 1);
-                        isCompleted();
-                    }
-                }
-                break;
-                
-            default:
-                break;
-        }
-
-        return false;
-    }
-
-    public void isCompleted() {
-        int nOfBags = baggs.size();
-        int finishedBags = 0;
-
-        for (int i = 0; i < nOfBags; i++) {
-            Baggage bag = baggs.get(i);
-            
-            for (int j = 0; j < nOfBags; j++) {
-                Goal goal = goals.get(j);
-
-                if (bag.getX() == goal.getX() && bag.getY() == goal.getY()) {
-                    finishedBags += 1;
-                }
+    private boolean isWallAt(int x, int y) {
+        for (final Wall wall: walls) {
+            if (wall.getX() == x && wall.getY() == y) {
+                return true;
             }
         }
+        return false;
+    }
 
-        if (finishedBags == nOfBags) {
-            isCompleted = true;
-            repaint();
+    private boolean isGoalAt(int x, int y) {
+        for (final Goal goal: goals) {
+            if (goal.getX() == x && goal.getY() == y) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private Baggage getBaggageAt(int x, int y) {
+        for (final Baggage bagg: baggs) {
+            if (bagg.getX() == x && bagg.getY() == y) {
+                return bagg;
+            }
+        }
+        return null;
+    }
+
+    public boolean isCompleted() {
+        return remainingBaggages == 0;
     }
 
     private void restartLevel() {
-        goals.clear();
-        baggs.clear();
-        walls.clear();
-
         initWorld(level);
-
-        if (isCompleted) {
-            isCompleted = false;
-        }
+        repaint();
     }
 }
