@@ -98,23 +98,17 @@ public class Board extends JPanel
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        ArrayList<Block> blocks = new ArrayList<>();
+        final ArrayList<Block> blocks = new ArrayList<>();
         blocks.addAll(walls);
         blocks.addAll(goals);
         blocks.addAll(baggs);
         blocks.add(player);
 
-        for (int i = 0; i < blocks.size(); i++) {
-            Block block = blocks.get(i);
-            int drawX = OFFSET + block.getX() * SPACE;
-            int drawY = OFFSET + block.getY() * SPACE;
-
-            if (block instanceof Player || block instanceof Baggage) {
-                drawX += 2;
-                drawY += 2;
-            }
-
+        for (final Block block : blocks) {
+            final int drawX = OFFSET + block.getX() * SPACE;
+            final int drawY = OFFSET + block.getY() * SPACE;
             g.drawImage(block.getImage(), drawX, drawY, this);
+        }
 
             if (isCompleted) {
                 g.setColor(new Color(0, 0, 0));

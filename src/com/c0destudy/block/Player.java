@@ -11,7 +11,7 @@ public class Player extends Movable
     }
 
     private void initPlayer() {
-        ImageIcon iicon = new ImageIcon("src/resources/sokoban.png");
+        ImageIcon iicon = new ImageIcon("src/resources/player.png");
         Image image = iicon.getImage();
         setImage(image);
     }
