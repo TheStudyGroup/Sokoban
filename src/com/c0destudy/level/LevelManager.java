@@ -17,11 +17,10 @@ import java.util.List;
 public class LevelManager
 {
     // txt 파일에서 사용하는 레벨 기호 모음
-    public static final char WALL    = '#';
-    public static final char BAGGAGE = '$';
-    public static final char GOAL    = '.';
-    public static final char PLAYER1 = '@';
-    public static final char PLAYER2 = '%';
+    private static final char LEVEL_SYMBOL_WALL    = '#';
+    private static final char LEVEL_SYMBOL_BAGGAGE = '$';
+    private static final char LEVEL_SYMBOL_GOAL    = '.';
+    private static final char LEVEL_SYMBOL_PLAYER  = '@';
 
     /**
      * 파일로부터 레벨 인스턴스를 생성합니다.
@@ -66,17 +65,16 @@ public class LevelManager
             for (int x = 0; x < line.length(); x++) {
                 final Point point = new Point(x, y);
                 switch (line.charAt(x)) {
-                    case WALL:
+                    case LEVEL_SYMBOL_WALL:
                         level.addWall(new Wall(point));
                         break;
-                    case BAGGAGE:
+                    case LEVEL_SYMBOL_BAGGAGE:
                         level.addBaggage(new Baggage(point));
                         break;
-                    case GOAL:
+                    case LEVEL_SYMBOL_GOAL:
                         level.addGoal(new Goal(point));
                         break;
-                    case PLAYER1:
-                    case PLAYER2:
+                    case LEVEL_SYMBOL_PLAYER:
                         level.addPlayer(new Player(point));
                         break;
                     default:
