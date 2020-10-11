@@ -1,19 +1,15 @@
-package com.c0destudy.block;
+package com.c0destudy.tile;
 
-import com.c0destudy.Point;
+import com.c0destudy.misc.Point;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Wall extends Block
+public class Wall extends Tile
 {
-    public Wall(int x, int y) {
-        super(x, y);
-        initWall();
-    }
-
     public Wall(final Point point) {
-        this(point.getX(), point.getY());
+        super(point);
+        initWall();
     }
 
     private void initWall() {

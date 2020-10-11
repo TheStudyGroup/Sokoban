@@ -1,5 +1,7 @@
 package com.c0destudy;
 
+import com.c0destudy.ui.Board;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 

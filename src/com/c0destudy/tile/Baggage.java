@@ -1,19 +1,15 @@
-package com.c0destudy.block;
+package com.c0destudy.tile;
 
-import com.c0destudy.Point;
+import com.c0destudy.misc.Point;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class Baggage extends Movable
 {
-    public Baggage(int x, int y) {
-        super(x, y);
+    public Baggage(final Point point) {
+        super(point);
         initBaggage();
-    }
-
-    public Baggage(final Point p) {
-        this(p.getX(), p.getY());
     }
 
     private void initBaggage() {

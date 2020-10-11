@@ -1,14 +1,14 @@
-package com.c0destudy;
+package com.c0destudy.ui;
 
-import com.c0destudy.block.*;
+import com.c0destudy.misc.Point;
+import com.c0destudy.tile.*;
 import com.c0destudy.level.Level;
-import com.c0destudy.level.LevelLoader;
+import com.c0destudy.level.LevelManager;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class Board extends JPanel
@@ -26,7 +26,7 @@ public class Board extends JPanel
 
     private void initLevel() {
         String path = "src/resources/levels/Level 1.txt";
-        level = LevelLoader.loadLevelFromFile(path);
+        level = LevelManager.loadLevelFromFile(path);
     }
 
     public int getBoardWidth() {
@@ -52,10 +52,10 @@ public class Board extends JPanel
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        for (final Block block : level.getAllBlocks()) {
-            final int drawX = OFFSET + block.getX() * BLOCK_SIZE;
-            final int drawY = OFFSET + block.getY() * BLOCK_SIZE;
-            g.drawImage(block.getImage(), drawX, drawY, this);
+        for (final Tile tile : level.getAllTiles()) {
+            final int drawX = OFFSET + tile.getX() * BLOCK_SIZE;
+            final int drawY = OFFSET + tile.getY() * BLOCK_SIZE;
+            g.drawImage(tile.getImage(), drawX, drawY, this);
         }
 
         g.setColor(new Color(0, 0, 0));
