@@ -1,40 +1,35 @@
-package com.c0destudy.sokoban.ui;
+package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.misc.Point;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.tile.Tile;
 import com.c0destudy.sokoban.level.LevelManager;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
-public class Board extends JPanel
+public class GamePanel extends JPanel
 {
-    private final int OFFSET = 30;
+    private final int MARGIN = 30;
     private final int BLOCK_SIZE = 20;
 
     private Level level;
 
-    public Board() {
+    public GamePanel() {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initLevel();
     }
 
     private void initLevel() {
-        String path = "src/resources/levels/Level 1.txt";
+        String path = "src/resources/levels/Level 2.txt";
         level = LevelManager.loadLevelFromFile(path);
-    }
 
-    public int getBoardWidth() {
-        return OFFSET + level.getWidth() * BLOCK_SIZE;
-    }
-
-    public int getBoardHeight() {
-        return OFFSET + level.getHeight() * BLOCK_SIZE;
+        final int width  = MARGIN * 2 + level.getWidth() * BLOCK_SIZE;
+        final int height = MARGIN * 2 + level.getHeight() * BLOCK_SIZE;
+        setPreferredSize(new Dimension(width, height));
     }
 
     /**
@@ -53,8 +48,8 @@ public class Board extends JPanel
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         for (final Tile tile : level.getAllTiles()) {
-            final int drawX = OFFSET + tile.getX() * BLOCK_SIZE;
-            final int drawY = OFFSET + tile.getY() * BLOCK_SIZE;
+            final int drawX = MARGIN + tile.getX() * BLOCK_SIZE;
+            final int drawY = MARGIN + tile.getY() * BLOCK_SIZE;
             g.drawImage(tile.getImage(), drawX, drawY, this);
         }
 
