@@ -1,16 +1,15 @@
-package com.c0destudy.block;
+package com.c0destudy.tile;
 
-import com.c0destudy.Point;
+import com.c0destudy.misc.Point;
 
 import java.awt.Image;
 
-public class Block
+public class Tile
 {
     private Point point;
     private Image image;
 
-    public Block(final Point point)        { this.point = point;      }
-    public Block(final int x, final int y) { point = new Point(x, y); }
+    public Tile(final Point point)        { this.point = point;      }
 
     public Point getPoint() { return point; }
     public Image getImage() { return image; }
@@ -23,5 +22,4 @@ public class Block
     public void setY(final int y) { point.setY(y); }
 
     public boolean isLocatedAt(final Point point)        { return this.point.equals(point);     }
-    public boolean isLocatedAt(final int x, final int y) { return isLocatedAt(new Point(x, y)); }
 }

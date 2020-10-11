@@ -1,4 +1,4 @@
-package com.c0destudy;
+package com.c0destudy.misc;
 
 public class Point {
     private int x;

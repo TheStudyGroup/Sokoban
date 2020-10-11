@@ -1,7 +1,7 @@
 package com.c0destudy.level;
 
-import com.c0destudy.Point;
-import com.c0destudy.block.*;
+import com.c0destudy.misc.Point;
+import com.c0destudy.tile.*;
 
 import java.util.ArrayList;
 
@@ -27,14 +27,14 @@ public class Level
     public int getRemainingBaggages() { return remainingBaggages; }
     public boolean isCompleted()      { return remainingBaggages == 0; }
 
-    // 블럭
-    public ArrayList<Block> getAllBlocks() {
-        final ArrayList<Block> blocks = new ArrayList<>();
-        blocks.addAll(walls);
-        blocks.addAll(goals);
-        blocks.addAll(baggages);
-        blocks.addAll(players);
-        return blocks;
+    // 타일
+    public ArrayList<Tile> getAllTiles() {
+        final ArrayList<Tile> tiles = new ArrayList<>();
+        tiles.addAll(walls);
+        tiles.addAll(goals);
+        tiles.addAll(baggages);
+        tiles.addAll(players);
+        return tiles;
     }
     public Player getPlayer(final int index) {
         try {

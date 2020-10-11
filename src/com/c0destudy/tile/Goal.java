@@ -1,19 +1,15 @@
-package com.c0destudy.block;
+package com.c0destudy.tile;
 
-import com.c0destudy.Point;
+import com.c0destudy.misc.Point;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Goal extends Block
+public class Goal extends Tile
 {
-    public Goal(int x, int y) {
-        super(x, y);
-        initArea();
-    }
-
     public Goal(final Point point) {
-        this(point.getX(), point.getY());
+        super(point);
+        initArea();
     }
 
     private void initArea() {

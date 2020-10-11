@@ -1,9 +1,10 @@
 package com.c0destudy.level;
 
-import com.c0destudy.block.Baggage;
-import com.c0destudy.block.Goal;
-import com.c0destudy.block.Player;
-import com.c0destudy.block.Wall;
+import com.c0destudy.misc.Point;
+import com.c0destudy.tile.Baggage;
+import com.c0destudy.tile.Goal;
+import com.c0destudy.tile.Player;
+import com.c0destudy.tile.Wall;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,14 +14,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class LevelLoader
+public class LevelManager
 {
+    // txt 파일에서 사용하는 레벨 기호 모음
+    public static final char WALL    = '#';
+    public static final char BAGGAGE = '$';
+    public static final char GOAL    = '.';
+    public static final char PLAYER1 = '@';
+    public static final char PLAYER2 = '%';
+
     /**
      * 파일로부터 레벨 인스턴스를 생성합니다.
      *
      * @param  filePath    레벨 데이터가 저장된 파일 경로
      * @return Level       레벨 인스턴스
-     * @see    LevelSymbol
      */
     public static Level loadLevelFromFile(final String filePath) {
         final Path    path    = Paths.get(filePath);
@@ -41,7 +48,6 @@ public class LevelLoader
      *
      * @param  levelData   레벨 데이터가 행별로 구분된 리스트
      * @return Level       레벨 인스턴스
-     * @see    LevelSymbol
      */
     public static Level loadLevelFromStringList(final List<String> levelData) {
         // 레벨의 가로, 세로 크기 계산
@@ -58,19 +64,20 @@ public class LevelLoader
         for (int y = 0; y < levelData.size(); y++) {
             final String line = levelData.get(y);
             for (int x = 0; x < line.length(); x++) {
+                final Point point = new Point(x, y);
                 switch (line.charAt(x)) {
-                    case LevelSymbol.WALL:
-                        level.addWall(new Wall(x, y));
+                    case WALL:
+                        level.addWall(new Wall(point));
                         break;
-                    case LevelSymbol.BAGGAGE:
-                        level.addBaggage(new Baggage(x, y));
+                    case BAGGAGE:
+                        level.addBaggage(new Baggage(point));
                         break;
-                    case LevelSymbol.GOAL:
-                        level.addGoal(new Goal(x, y));
+                    case GOAL:
+                        level.addGoal(new Goal(point));
                         break;
-                    case LevelSymbol.PLAYER1:
-                    case LevelSymbol.PLAYER2:
-                        level.addPlayer(new Player(x, y));
+                    case PLAYER1:
+                    case PLAYER2:
+                        level.addPlayer(new Player(point));
                         break;
                     default:
                         break;
@@ -79,5 +86,10 @@ public class LevelLoader
         }
 
         return level;
+    }
+
+    // TODO
+    public static boolean saveLevelToFile(final String filePath, final Level level) {
+        return true;
     }
 }
