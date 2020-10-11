@@ -15,21 +15,14 @@ public class GamePanel extends JPanel
     private final int MARGIN = 30;
     private final int BLOCK_SIZE = 20;
 
-    private Level level;
+    private final Level level;
 
-    public GamePanel() {
-        addKeyListener(new TAdapter());
-        setFocusable(true);
-        initLevel();
-    }
-
-    private void initLevel() {
-        String path = "src/resources/levels/Level 2.txt";
-        level = LevelManager.loadLevelFromFile(path);
-
+    public GamePanel(final Level level) {
+        this.level = level;
         final int width  = MARGIN * 2 + level.getWidth() * BLOCK_SIZE;
         final int height = MARGIN * 2 + level.getHeight() * BLOCK_SIZE;
         setPreferredSize(new Dimension(width, height));
+        setFocusable(true);
     }
 
     /**
@@ -59,71 +52,5 @@ public class GamePanel extends JPanel
         } else {
             g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 20);
         }
-    }
-
-    private class TAdapter extends KeyAdapter
-    {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int keyCode = e.getKeyCode();
-
-            // 항상 입력받을 수 있는 키
-            switch (keyCode) {
-                case KeyEvent.VK_R:
-                    restartLevel();
-                    return;
-            }
-
-            if (level.isCompleted()) { // 게임 클리어시 이동 불가
-                return;
-            }
-
-            // 플레이어 선택
-            int playerIndex;
-            switch (keyCode) {
-                case KeyEvent.VK_LEFT: // Player1
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_DOWN:
-                    playerIndex = 0;
-                    break;
-                case KeyEvent.VK_A: // Player 2
-                case KeyEvent.VK_D:
-                case KeyEvent.VK_W:
-                case KeyEvent.VK_S:
-                    playerIndex = 1;
-                    break;
-                default:
-                    return;
-            }
-
-            // 방향 선택
-            Point delta = null;
-            switch (keyCode) {
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
-                    delta = new Point(-1, 0);
-                    break;
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
-                    delta = new Point(1, 0);
-                    break;
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_W:
-                    delta = new Point(0, -1);
-                    break;
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_S:
-                    delta = new Point(0, 1);
-                    break;
-            }
-            level.movePlayerAndBaggage(playerIndex, delta);
-            repaint();
-        }
-    }
-
-    private void restartLevel() {
-        initLevel();
-        repaint();
     }
 }
