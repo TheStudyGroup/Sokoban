@@ -1,6 +1,6 @@
-package com.c0destudy.tile;
+package com.c0destudy.sokoban.tile;
 
-import com.c0destudy.misc.Point;
+import com.c0destudy.sokoban.misc.Point;
 
 public class Movable extends Tile
 {

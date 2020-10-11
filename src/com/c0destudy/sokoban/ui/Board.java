@@ -1,9 +1,9 @@
-package com.c0destudy.ui;
+package com.c0destudy.sokoban.ui;
 
-import com.c0destudy.misc.Point;
-import com.c0destudy.tile.*;
-import com.c0destudy.level.Level;
-import com.c0destudy.level.LevelManager;
+import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.level.Level;
+import com.c0destudy.sokoban.tile.Tile;
+import com.c0destudy.sokoban.level.LevelManager;
 
 import java.awt.Color;
 import java.awt.Graphics;

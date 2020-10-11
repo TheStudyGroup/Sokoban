@@ -1,6 +1,6 @@
-package com.c0destudy;
+package com.c0destudy.sokoban;
 
-import com.c0destudy.ui.Board;
+import com.c0destudy.sokoban.ui.Board;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;

@@ -1,4 +1,4 @@
-package com.c0destudy.misc;
+package com.c0destudy.sokoban.misc;
 
 public class Point {
     private int x;

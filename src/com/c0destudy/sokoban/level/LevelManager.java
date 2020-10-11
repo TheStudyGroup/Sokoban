@@ -1,10 +1,10 @@
-package com.c0destudy.level;
+package com.c0destudy.sokoban.level;
 
-import com.c0destudy.misc.Point;
-import com.c0destudy.tile.Baggage;
-import com.c0destudy.tile.Goal;
-import com.c0destudy.tile.Player;
-import com.c0destudy.tile.Wall;
+import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.tile.Baggage;
+import com.c0destudy.sokoban.tile.Goal;
+import com.c0destudy.sokoban.tile.Player;
+import com.c0destudy.sokoban.tile.Wall;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

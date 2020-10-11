@@ -1,7 +1,7 @@
-package com.c0destudy.level;
+package com.c0destudy.sokoban.level;
 
-import com.c0destudy.misc.Point;
-import com.c0destudy.tile.*;
+import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.tile.*;
 
 import java.util.ArrayList;
 
