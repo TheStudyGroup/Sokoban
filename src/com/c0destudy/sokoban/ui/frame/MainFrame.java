@@ -11,13 +11,6 @@ public class MainFrame extends JFrame implements ActionListener
 {
     private JPanel contentPane = null;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
-            frame.setVisible(true);
-        });
-    }
-
     public MainFrame() {
         super();
         SkinManager.loadSkin();
@@ -104,9 +97,10 @@ public class MainFrame extends JFrame implements ActionListener
     }
 
     public void actionPerformed(ActionEvent e){
-        JButton button = (JButton) e.getSource();
+        final JButton button = (JButton) e.getSource();
         switch (button.getText()) {
             case "New Game":
+                FrameManager.showGameFrame("Level 2");
                 break;
             case "Continue":
                 break;
@@ -117,9 +111,9 @@ public class MainFrame extends JFrame implements ActionListener
             case "About":
                 break;
             case "Exit Game":
-                dispose();
                 break;
         }
+        dispose();
     }
 }
 

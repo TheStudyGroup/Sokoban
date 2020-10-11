@@ -7,35 +7,29 @@ import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 public class GameFrame extends JFrame
 {
-    private final String levelName;
-    private Level        level      = null;
-    private GamePanel    gamePanel  = null;
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            GameFrame frame = new GameFrame("Level 2");
-            frame.setVisible(true);
-        });
-    }
+    private final GameFrame gameFrame;
+    private final String    levelName;
+    private Level           level     = null;
+    private GamePanel       gamePanel = null;
 
     public GameFrame(final String levelName) {
         super();
+        this.gameFrame = this;
         this.levelName = levelName;
         setTitle("SOKOBAN - " + levelName);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new TWindowAdapter());
         initUI();
     }
 
     private void initUI() {
         final Level     newLevel     = LevelManager.getNewLevel(levelName);
         final GamePanel newGamePanel = new GamePanel(newLevel);
-        newGamePanel.addKeyListener(new TAdapter());
+        newGamePanel.addKeyListener(new TKeyAdapter());
 
         getContentPane().removeAll();       // 이전 GamePanel 제거
         getContentPane().add(newGamePanel); // 새로운 GamePanel 추가
@@ -48,7 +42,7 @@ public class GameFrame extends JFrame
         gamePanel = newGamePanel;
     }
 
-    private class TAdapter extends KeyAdapter
+    private class TKeyAdapter extends KeyAdapter
     {
         @Override
         public void keyPressed(KeyEvent e) {
@@ -106,6 +100,15 @@ public class GameFrame extends JFrame
             }
             level.movePlayerAndBaggage(playerIndex, delta);
             gamePanel.repaint();
+        }
+    }
+
+    private class TWindowAdapter extends WindowAdapter
+    {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            FrameManager.showMainFrame();
+            dispose();
         }
     }
 }
