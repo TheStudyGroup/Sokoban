@@ -1,11 +1,14 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.ui.helper.MakeButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 
 public class MainPanel extends JPanel
 {
@@ -24,41 +27,28 @@ public class MainPanel extends JPanel
         setPreferredSize(new Dimension(800, 500));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        final JLabel lblTitle = new JLabel("S O K O B A N");
-        lblTitle.setFont(skin.getFont(Skin.FONTS.MainTitle));
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         final Font buttonFont = skin.getFont(Skin.FONTS.MainButton);
 
-        add(Box.createVerticalStrut(50));
-        add(lblTitle);
-
-        add(Box.createVerticalStrut(40));
-        add(MakeButton.make("New Game", 450, 45, true, buttonFont, buttonListener));
-
-        add(Box.createVerticalStrut(20));
-        add(btnContinue = MakeButton.make("Continue", 450, 45, true, buttonFont, buttonListener));
-
-        add(Box.createVerticalStrut(20));
-        Box box = Box.createHorizontalBox();
-        box.setMaximumSize(new Dimension(450, 45));
-        box.setAlignmentX(Component.CENTER_ALIGNMENT);
-        box.add(MakeButton.make("Ranking", 215, 45, false, buttonFont, buttonListener));
-        box.add(Box.createHorizontalStrut(20));
-        box.add(MakeButton.make("Recordings", 215, 45, false, buttonFont, buttonListener));
-        add(box);
-
-        add(Box.createVerticalStrut(20));
-        box = Box.createHorizontalBox();
-        box.setMaximumSize(new Dimension(450, 45));
-        box.setAlignmentX(Component.CENTER_ALIGNMENT);
-        box.add(MakeButton.make("Settings", 215, 45, false, buttonFont, buttonListener));
-        box.add(Box.createHorizontalStrut(20));
-        box.add(MakeButton.make("About", 215, 45, false, buttonFont, buttonListener));
-        add(box);
-
-        add(Box.createVerticalStrut(20));
-        add(MakeButton.make("Exit Game", 450, 45, true, buttonFont, buttonListener));
+        Arrays.asList(
+            makeVSpace(50),
+            makeLabel("S O K O B A N", true, skin.getFont(Skin.FONTS.MainTitle)),
+            makeVSpace(40),
+            makeButton("New Game", 450, 45, true, buttonFont, buttonListener),
+            makeVSpace(20),
+            btnContinue = makeButton("Continue", 450, 45, true, buttonFont, buttonListener),
+            makeVSpace(20),
+            makeHBox(450, 45, true, Arrays.asList(
+                makeButton("Ranking", 215, 45, false, buttonFont, buttonListener),
+                makeHSpace(20),
+                makeButton("Recordings", 215, 45, false, buttonFont, buttonListener))),
+            makeVSpace(20),
+            makeHBox(450, 45, true, Arrays.asList(
+                makeButton("Settings", 215, 45, false, buttonFont, buttonListener),
+                makeHSpace(20),
+                makeButton("About", 215, 45, false, buttonFont, buttonListener))),
+            makeVSpace(20),
+            makeButton("Exit Game", 450, 45, true, buttonFont, buttonListener)
+        ).forEach(this::add);
     }
 
     public void setContinueButtonEnabled(final boolean enabled) {
