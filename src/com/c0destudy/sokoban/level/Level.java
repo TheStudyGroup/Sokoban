@@ -7,25 +7,30 @@ import java.util.ArrayList;
 
 public class Level
 {
+    private final String             name;
     private final int                width;
     private final int                height;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
     private final ArrayList<Player>  players  = new ArrayList<>();
+    private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
 
     // 생성자
-    public Level(final int width, final int height) {
+    public Level(final String name, final int width, final int height) {
+        this.name   = name;
         this.width  = width;
         this.height = height;
     }
 
     // 레벨 정보
-    public int getWidth()  { return width;  }
-    public int getHeight() { return height; }
-    public int getRemainingBaggages() { return remainingBaggages; }
-    public boolean isCompleted()      { return remainingBaggages == 0; }
+    public String  getName()      { return name;   }
+    public int     getWidth()     { return width;  }
+    public int     getHeight()    { return height; }
+    public int     getMoveCount() { return moveCount; }
+    public int     getRemainingBaggages() { return remainingBaggages; }
+    public boolean isCompleted()          { return remainingBaggages == 0; }
 
     // 타일
     public ArrayList<Tile> getAllTiles() {
@@ -97,6 +102,7 @@ public class Level
 
         // 플레이어 이동
         player.moveDelta(delta);
+        moveCount++;
         return true;
     }
 
@@ -149,7 +155,7 @@ public class Level
      * 해당 좌표에 있는 물건 객체를 가져옵니다.
      *
      * @param  point 좌표
-     * @return       물건 객체 (없는 경우 null)
+     * @return       물건 객체 (없을 경우 null)
      */
     private Baggage getBaggageAt(final Point point) {
         for (final Baggage baggage: baggages) {
