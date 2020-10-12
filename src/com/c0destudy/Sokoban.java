@@ -2,6 +2,7 @@ package com.c0destudy;
 
 import com.c0destudy.ui.Board;
 
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
@@ -18,7 +19,7 @@ public class Sokoban extends JFrame
         add(board);
 
         setTitle("Sokoban");
-        
+        BackgroundMusic.Play("src/resources/test.wav");
         setSize(board.getBoardWidth() + OFFSET,
                 board.getBoardHeight() + 2 * OFFSET);
         
@@ -27,7 +28,9 @@ public class Sokoban extends JFrame
     }
 
     public static void main(String[] args) {
+    
         EventQueue.invokeLater(() -> {
+      
             Sokoban game = new Sokoban();
             game.setVisible(true);
         });

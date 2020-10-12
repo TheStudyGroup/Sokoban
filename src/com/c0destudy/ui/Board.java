@@ -4,6 +4,7 @@ import com.c0destudy.misc.Point;
 import com.c0destudy.tile.*;
 import com.c0destudy.level.Level;
 import com.c0destudy.level.LevelManager;
+import com.c0destudy.sound.MoveSound;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -38,12 +39,12 @@ public class Board extends JPanel
     }
 
     /**
-     * 화면에 보드를 출력합니다.
+     * �솕硫댁뿉 蹂대뱶瑜� 異쒕젰�빀�땲�떎.
      *
-     * 경고: 직접 호출하지 마십시오.
-     * 보드를 다시 그리는 경우 repaint() 메서드를 사용해야 합니다.
+     * 寃쎄퀬: 吏곸젒 �샇異쒗븯吏� 留덉떗�떆�삤.
+     * 蹂대뱶瑜� �떎�떆 洹몃━�뒗 寃쎌슦 repaint() 硫붿꽌�뱶瑜� �궗�슜�빐�빞 �빀�땲�떎.
      *
-     * @param g 스윙 그래픽 객체
+     * @param g �뒪�쐷 洹몃옒�뵿 媛앹껜
      */
     @Override
     public void paintComponent(Graphics g) {
@@ -59,11 +60,17 @@ public class Board extends JPanel
         }
 
         g.setColor(new Color(0, 0, 0));
+        
         if (level.isCompleted()) {
             g.drawString("Completed", 25, 20);
+        }
+        else if (level.isFailed()) {
+        	g.drawString("Failed", 25, 25);
         } else {
             g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 20);
+            g.drawString("HP:" + level.getLeftHealth(), 25, 30);
         }
+      
     }
 
     private class TAdapter extends KeyAdapter
@@ -71,40 +78,45 @@ public class Board extends JPanel
         @Override
         public void keyPressed(KeyEvent e) {
             int keyCode = e.getKeyCode();
-
-            // 항상 입력받을 수 있는 키
+            
+            // �빆�긽 �엯�젰諛쏆쓣 �닔 �엳�뒗 �궎
             switch (keyCode) {
                 case KeyEvent.VK_R:
                     restartLevel();
                     return;
             }
+            
 
-            if (level.isCompleted()) { // 게임 클리어시 이동 불가
+            if (level.isCompleted()||level.isFailed()) { // 寃뚯엫 �겢由ъ뼱�떆 �씠�룞 遺덇�
                 return;
             }
 
-            // 플레이어 선택
+            // �뵆�젅�씠�뼱 �꽑�깮
             int playerIndex;
             switch (keyCode) {
                 case KeyEvent.VK_LEFT: // Player1
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_DOWN:
+                	MoveSound.Play("src/resources/move.wav");
+                	
                     playerIndex = 0;
                     break;
                 case KeyEvent.VK_A: // Player 2
                 case KeyEvent.VK_D:
                 case KeyEvent.VK_W:
                 case KeyEvent.VK_S:
+                	MoveSound.Play("src/resources/move.wav");
                     playerIndex = 1;
                     break;
                 default:
                     return;
             }
 
-            // 방향 선택
+            // 諛⑺뼢 �꽑�깮
             Point delta = null;
             switch (keyCode) {
+            	
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_A:
                     delta = new Point(-1, 0);

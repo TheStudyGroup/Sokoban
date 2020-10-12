@@ -5,6 +5,7 @@ import com.c0destudy.tile.Baggage;
 import com.c0destudy.tile.Goal;
 import com.c0destudy.tile.Player;
 import com.c0destudy.tile.Wall;
+import com.c0destudy.tile.Trigger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,18 +17,19 @@ import java.util.List;
 
 public class LevelManager
 {
-    // txt 파일에서 사용하는 레벨 기호 모음
+    // txt �뙆�씪�뿉�꽌 �궗�슜�븯�뒗 �젅踰� 湲고샇 紐⑥쓬
     public static final char WALL    = '#';
     public static final char BAGGAGE = '$';
     public static final char GOAL    = '.';
+    public static final char Trigger = '!';
     public static final char PLAYER1 = '@';
     public static final char PLAYER2 = '%';
 
     /**
-     * 파일로부터 레벨 인스턴스를 생성합니다.
+     * �뙆�씪濡쒕��꽣 �젅踰� �씤�뒪�꽩�뒪瑜� �깮�꽦�빀�땲�떎.
      *
-     * @param  filePath    레벨 데이터가 저장된 파일 경로
-     * @return Level       레벨 인스턴스
+     * @param  filePath    �젅踰� �뜲�씠�꽣媛� ���옣�맂 �뙆�씪 寃쎈줈
+     * @return Level       �젅踰� �씤�뒪�꽩�뒪
      */
     public static Level loadLevelFromFile(final String filePath) {
         final Path    path    = Paths.get(filePath);
@@ -42,25 +44,25 @@ public class LevelManager
     }
 
     /**
-     * 문자열 리스트로부터 레벨 인스턴스를 생성합니다.
+     * 臾몄옄�뿴 由ъ뒪�듃濡쒕��꽣 �젅踰� �씤�뒪�꽩�뒪瑜� �깮�꽦�빀�땲�떎.
      *
-     * 레벨의 가로/세로 크기는 자동으로 계산됩니다.
+     * �젅踰⑥쓽 媛�濡�/�꽭濡� �겕湲곕뒗 �옄�룞�쑝濡� 怨꾩궛�맗�땲�떎.
      *
-     * @param  levelData   레벨 데이터가 행별로 구분된 리스트
-     * @return Level       레벨 인스턴스
+     * @param  levelData   �젅踰� �뜲�씠�꽣媛� �뻾蹂꾨줈 援щ텇�맂 由ъ뒪�듃
+     * @return Level       �젅踰� �씤�뒪�꽩�뒪
      */
     public static Level loadLevelFromStringList(final List<String> levelData) {
-        // 레벨의 가로, 세로 크기 계산
+        // �젅踰⑥쓽 媛�濡�, �꽭濡� �겕湲� 怨꾩궛
         final int width = levelData
                 .stream()
                 .map(String::length)
                 .reduce(0, Math::max);
         final int height = levelData.size();
 
-        // 레밸 인스턴스 생성
+        // �젅諛� �씤�뒪�꽩�뒪 �깮�꽦
         final Level level = new Level(width, height);
 
-        // 각종 블럭 추가
+        // 媛곸쥌 釉붾윮 異붽�
         for (int y = 0; y < levelData.size(); y++) {
             final String line = levelData.get(y);
             for (int x = 0; x < line.length(); x++) {
@@ -75,6 +77,9 @@ public class LevelManager
                     case GOAL:
                         level.addGoal(new Goal(point));
                         break;
+                    case Trigger:
+                    	level.addTrigger(new Trigger(point));
+                    	break;
                     case PLAYER1:
                     case PLAYER2:
                         level.addPlayer(new Player(point));
