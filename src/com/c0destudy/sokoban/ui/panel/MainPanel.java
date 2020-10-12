@@ -9,8 +9,9 @@ import java.awt.event.ActionListener;
 
 public class MainPanel extends JPanel
 {
-    private final Skin skin;
+    private final Skin           skin;
     private final ActionListener buttonListener;
+    private       JButton        btnContinue;
 
     public MainPanel(final Skin skin, final ActionListener buttonListener) {
         super();
@@ -33,24 +34,34 @@ public class MainPanel extends JPanel
         add(lblTitle);
 
         add(Box.createVerticalStrut(40));
-        add(MakeButton.make("New Game", 400, 45, true, buttonFont, buttonListener));
+        add(MakeButton.make("New Game", 450, 45, true, buttonFont, buttonListener));
 
         add(Box.createVerticalStrut(20));
-        add(MakeButton.make("Continue", 400, 45, true, buttonFont, buttonListener));
+        add(btnContinue = MakeButton.make("Continue", 450, 45, true, buttonFont, buttonListener));
 
         add(Box.createVerticalStrut(20));
-        add(MakeButton.make("Ranking", 400, 45, true, buttonFont, buttonListener));
-
-        add(Box.createVerticalStrut(20));
-        final Box box = Box.createHorizontalBox();
-        box.setMaximumSize(new Dimension(400, 45));
+        Box box = Box.createHorizontalBox();
+        box.setMaximumSize(new Dimension(450, 45));
         box.setAlignmentX(Component.CENTER_ALIGNMENT);
-        box.add(MakeButton.make("Setting", 260, 45, false, buttonFont, buttonListener));
+        box.add(MakeButton.make("Ranking", 215, 45, false, buttonFont, buttonListener));
         box.add(Box.createHorizontalStrut(20));
-        box.add(MakeButton.make("About", 120, 45, false, buttonFont, buttonListener));
+        box.add(MakeButton.make("Recordings", 215, 45, false, buttonFont, buttonListener));
         add(box);
 
         add(Box.createVerticalStrut(20));
-        add(MakeButton.make("Exit Game", 400, 45, true, buttonFont, buttonListener));
+        box = Box.createHorizontalBox();
+        box.setMaximumSize(new Dimension(450, 45));
+        box.setAlignmentX(Component.CENTER_ALIGNMENT);
+        box.add(MakeButton.make("Settings", 215, 45, false, buttonFont, buttonListener));
+        box.add(Box.createHorizontalStrut(20));
+        box.add(MakeButton.make("About", 215, 45, false, buttonFont, buttonListener));
+        add(box);
+
+        add(Box.createVerticalStrut(20));
+        add(MakeButton.make("Exit Game", 450, 45, true, buttonFont, buttonListener));
+    }
+
+    public void setContinueButtonEnabled(final boolean enabled) {
+        btnContinue.setEnabled(enabled);
     }
 }
