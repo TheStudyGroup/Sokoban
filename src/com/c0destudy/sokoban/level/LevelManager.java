@@ -25,27 +25,28 @@ public class LevelManager
     /**
      * 레벨 인스턴스를 생성합니다.
      *
-     * @param  levelName 레벨 이름
-     * @return Level     레벨 인스턴스
+     * @param  name  레벨 이름
+     * @return Level 레벨 인스턴스
      */
-    public static Level getNewLevel(final String levelName) {
-        final String path = "src/resources/levels/" + levelName + ".txt";
-        return getNewLevelFromFile(path);
+    public static Level getNewLevel(final String name) {
+        final String path = "src/resources/levels/" + name + ".txt";
+        return getNewLevelFromFile(name, path);
     }
 
     /**
      * 파일로부터 레벨 인스턴스를 생성합니다.
      *
+     * @param  name     레벨 이름
      * @param  filePath 레벨 데이터가 저장된 파일 경로
      * @return Level    레벨 인스턴스
      */
-    private static Level getNewLevelFromFile(final String filePath) {
+    private static Level getNewLevelFromFile(final String name, final String filePath) {
         final Path    path    = Paths.get(filePath);
         final Charset charset = StandardCharsets.UTF_8;
 
         try {
             final List<String> lines = Files.readAllLines(path, charset);
-            return getNewLevelFromStringList(lines);
+            return getNewLevelFromStringList(name, lines);
         } catch (IOException e) {
             return null;
         }
@@ -56,10 +57,11 @@ public class LevelManager
      *
      * 레벨의 가로/세로 크기는 자동으로 계산됩니다.
      *
+     * @param  name      레벨 이름
      * @param  levelData 레벨 데이터가 행별로 구분된 리스트
      * @return Level     레벨 인스턴스
      */
-    private static Level getNewLevelFromStringList(final List<String> levelData) {
+    private static Level getNewLevelFromStringList(final String name, final List<String> levelData) {
         // 레벨의 가로, 세로 크기 계산
         final int width = levelData
                 .stream()
@@ -68,7 +70,7 @@ public class LevelManager
         final int height = levelData.size();
 
         // 레밸 인스턴스 생성
-        final Level level = new Level(width, height);
+        final Level level = new Level(name, width, height);
 
         // 각종 블럭 추가
         for (int y = 0; y < levelData.size(); y++) {
