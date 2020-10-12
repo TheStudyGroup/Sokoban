@@ -6,7 +6,7 @@ import com.c0destudy.sokoban.tile.Goal;
 import com.c0destudy.sokoban.tile.Player;
 import com.c0destudy.sokoban.tile.Wall;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,19 +29,7 @@ public class LevelManager
      * @return Level 레벨 인스턴스
      */
     public static Level getNewLevel(final String name) {
-        final String path = "src/resources/levels/" + name + ".txt";
-        return getNewLevelFromFile(name, path);
-    }
-
-    /**
-     * 파일로부터 레벨 인스턴스를 생성합니다.
-     *
-     * @param  name     레벨 이름
-     * @param  filePath 레벨 데이터가 저장된 파일 경로
-     * @return Level    레벨 인스턴스
-     */
-    private static Level getNewLevelFromFile(final String name, final String filePath) {
-        final Path    path    = Paths.get(filePath);
+        final Path    path    = Paths.get("src/resources/levels/" + name + ".txt");
         final Charset charset = StandardCharsets.UTF_8;
 
         try {
@@ -99,8 +87,42 @@ public class LevelManager
         return level;
     }
 
-    // TODO
-    public static boolean saveLevelToFile(final String filePath, final Level level) {
-        return true;
+    /**
+     * 레벨 인스턴스를 직렬화하여 파일로 저장합니다.
+     *
+     * @param  level    레벨 인스턴스
+     * @param  filePath 파일 경로
+     * @return boolean  성공 여부
+     */
+    public static boolean saveLevelToFile(final Level level, final String filePath) {
+        try {
+            final FileOutputStream     fos = new FileOutputStream(filePath);
+            final BufferedOutputStream bos = new BufferedOutputStream(fos);
+            final ObjectOutputStream   out = new ObjectOutputStream(bos);
+            out.writeObject(level);
+            out.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 레벨 인스턴스를 파일에서 불러와 역직렬화합니다.
+     *
+     * @param  filePath 파일 경로
+     * @return Level    레벨 인스턴스
+     */
+    public static Level loadLevelFromFile(final String filePath) {
+        try {
+            final FileInputStream     fis   = new FileInputStream(filePath);
+            final BufferedInputStream bis   = new BufferedInputStream(fis);
+            final ObjectInputStream   in    = new ObjectInputStream(bis);
+            final Level               level = (Level) in.readObject();
+            in.close();
+            return level;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

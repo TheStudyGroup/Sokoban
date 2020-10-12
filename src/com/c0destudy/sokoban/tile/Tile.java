@@ -3,8 +3,9 @@ package com.c0destudy.sokoban.tile;
 import com.c0destudy.sokoban.misc.Point;
 
 import java.awt.Image;
+import java.io.Serializable;
 
-public class Tile
+public class Tile implements Serializable
 {
     private Point point;
 

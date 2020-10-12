@@ -3,10 +3,12 @@ package com.c0destudy.sokoban.level;
 import com.c0destudy.sokoban.misc.Point;
 import com.c0destudy.sokoban.tile.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Level
+public class Level implements Serializable
 {
+    private static final long        serialVersionUID = 1L;
     private final String             name;
     private final int                width;
     private final int                height;
