@@ -2,6 +2,7 @@ package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.skin.SkinManager;
+import com.c0destudy.sokoban.ui.helper.MakeButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,61 +24,34 @@ public class MainPanel extends JPanel
         setPreferredSize(new Dimension(800, 500));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel lblTitle = new JLabel("S O K O B A N");
-        JButton btnStart = new JButton("New Game");
-        JButton btnContinue = new JButton("Continue");
-        JButton btnRanking = new JButton("Ranking");
-        JButton btnSetting = new JButton("Setting");
-        JButton btnAbout = new JButton("About");
-        JButton btnExit = new JButton("Exit Game");
-        Box boxSettingAbout = Box.createHorizontalBox();
-        boxSettingAbout.add(btnSetting);
-        boxSettingAbout.add(Box.createHorizontalStrut(20));
-        boxSettingAbout.add(btnAbout);
-
+        final JLabel lblTitle = new JLabel("S O K O B A N");
         lblTitle.setFont(skin.getFont(Skin.FONTS.MainTitle));
-        final Font buttonFont = skin.getFont(Skin.FONTS.MainButton);
-        btnStart.setFont(buttonFont);
-        btnContinue.setFont(buttonFont);
-        btnRanking.setFont(buttonFont);
-        btnSetting.setFont(buttonFont);
-        btnAbout.setFont(buttonFont);
-        btnExit.setFont(buttonFont);
-
-        btnStart.addActionListener(buttonListener);
-        btnContinue.addActionListener(buttonListener);
-        btnRanking.addActionListener(buttonListener);
-        btnSetting.addActionListener(buttonListener);
-        btnAbout.addActionListener(buttonListener);
-        btnExit.addActionListener(buttonListener);
-
-        final Dimension dimButton = new Dimension(400,45);
-        btnStart.setMaximumSize(dimButton);
-        btnContinue.setMaximumSize(dimButton);
-        btnRanking.setMaximumSize(dimButton);
-        boxSettingAbout.setMaximumSize(dimButton);
-        btnSetting.setMaximumSize(new Dimension(260,45));
-        btnAbout.setMaximumSize(new Dimension(120,45));
-        btnExit.setMaximumSize(dimButton);
-
         lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnStart.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnContinue.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRanking.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boxSettingAbout.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnExit.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final Font buttonFont = skin.getFont(Skin.FONTS.MainButton);
 
         add(Box.createVerticalStrut(50));
         add(lblTitle);
+
         add(Box.createVerticalStrut(40));
-        add(btnStart);
+        add(MakeButton.make("New Game", 400, 45, true, buttonFont, buttonListener));
+
         add(Box.createVerticalStrut(20));
-        add(btnContinue);
+        add(MakeButton.make("Continue", 400, 45, true, buttonFont, buttonListener));
+
         add(Box.createVerticalStrut(20));
-        add(btnRanking);
+        add(MakeButton.make("Ranking", 400, 45, true, buttonFont, buttonListener));
+
         add(Box.createVerticalStrut(20));
-        add(boxSettingAbout);
+        final Box box = Box.createHorizontalBox();
+        box.setMaximumSize(new Dimension(400, 45));
+        box.setAlignmentX(Component.CENTER_ALIGNMENT);
+        box.add(MakeButton.make("Setting", 260, 45, false, buttonFont, buttonListener));
+        box.add(Box.createHorizontalStrut(20));
+        box.add(MakeButton.make("About", 120, 45, false, buttonFont, buttonListener));
+        add(box);
+
         add(Box.createVerticalStrut(20));
-        add(btnExit);
+        add(MakeButton.make("Exit Game", 400, 45, true, buttonFont, buttonListener));
     }
 }

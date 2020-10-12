@@ -31,14 +31,6 @@ public class GamePanel extends JPanel
         repaint();
     }
 
-    /**
-     * 화면에 보드를 출력합니다.
-     *
-     * 경고: 직접 호출하지 마십시오.
-     * 보드를 다시 그리는 경우 repaint() 메서드를 사용해야 합니다.
-     *
-     * @param g 스윙 그래픽 객체
-     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
