@@ -1,7 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.skin.SkinManager;
 import com.c0destudy.sokoban.ui.helper.MakeButton;
 
 import javax.swing.*;
