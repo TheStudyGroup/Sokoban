@@ -1,6 +1,7 @@
 package com.c0destudy.sokoban.level;
 
 import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.tile.Baggage;
 import com.c0destudy.sokoban.tile.Goal;
 import com.c0destudy.sokoban.tile.Player;
@@ -25,16 +26,16 @@ public class LevelManager
     /**
      * 레벨 인스턴스를 생성합니다.
      *
-     * @param  name  레벨 이름
-     * @return Level 레벨 인스턴스
+     * @param  levelName 레벨 이름
+     * @return Level     레벨 인스턴스
      */
-    public static Level getNewLevel(final String name) {
-        final Path    path    = Paths.get("src/resources/levels/" + name + ".txt");
+    public static Level getNewLevel(final String levelName) {
+        final Path    path    = Paths.get(String.format(Resource.PATH_LEVEL, levelName));
         final Charset charset = StandardCharsets.UTF_8;
 
         try {
             final List<String> lines = Files.readAllLines(path, charset);
-            return getNewLevelFromStringList(name, lines);
+            return getNewLevelFromStringList(levelName, lines);
         } catch (IOException e) {
             return null;
         }
@@ -45,11 +46,11 @@ public class LevelManager
      *
      * 레벨의 가로/세로 크기는 자동으로 계산됩니다.
      *
-     * @param  name      레벨 이름
+     * @param  levelName 레벨 이름
      * @param  levelData 레벨 데이터가 행별로 구분된 리스트
      * @return Level     레벨 인스턴스
      */
-    private static Level getNewLevelFromStringList(final String name, final List<String> levelData) {
+    private static Level getNewLevelFromStringList(final String levelName, final List<String> levelData) {
         // 레벨의 가로, 세로 크기 계산
         final int width = levelData
                 .stream()
@@ -58,7 +59,7 @@ public class LevelManager
         final int height = levelData.size();
 
         // 레밸 인스턴스 생성
-        final Level level = new Level(name, width, height);
+        final Level level = new Level(levelName, width, height);
 
         // 각종 블럭 추가
         for (int y = 0; y < levelData.size(); y++) {
@@ -103,6 +104,7 @@ public class LevelManager
             out.close();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -113,7 +115,7 @@ public class LevelManager
      * @param  filePath 파일 경로
      * @return Level    레벨 인스턴스
      */
-    public static Level loadLevelFromFile(final String filePath) {
+    public static Level readLevelFromFile(final String filePath) {
         try {
             final FileInputStream     fis   = new FileInputStream(filePath);
             final BufferedInputStream bis   = new BufferedInputStream(fis);
