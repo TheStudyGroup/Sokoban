@@ -3,6 +3,7 @@ package com.c0destudy.sokoban.ui.frame;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
@@ -11,24 +12,23 @@ import java.awt.event.*;
 
 public class GameFrame extends JFrame
 {
-    private final GameFrame gameFrame;
-    private final String    levelName;
-    private Level           level     = null;
-    private GamePanel       gamePanel = null;
+    private Skin      skin      = null;
+    private Level     level     = null;
+    private GamePanel gamePanel = null;
 
-    public GameFrame(final String levelName) {
+    public GameFrame(final Skin skin, final Level level) {
         super();
-        this.gameFrame = this;
-        this.levelName = levelName;
-        setTitle("SOKOBAN - " + levelName);
+        this.skin  = skin;
+        this.level = level;
+        setTitle("Sokoban - " + level.getName());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new TWindowAdapter());
         initUI();
     }
 
     private void initUI() {
-        final Level     newLevel     = LevelManager.getNewLevel(levelName);
-        final GamePanel newGamePanel = new GamePanel(newLevel);
+        final Level     newLevel     = LevelManager.getNewLevel(level.getName()); // 동일한 레벨 다시 불러오기
+        final GamePanel newGamePanel = new GamePanel(skin, newLevel);
         newGamePanel.addKeyListener(new TKeyAdapter());
 
         getContentPane().removeAll();       // 이전 GamePanel 제거
@@ -52,6 +52,10 @@ public class GameFrame extends JFrame
             switch (keyCode) {
                 case KeyEvent.VK_R:
                     initUI();
+                    return;
+                case KeyEvent.VK_ESCAPE:
+                    FrameManager.showMainFrame();
+                    dispose();
                     return;
             }
 
@@ -99,6 +103,8 @@ public class GameFrame extends JFrame
                     break;
             }
             level.movePlayerAndBaggage(playerIndex, delta);
+
+            // 다시 그리기
             gamePanel.repaint();
         }
     }

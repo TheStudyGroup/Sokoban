@@ -17,7 +17,6 @@ public class Level
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
 
-    // 생성자
     public Level(final String name, final int width, final int height) {
         this.name   = name;
         this.width  = width;
@@ -33,7 +32,11 @@ public class Level
     public boolean isCompleted()          { return remainingBaggages == 0; }
 
     // 타일
-    public ArrayList<Tile> getAllTiles() {
+    public ArrayList<Wall>    getWalls()    { return walls;    }
+    public ArrayList<Goal>    getGoals()    { return goals;    }
+    public ArrayList<Baggage> getBaggages() { return baggages; }
+    public ArrayList<Player>  getPlayers()  { return players;  }
+    public ArrayList<Tile>    getAllTiles() {
         final ArrayList<Tile> tiles = new ArrayList<>();
         tiles.addAll(walls);
         tiles.addAll(goals);
