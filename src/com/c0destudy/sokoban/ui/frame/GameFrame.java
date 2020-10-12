@@ -3,6 +3,7 @@ package com.c0destudy.sokoban.ui.frame;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.ui.panel.GamePanel;
 
@@ -12,8 +13,8 @@ import java.awt.event.*;
 
 public class GameFrame extends JFrame
 {
-    private Skin      skin      = null;
-    private Level     level     = null;
+    private Skin      skin;
+    private Level     level;
     private GamePanel gamePanel = null;
 
     public GameFrame(final Skin skin, final Level level) {
@@ -27,19 +28,35 @@ public class GameFrame extends JFrame
     }
 
     private void initUI() {
+        gamePanel = new GamePanel(skin, level);
+        gamePanel.addKeyListener(new TKeyAdapter());
+        getContentPane().add(gamePanel);
+        setSize(gamePanel.getSize());
+        pack(); // 프레임 사이즈 맞추기
+        setLocationRelativeTo(null); // 화면 중앙으로 이동
+    }
+
+    private void resetUI() {
         final Level     newLevel     = LevelManager.getNewLevel(level.getName()); // 동일한 레벨 다시 불러오기
         final GamePanel newGamePanel = new GamePanel(skin, newLevel);
         newGamePanel.addKeyListener(new TKeyAdapter());
 
         getContentPane().removeAll();       // 이전 GamePanel 제거
         getContentPane().add(newGamePanel); // 새로운 GamePanel 추가
-        setSize(newGamePanel.getSize());
-        pack(); // 프레임 사이즈 맞추기
-        setLocationRelativeTo(null); // 화면 중앙으로 이동
-        newGamePanel.requestFocus(); // 포커스 적용 (레밸 재시작시 필요)
-
+        newGamePanel.requestFocus();        // 포커스 적용 (레밸 재시작시 필요)
         level     = newLevel;
         gamePanel = newGamePanel;
+
+        setSize(gamePanel.getSize());
+        pack(); // 프레임 사이즈 맞추기
+    }
+
+    private void closeUI() {
+        if (!level.isCompleted()) {
+            LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
+        }
+        FrameManager.showMainFrame();
+        dispose();
     }
 
     private class TKeyAdapter extends KeyAdapter
@@ -50,12 +67,11 @@ public class GameFrame extends JFrame
 
             // 항상 입력받을 수 있는 키
             switch (keyCode) {
-                case KeyEvent.VK_R:
-                    initUI();
+                case KeyEvent.VK_R: // 재시작
+                    resetUI();
                     return;
                 case KeyEvent.VK_ESCAPE:
-                    FrameManager.showMainFrame();
-                    dispose();
+                    closeUI();
                     return;
             }
 
@@ -112,9 +128,8 @@ public class GameFrame extends JFrame
     private class TWindowAdapter extends WindowAdapter
     {
         @Override
-        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-            FrameManager.showMainFrame();
-            dispose();
+        public void windowClosing(final WindowEvent windowEvent) {
+            closeUI();
         }
     }
 }

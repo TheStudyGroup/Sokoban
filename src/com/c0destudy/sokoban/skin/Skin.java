@@ -13,10 +13,10 @@ public class Skin
     }
 
     public enum FONTS {
-        MainTitle, MainButton,
+        Title, LargeButton, SmallButton,
     }
 
-    private  String  name;
+    private String  name;
     private Image[] images;
     private Font[]  fonts;
 
@@ -30,8 +30,9 @@ public class Skin
 
         Resource.loadFontFromResource("FORCED SQUARE");
 
-        setFont(Skin.FONTS.MainTitle, new Font("FORCED SQUARE", Font.PLAIN, 60));
-        setFont(Skin.FONTS.MainButton, new Font("FORCED SQUARE", Font.PLAIN, 30));
+        setFont(Skin.FONTS.Title, new Font("FORCED SQUARE", Font.PLAIN, 60));
+        setFont(Skin.FONTS.LargeButton, new Font("FORCED SQUARE", Font.PLAIN, 30));
+        setFont(Skin.FONTS.SmallButton, new Font("FORCED SQUARE", Font.PLAIN, 20));
 
         setImage(IMAGES.Wall, Resource.getImageFromResource(name, "wall"));
         setImage(IMAGES.Baggage, Resource.getImageFromResource(name, "baggage"));

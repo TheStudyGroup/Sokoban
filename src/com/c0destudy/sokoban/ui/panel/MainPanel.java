@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 
@@ -27,11 +26,10 @@ public class MainPanel extends JPanel
         setPreferredSize(new Dimension(800, 500));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        final Font buttonFont = skin.getFont(Skin.FONTS.MainButton);
-
+        final Font buttonFont = skin.getFont(Skin.FONTS.LargeButton);
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("S O K O B A N", true, skin.getFont(Skin.FONTS.MainTitle)),
+            makeLabel("S O K O B A N", true, skin.getFont(Skin.FONTS.Title)),
             makeVSpace(40),
             makeButton("New Game", 450, 45, true, buttonFont, buttonListener),
             makeVSpace(20),

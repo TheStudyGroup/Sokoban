@@ -11,6 +11,7 @@ public class Resource
     public static final String PATH_RESOURCES_FONT  = "src/resources/fonts/%s.ttf";
 
     public static final String PATH_LEVEL           = "src/resources/levels/%s.txt";
+    public static final String PATH_LEVEL_ROOT      = "src/resources/levels";
     public static final String PATH_LEVEL_PAUSE     = "data/pause.dat";
     public static final String PATH_LEVEL_RECORDING = "data/recordings/%s.dat";
 
