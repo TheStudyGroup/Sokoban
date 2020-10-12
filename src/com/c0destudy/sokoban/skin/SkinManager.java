@@ -1,4 +1,4 @@
-package com.c0destudy.sokoban;
+package com.c0destudy.sokoban.skin;
 
 import java.awt.*;
 import java.io.File;
@@ -6,18 +6,16 @@ import java.io.IOException;
 
 public class SkinManager
 {
-    public static Font fontMainTitle = null;
-    public static Font fontMainButton = null;
-
-    public static boolean loadSkin() {
+    public static Skin getSkin() {
         loadFontFromResource("FORCED SQUARE");
 
-        fontMainTitle = new Font("FORCED SQUARE", Font.PLAIN, 60);
-        fontMainButton = new Font("FORCED SQUARE", Font.PLAIN, 30);
+        final Skin skin = new Skin();
 
-        return true;
+        skin.fontMainTitle = new Font("FORCED SQUARE", Font.PLAIN, 60);
+        skin.fontMainButton = new Font("FORCED SQUARE", Font.PLAIN, 30);
+
+        return skin;
     }
-
 
     private static void loadFontFromResource(final String fontName) {
         try {
