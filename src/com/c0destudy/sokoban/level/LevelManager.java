@@ -18,10 +18,12 @@ import java.util.List;
 public class LevelManager
 {
     // txt 파일에서 사용하는 레벨 기호 모음
-    private static final char LEVEL_SYMBOL_WALL    = '#';
-    private static final char LEVEL_SYMBOL_BAGGAGE = '$';
-    private static final char LEVEL_SYMBOL_GOAL    = '.';
-    private static final char LEVEL_SYMBOL_PLAYER  = '@';
+    private static final char LEVEL_SYMBOL_WALL            = '#';
+    private static final char LEVEL_SYMBOL_BAGGAGE         = '$';
+    private static final char LEVEL_SYMBOL_BAGGAGE_AT_GOAL = '*';
+    private static final char LEVEL_SYMBOL_GOAL            = '.';
+    private static final char LEVEL_SYMBOL_PLAYER          = '@';
+    private static final char LEVEL_SYMBOL_PLAYER_AT_GOAL  = '+';
 
     /**
      * 레벨 인스턴스를 생성합니다.
@@ -73,11 +75,19 @@ public class LevelManager
                     case LEVEL_SYMBOL_BAGGAGE:
                         level.addBaggage(new Baggage(point));
                         break;
+                    case LEVEL_SYMBOL_BAGGAGE_AT_GOAL:
+                        level.addBaggage(new Baggage(point));
+                        level.addGoal(new Goal(new Point(point)));
+                        break;
                     case LEVEL_SYMBOL_GOAL:
                         level.addGoal(new Goal(point));
                         break;
                     case LEVEL_SYMBOL_PLAYER:
                         level.addPlayer(new Player(point));
+                        break;
+                    case LEVEL_SYMBOL_PLAYER_AT_GOAL:
+                        level.addPlayer(new Player(point));
+                        level.addGoal(new Goal(new Point(point)));
                         break;
                     default:
                         break;
@@ -86,6 +96,15 @@ public class LevelManager
         }
 
         return level;
+    }
+
+    /**
+     * 일시 정지된 레벨 데이터가 존재하는지 확인합니다.
+     *
+     * @return boolean 존재 여부
+     */
+    public static boolean isPausedLevelExisting() {
+        return (new File(Resource.PATH_LEVEL_PAUSE)).exists();
     }
 
     /**
