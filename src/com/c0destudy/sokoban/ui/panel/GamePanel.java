@@ -49,12 +49,12 @@ public class GamePanel extends JPanel
         // Wall
         Image image = skin.getImage(Skin.IMAGES.Wall);
         for (final Tile tile : level.getWalls()) drawTile(g, tile, image);
-        // Baggage
-        image = skin.getImage(Skin.IMAGES.Baggage);
-        for (final Tile tile : level.getBaggages()) drawTile(g, tile, image);
         // Goal
         image = skin.getImage(Skin.IMAGES.Goal);
         for (final Tile tile : level.getGoals()) drawTile(g, tile, image);
+        // Baggage
+        image = skin.getImage(Skin.IMAGES.Baggage);
+        for (final Tile tile : level.getBaggages()) drawTile(g, tile, image);
         // Player
         drawTile(g, level.getPlayer(0), skin.getImage(Skin.IMAGES.Player1));
         if (level.getPlayers().size() == 2) {
