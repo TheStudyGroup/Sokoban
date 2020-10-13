@@ -7,7 +7,5 @@ import javax.swing.ImageIcon;
 
 public class Goal extends Tile
 {
-    public Goal(final Point position) {
-        super(position);
-    }
+    public Goal(final Point position) { super(position); }
 }

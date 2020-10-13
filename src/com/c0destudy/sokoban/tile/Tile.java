@@ -6,10 +6,13 @@ import java.io.Serializable;
 
 public class Tile implements Serializable
 {
-    private Point position;
+    private final Point position;
 
-    public         Tile(final Point position)        { this.position = position;           }
-    public Point   getPosition()                     { return position;                    }
-    public void    setPosition(final Point position) { this.position = position;           }
-    public boolean isLocatedAt(final Point point)    { return this.position.equals(point); }
+    public Tile(final Point position) {
+        this.position = position;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
 }
