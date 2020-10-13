@@ -4,7 +4,7 @@ import com.c0destudy.misc.Point;
 import com.c0destudy.tile.*;
 import com.c0destudy.level.Level;
 import com.c0destudy.level.LevelManager;
-import com.c0destudy.sound.MoveSound;
+import com.c0destudy.sound.SoundManager;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -98,15 +98,14 @@ public class Board extends JPanel
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_DOWN:
-                	MoveSound.Play("src/resources/move.wav");
-                	
+                    SoundManager.playPlayerMoveSound();
                     playerIndex = 0;
                     break;
                 case KeyEvent.VK_A: // Player 2
                 case KeyEvent.VK_D:
                 case KeyEvent.VK_W:
                 case KeyEvent.VK_S:
-                	MoveSound.Play("src/resources/move.wav");
+                    SoundManager.playPlayerMoveSound();
                     playerIndex = 1;
                     break;
                 default:
