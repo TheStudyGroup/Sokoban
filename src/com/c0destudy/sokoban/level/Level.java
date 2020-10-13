@@ -1,10 +1,6 @@
 package com.c0destudy.sokoban.level;
 
 import com.c0destudy.sokoban.misc.Point;
-import com.c0destudy.sokoban.recording.Movement;
-import com.c0destudy.sokoban.recording.Recording;
-import com.c0destudy.sokoban.recording.RecordingType;
-import com.c0destudy.sokoban.recording.RecordingUnit;
 import com.c0destudy.sokoban.tile.*;
 
 import java.io.Serializable;
@@ -20,10 +16,10 @@ public class Level implements Serializable
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
     private final ArrayList<Player>  players  = new ArrayList<>();
+    private final ArrayList<Record>  records  = new ArrayList<>();
     private long                     timeLastMove;
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
-    private final Recording          recording = new Recording();
 
     public Level(final String name, final int width, final int height) {
         this.name         = name;
@@ -33,11 +29,11 @@ public class Level implements Serializable
     }
 
     // 레벨 정보
-    public String  getName()      { return name;   }
-    public int     getWidth()     { return width;  }
-    public int     getHeight()    { return height; }
-    public int     getMoveCount() { return moveCount; }
-    public int     getRemainingBaggages() { return remainingBaggages; }
+    public String  getName()              { return name;      }
+    public int     getWidth()             { return width;     }
+    public int     getHeight()            { return height;    }
+    public int     getMoveCount()         { return moveCount; }
+    public int     getRemainingBaggages() { return remainingBaggages;      }
     public boolean isCompleted()          { return remainingBaggages == 0; }
 
     // 타일
@@ -72,9 +68,9 @@ public class Level implements Serializable
      * 이동하는 방향에 물건이 있으면 물건도 같이 이동시킵니다.
      * 단, 물건이 연속으로 2개 있거나 벽이 있는 경우에는 이동할 수 없습니다.
      *
-     * @param  playerIndex 이동할 플레이어 번호 (0-based)
-     * @param  direction   플레이어의 좌표 변화량
-     * @return             이동 여부 (이동 실패시 false)
+     * @param  playerIndex 이동할 플레이어 인덱스
+     * @param  direction   플레이어의 이동 방향 (좌표 변화량)
+     * @return             성공 여부
      */
     public boolean movePlayerAndBaggage(final int playerIndex, final Point direction) {
         // 플레이어가 이동할 새로운 좌표 계산
@@ -88,64 +84,88 @@ public class Level implements Serializable
         if (isPlayerAt(newPlayerPos)) return false;
 
         // 플레이어가 물건(baggage)을 미는 경우
-        final Baggage       nearBaggage   = getBaggageAt(newPlayerPos);
-        final long          currentTime   = System.currentTimeMillis();
-        final RecordingUnit recordingUnit = new RecordingUnit(currentTime - timeLastMove);
-        if (nearBaggage != null) {
-            // 물건이 이동될 새로운 좌표 계산
-            final Point newBaggagePos = Point.add(nearBaggage.getPosition(), direction);
-
-            // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
-            if (isWallAt(newBaggagePos)) return false;
-
-            // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
-            if (getBaggageAt(newBaggagePos) != null) return false;
-
-            // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
-            if (isPlayerAt(newBaggagePos)) return false;
-
-            // 이동 전에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getPosition())) remainingBaggages++;
-
-            // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
-            recordingUnit.addMovement(new Movement(RecordingType.Baggage, nearBaggage.getPosition(), direction));
-            nearBaggage.moveDelta(direction);
-
-            // 이동 후에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getPosition())) remainingBaggages--;
+        final Baggage baggage = getBaggageAt(newPlayerPos);
+        if (baggage != null) {
+            if (!moveBaggage(baggage, direction)) return false;
         }
 
-        // 플레이어 이동 및 기록
-        recordingUnit.addMovement(new Movement(RecordingType.Player, player.getPosition(), direction));
-        recording.addRecord(recordingUnit);
+        // 기록 (undo와 replay를 위함)
+        final long   currentTime = System.currentTimeMillis();
+        final Record record      = new Record(
+                currentTime - timeLastMove,
+                playerIndex,
+                player.getPosition(),
+                direction,
+                baggage != null);
+        records.add(record);
         timeLastMove = currentTime;
+
+        // 플레이어 이동
         player.moveDelta(direction);
         moveCount++;
         return true;
     }
 
-    public boolean undoMove() {
-        final RecordingUnit recordingUnit = recording.popRecord();
-        if (recordingUnit == null) return false;
+    /**
+     * 물건을 이동시킵니다.
+     *
+     * 남은 물건의 개수는 자동으로 계산됩니다.
+     * 물건을 이동할 수 없거나 찾을 수 없는 경우에는 false를 반환합니다.
+     *
+     * @param  baggage   이동할 물건 객체
+     * @param  direction 물건의 이동 방향 (좌표 변화량)
+     * @return           성공 여부
+     */
+    private boolean moveBaggage(final Baggage baggage, final Point direction) {
+        // 물건이 이동될 새로운 좌표 계산
+        final Point newPosition = Point.add(baggage.getPosition(), direction);
 
-        Movement movement;
-        while ((movement = recordingUnit.popMovement()) != null) {
-            final Point oldPos  = movement.getPosition();
-            final Point currPos = Point.add(movement.getPosition(), movement.getDirection());
-            switch (movement.getType()) {
-                case Player:
-                    getPlayerAt(currPos).moveTo(oldPos);
-                    break;
-                case Baggage:
-                    final Baggage baggage = getBaggageAt(currPos);
-                    if (isGoalAt(baggage.getPosition())) remainingBaggages++;
-                    baggage.moveTo(oldPos);
-                    if (isGoalAt(baggage.getPosition())) remainingBaggages--;
-            }
+        // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
+        if (isWallAt(newPosition)) return false;
+
+        // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
+        if (getBaggageAt(newPosition) != null) return false;
+
+        // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
+        if (isPlayerAt(newPosition)) return false;
+
+        // 이동 전에 물건이 목적지에 있는 경우
+        if (isGoalAt(baggage.getPosition())) remainingBaggages++;
+
+        // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
+        baggage.moveDelta(direction);
+
+        // 이동 후에 물건이 목적지에 있는 경우
+        if (isGoalAt(baggage.getPosition())) remainingBaggages--;
+
+        return true;
+    }
+
+    /**
+     * 플레이어 이동을 취소합니다.
+     *
+     * 물건을 움직인 경우 물건도 이전 위치로 다시 이동시킵니다.
+     */
+    public void undoMove() {
+        if (records.size() == 0) return;
+
+        // 마지막 움직임 기록 가져오기
+        final Record record    = records.remove(records.size() - 1);
+        final Player player    = getPlayer(record.getPlayerIndex());
+        final Point  position  = record.getPosition();
+        final Point  direction = record.getDirection();
+
+        // 역방향 이동
+        player.moveDelta(Point.reverse(direction));
+
+        // 물건을 민 경우 물건도 역방향으로 이동시킨다
+        if (record.isBaggageMoved()) {
+            final Baggage baggage = getBaggageAt(Point.add(position, direction, direction));
+            moveBaggage(baggage, Point.reverse(direction));
         }
 
-        moveCount++; // undo도 이동으로 계산
-        return true;
+        // 이동 취소도 이동한 횟수에 포함한다
+        moveCount++;
     }
 
     /**

@@ -7,22 +7,27 @@ public class Point implements Serializable
     private int x;
     private int y;
 
-    public Point(final int x, final int y) { this.x = x; this.y = y;           }
-    public Point(final Point point)        { this(point.getX(), point.getY()); }
-
+    public     Point(final int x, final int y) { this.x = x; this.y = y;           }
+    public     Point(final Point point)        { this(point.getX(), point.getY()); }
     public int getX() { return x; }
     public int getY() { return y; }
-    public void setX(final int x) { this.x = x; }
-    public void setY(final int y) { this.y = y; }
 
     public void add(final Point point) {
         x += point.x;
         y += point.y;
     }
 
-    public static Point add(final Point a, final Point b) { return new Point(a.x + b.x, a.y + b.y); }
-    public static Point sub(final Point a, final Point b) { return new Point(a.x - b.x, a.y - b.y); }
-    public static Point reverse(final Point a)            { return new Point(-a.x, -a.y);                 }
+    public static Point add(final Point a, final Point b) {
+        return new Point(a.x + b.x, a.y + b.y);
+    }
+
+    public static Point add(final Point a, final Point b, final Point c) {
+        return new Point(a.x + b.x + c.x, a.y + b.y + c.y);
+    }
+
+    public static Point reverse(final Point a) {
+        return new Point(-a.x, -a.y);
+    }
 
     @Override
     public boolean equals(Object object) {
