@@ -5,14 +5,35 @@ import java.util.ArrayList;
 
 public class Recording implements Serializable
 {
-    public enum RECORDING_TYPES {
-        DELAY,
-        PLAYER_MOVE,
-        BAGGAGE_MOVE,
-    }
+    private final ArrayList<RecordingUnit> records = new ArrayList<>();
 
-    private class RecordingData {
+    public Recording() {
 
     }
-//    private final ArrayList<Map<RECORDING_TYPES, >>
+
+    public void addRecord(final RecordingUnit unit) { records.add(unit); }
+
+    public RecordingUnit getRecord(final int index) {
+        if (index >= 0 && index < records.size() - 1) {
+            return records.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    public RecordingUnit getLastRecord() {
+        if (records.size() >= 1) {
+            return records.get(records.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    public RecordingUnit popRecord() {
+        if (records.size() >= 1) {
+            return records.remove(records.size() - 1);
+        } else {
+            return null;
+        }
+    }
 }
