@@ -40,6 +40,7 @@ public class Level
     public ArrayList<Goal>    getGoals()    { return goals;    }
     public ArrayList<Baggage> getBaggages() { return baggages; }
     public ArrayList<Player>  getPlayers()  { return players;  }
+    public ArrayList<Trigger> getTriggers() { return triggers; }
     public ArrayList<Tile>    getAllTiles() {
         final ArrayList<Tile> tiles = new ArrayList<>();
         tiles.addAll(walls);

@@ -1,4 +1,4 @@
-package com.c0destudy.sound;
+package com.c0destudy.sokoban.sound;
 
 import java.io.File;
 
@@ -12,12 +12,24 @@ public class SoundManager
     private static final String SOUND_BACKGROUND = "src/resources/test.wav";
     private static final String SOUND_PLAYER_MOVE = "src/resources/move.wav";
 
+    private static Clip backgroundClip;
+
 	public static void playPlayerMoveSound() {
         playSound(SOUND_PLAYER_MOVE, false);
     }
 
     public static void playBackgroundMusic() {
-        playSound(SOUND_BACKGROUND, true, -8.0f);
+	    if (backgroundClip != null) {
+            stopBackgroundMusic();
+        }
+        backgroundClip = playSound(SOUND_BACKGROUND, true, -8.0f);
+    }
+
+    public static void stopBackgroundMusic() {
+	    if (backgroundClip != null) {
+            backgroundClip.stop();
+            backgroundClip = null;
+        }
     }
 
     private static Clip playSound(final String fileName, final boolean isContinuing) {
