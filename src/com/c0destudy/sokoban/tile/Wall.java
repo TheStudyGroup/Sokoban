@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 
 public class Wall extends Tile
 {
-    public Wall(final Point point) {
-        super(point);
+    public Wall(final Point position) {
+        super(position);
     }
 }

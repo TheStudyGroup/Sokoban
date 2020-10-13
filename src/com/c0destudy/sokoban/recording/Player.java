@@ -4,7 +4,7 @@ import com.c0destudy.sokoban.misc.Point;
 
 public class Player extends Movement
 {
-    public Player(final Point point, final Point delta) {
-        super(point, delta);
+    public Player(final Point position, final Point direction) {
+        super(position, direction);
     }
 }

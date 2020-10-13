@@ -4,14 +4,14 @@ import com.c0destudy.sokoban.misc.Point;
 
 public class Movement extends Unit
 {
-    private final Point point;
-    private final Point delta;
+    private final Point position;
+    private final Point direction;
 
-    public Movement(final Point point, final Point delta) {
-        this.point = new Point(point);
-        this.delta = new Point(delta);
+    public Movement(final Point position, final Point direction) {
+        this.position  = new Point(position);
+        this.direction = new Point(direction);
     }
 
-    public Point getPoint() { return point; }
-    public Point getDelta() { return delta; }
+    public Point getPosition() { return position; }
+    public Point getDirection() { return direction; }
 }

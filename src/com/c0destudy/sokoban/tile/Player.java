@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 
 public class Player extends Movable
 {
-    public Player(final Point point) {
-        super(point);
+    public Player(final Point position) {
+        super(position);
     }
 }

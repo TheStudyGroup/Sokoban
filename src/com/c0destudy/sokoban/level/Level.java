@@ -72,7 +72,7 @@ public class Level implements Serializable
     public boolean movePlayerAndBaggage(final int playerIndex, final Point delta) {
         // 플레이어가 이동할 새로운 좌표 계산
         final Player player       = getPlayer(playerIndex);
-        final Point  newPlayerPos = Point.add(player.getPoint(), delta);
+        final Point  newPlayerPos = Point.add(player.getPosition(), delta);
 
         // 이동할 위치에 벽이 있는 경우 => 이동 불가
         if (isWallAt(newPlayerPos)) return false;
@@ -84,7 +84,7 @@ public class Level implements Serializable
         Baggage nearBaggage = getBaggageAt(newPlayerPos);
         if (nearBaggage != null) {
             // 물건이 이동될 새로운 좌표 계산
-            final Point newBaggagePos = Point.add(nearBaggage.getPoint(), delta);
+            final Point newBaggagePos = Point.add(nearBaggage.getPosition(), delta);
 
             // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
             if (isWallAt(newBaggagePos)) return false;
@@ -96,13 +96,13 @@ public class Level implements Serializable
             if (isPlayerAt(newBaggagePos)) return false;
 
             // 이동 전에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getPoint())) remainingBaggages++;
+            if (isGoalAt(nearBaggage.getPosition())) remainingBaggages++;
 
             // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
             nearBaggage.moveDelta(delta);
 
             // 이동 후에 물건이 목적지에 있는 경우
-            if (isGoalAt(nearBaggage.getPoint())) remainingBaggages--;
+            if (isGoalAt(nearBaggage.getPosition())) remainingBaggages--;
         }
 
         // 플레이어 이동
