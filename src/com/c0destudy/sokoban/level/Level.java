@@ -17,15 +17,16 @@ public class Level implements Serializable
     private final ArrayList<Baggage> baggages = new ArrayList<>();
     private final ArrayList<Player>  players  = new ArrayList<>();
     private final ArrayList<Record>  records  = new ArrayList<>();
-    private long                     timeLastMove;
+    private boolean                  isRecordEnabled;
+    private long                     timeLastMove      = 0;
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
 
     public Level(final String name, final int width, final int height) {
-        this.name         = name;
-        this.width        = width;
-        this.height       = height;
-        this.timeLastMove = System.currentTimeMillis();
+        this.name   = name;
+        this.width  = width;
+        this.height = height;
+        setRecordEnabled(true);
     }
 
     // 레벨 정보
@@ -35,6 +36,13 @@ public class Level implements Serializable
     public int     getMoveCount()         { return moveCount; }
     public int     getRemainingBaggages() { return remainingBaggages;      }
     public boolean isCompleted()          { return remainingBaggages == 0; }
+    public boolean getRecordEnabled()     { return isRecordEnabled;        }
+    public void    setRecordEnabled(final boolean enabled) {
+        isRecordEnabled = enabled;
+        if (isRecordEnabled) {
+            timeLastMove = System.currentTimeMillis();
+        }
+    }
 
     // 타일
     public ArrayList<Wall>    getWalls()    { return walls;    }
@@ -54,16 +62,27 @@ public class Level implements Serializable
             return null;
         }
     }
+    public Record getRecord(final int index) {
+        if (index >= 0 && index < records.size()) {
+            return records.get(index);
+        } else {
+            return null;
+        }
+    }
     public void addWall   (final Wall wall)       { walls.add(wall);     }
     public void addGoal   (final Goal goal)       { goals.add(goal);     }
     public void addPlayer (final Player player)   { players.add(player); }
     public void addBaggage(final Baggage baggage) { baggages.add(baggage); remainingBaggages++; }
 
     public void reset() {
+        records.clear();
+        resetWithoutRecords();
+    }
+
+    public void resetWithoutRecords() {
         for (final Movable movable : getMovables()) {
             movable.setPosition(movable.getOriginalPosition());
         }
-        records.clear();
         timeLastMove      = System.currentTimeMillis();
         moveCount         = 0;
         remainingBaggages = 0;
@@ -73,6 +92,7 @@ public class Level implements Serializable
             }
         }
     }
+
     /**
      * 플레이어의 좌표 변화량을 입력받아 플레이어를 이동하고,
      * 물건을 미는 경우 물건도 이동시킵니다.
@@ -102,15 +122,17 @@ public class Level implements Serializable
         }
 
         // 기록 (undo와 replay를 위함)
-        final long   currentTime = System.currentTimeMillis();
-        final Record record      = new Record(
-                currentTime - timeLastMove,
-                playerIndex,
-                player.getPosition(),
-                direction,
-                baggage != null);
-        records.add(record);
-        timeLastMove = currentTime;
+        if (getRecordEnabled()) {
+            final long   currentTime = System.currentTimeMillis();
+            final Record record      = new Record(
+                    currentTime - timeLastMove,
+                    playerIndex,
+                    player.getPosition(),
+                    direction,
+                    baggage != null);
+            records.add(record);
+            timeLastMove = currentTime;
+        }
 
         // 플레이어 이동
         player.moveDelta(direction);
@@ -159,7 +181,7 @@ public class Level implements Serializable
      * 물건을 움직인 경우 물건도 이전 위치로 다시 이동시킵니다.
      */
     public void undoMove() {
-        if (records.size() == 0) return;
+        if (!getRecordEnabled() || records.size() == 0) return;
 
         // 마지막 움직임 기록 가져오기
         final Record record    = records.remove(records.size() - 1);
@@ -176,8 +198,7 @@ public class Level implements Serializable
             moveBaggage(baggage, Point.reverse(direction));
         }
 
-        // 이동 취소도 이동한 횟수에 포함한다
-        moveCount++;
+        moveCount--;
     }
 
     /**

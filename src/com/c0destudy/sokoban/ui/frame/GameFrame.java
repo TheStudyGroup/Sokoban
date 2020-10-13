@@ -2,29 +2,45 @@ package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
+import com.c0destudy.sokoban.level.Record;
 import com.c0destudy.sokoban.misc.Point;
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameFrame extends JFrame
 {
-    private Skin      skin;
-    private Level     level;
-    private GamePanel gamePanel = null;
+    private Skin            skin;
+    private Level           level;
+    private GamePanel       gamePanel = null;
+    private boolean         isReplay;
+    private final Timer     replayTimer = new Timer();
+    private TimerTask       replayTask;
+    private long            replayTime;
+    private int             replayIndex;
 
-    public GameFrame(final Skin skin, final Level level) {
+    public GameFrame(final Skin skin, final Level level, final boolean isReplay) {
         super();
-        this.skin  = skin;
-        this.level = level;
+        this.skin     = skin;
+        this.level    = level;
+        this.isReplay = isReplay;
         setTitle("Sokoban - " + level.getName());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new TWindowAdapter());
         initUI();
+        if (isReplay) {
+            setTitle(getTitle() + " (replay mode)");
+            level.setRecordEnabled(false);
+            level.resetWithoutRecords();
+            gamePanel.repaint();
+            startReplay();
+        }
     }
 
     private void initUI() {
@@ -32,50 +48,66 @@ public class GameFrame extends JFrame
         gamePanel.addKeyListener(new TKeyAdapter());
         getContentPane().add(gamePanel);
         setSize(gamePanel.getSize());
-        pack(); // 프레임 사이즈 맞추기
+        pack();                      // 프레임 사이즈 맞추기
         setLocationRelativeTo(null); // 화면 중앙으로 이동
     }
 
-    private void resetUI() {
-        final Level     newLevel     = LevelManager.getNewLevel(level.getName()); // 동일한 레벨 다시 불러오기
-        final GamePanel newGamePanel = new GamePanel(skin, newLevel);
-        newGamePanel.addKeyListener(new TKeyAdapter());
-
-        getContentPane().removeAll();       // 이전 GamePanel 제거
-        getContentPane().add(newGamePanel); // 새로운 GamePanel 추가
-        newGamePanel.requestFocus();        // 포커스 적용 (레밸 재시작시 필요)
-        level     = newLevel;
-        gamePanel = newGamePanel;
-
-        setSize(gamePanel.getSize());
-        pack(); // 프레임 사이즈 맞추기
-    }
-
     private void closeUI() {
-        if (!level.isCompleted()) {
-            LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
+        if (!isReplay) {
+            if (!level.isCompleted()) {
+                LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
+            } else {
+                LevelManager.saveLevelToFile(level, String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getMoveCount()));
+            }
         }
         FrameManager.showMainFrame();
+        stopReplay();
         dispose();
+    }
+
+    private void startReplay() {
+        if (replayTask != null) return;
+        replayTime  = System.currentTimeMillis();
+        replayIndex = 0;
+        replayTask  = new TimerTask() {
+            @Override
+            public void run() {
+                final Record record = level.getRecord(replayIndex);
+                if (record == null) {
+                    stopReplay();
+                    return;
+                }
+                if (System.currentTimeMillis() - replayTime >= record.getTime()) {
+                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection());
+                    gamePanel.repaint();
+                    replayTime = System.currentTimeMillis();
+                    replayIndex++;
+                }
+            }
+        };
+        replayTimer.scheduleAtFixedRate(replayTask, 0, 10);
+    }
+
+    private void stopReplay() {
+        if (replayTask != null) {
+            replayTask.cancel();
+        }
     }
 
     private class TKeyAdapter extends KeyAdapter
     {
         @Override
         public void keyPressed(KeyEvent e) {
-            int keyCode = e.getKeyCode();
+            if (isReplay) return;
 
-            // 항상 입력받을 수 있는 키
+            final int keyCode = e.getKeyCode();
             switch (keyCode) {
                 case KeyEvent.VK_R: // 재시작
-                    resetUI();
+                    level.reset();
+                    gamePanel.repaint();
                     return;
                 case KeyEvent.VK_ESCAPE:
                     closeUI();
-                    return;
-                case KeyEvent.VK_U:
-                    level.undoMove();
-                    gamePanel.repaint();
                     return;
             }
 
@@ -83,9 +115,12 @@ public class GameFrame extends JFrame
                 return;
             }
 
-            // 플레이어 선택
             int playerIndex;
             switch (keyCode) {
+                case KeyEvent.VK_U: // undo
+                    level.undoMove();
+                    gamePanel.repaint();
+                    return;
                 case KeyEvent.VK_LEFT: // Player1
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_UP:
@@ -102,7 +137,6 @@ public class GameFrame extends JFrame
                     return;
             }
 
-            // 방향 선택
             Point delta = null;
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:

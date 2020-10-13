@@ -17,7 +17,7 @@ public class Movable extends Tile
     }
 
     public Point getOriginalPosition() {
-        return super.getPosition();
+        return new Point(super.getPosition());
     }
 
     public void setPosition(final Point position) {

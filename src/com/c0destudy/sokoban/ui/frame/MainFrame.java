@@ -1,5 +1,6 @@
 package com.c0destudy.sokoban.ui.frame;
 
+import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
@@ -136,7 +137,8 @@ public class MainFrame extends JFrame
                 case "Replay ->":
                     break;
                 default:
-                    FrameManager.showGameFrame(LevelManager.readLevelFromFile(Resource.PATH_RECORDING_ROOT + "/" + button.getText() + ".dat"));
+                    final Level level = LevelManager.readLevelFromFile(Resource.PATH_RECORDING_ROOT + "/" + button.getText() + ".dat");
+                    FrameManager.showGameFrame(level, true);
                     closeUI();
                     break;
             }
