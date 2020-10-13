@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainFrame extends JFrame implements ActionListener
+public class MainFrame extends JFrame
 {
     private final ArrayList<JPanel> panels = new ArrayList<>();
     private final MainPanel         mainPanel;
@@ -27,10 +27,10 @@ public class MainFrame extends JFrame implements ActionListener
 
     public MainFrame(final Skin skin) {
         super();
-        panels.add(mainPanel      = new MainPanel(skin, this));
-        panels.add(levelPanel     = new LevelPanel(skin, this));
+        panels.add(mainPanel      = new MainPanel(skin, new MainActionListener()));
+        panels.add(levelPanel     = new LevelPanel(skin, new LevelActionListener()));
         panels.add(rankingPanel   = new RankingPanel());
-        panels.add(recordingPanel = new RecordingPanel());
+        panels.add(recordingPanel = new RecordingPanel(skin, new RecordingActionListener()));
         panels.add(settingPanel   = new SettingPanel());
         panels.add(aboutPanel     = new AboutPanel());
         if (!LevelManager.isPausedLevelExisting()) {
@@ -46,6 +46,7 @@ public class MainFrame extends JFrame implements ActionListener
     private void initUI() {
         JPanel panel = new JPanel();
         panel.setLayout(new OverlayLayout(panel));
+        panel.addKeyListener(new TKeyAdapter());
         panels.forEach(e -> {
             e.setAlignmentY(Component.TOP_ALIGNMENT);
             panel.add(e);
@@ -69,41 +70,91 @@ public class MainFrame extends JFrame implements ActionListener
         dispose();
     }
 
-    public void actionPerformed(ActionEvent e){
-        final JButton button = (JButton) e.getSource();
-        switch (button.getText()) {
-            case "New Game":
-                selectPanel(levelPanel);
 
-//                FrameManager.showGameFrame(LevelManager.getNewLevel("Level 1"));
-                break;
-            case "Continue":
-                FrameManager.showGameFrame(LevelManager.readLevelFromFile(Resource.PATH_LEVEL_PAUSE));
-                (new File(Resource.PATH_LEVEL_PAUSE)).delete();
-                closeUI();
-                break;
-            case "Ranking":
-                selectPanel(rankingPanel);
-                break;
-            case "Recordings":
-                selectPanel(recordingPanel);
-                break;
-            case "Settings":
-                selectPanel(settingPanel);
-                break;
-            case "About":
-                selectPanel(aboutPanel);
-                break;
-            case "Exit Game":
-                closeUI();
-                break;
+    private class MainActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            switch (button.getText()) {
+                case "New Game":
+                    selectPanel(levelPanel);
+                    break;
+                case "Continue":
+                    FrameManager.showGameFrame(LevelManager.readLevelFromFile(Resource.PATH_LEVEL_PAUSE));
+                    (new File(Resource.PATH_LEVEL_PAUSE)).delete();
+                    closeUI();
+                    break;
+//                case "Ranking":
+//                    selectPanel(rankingPanel);
+//                    break;
+                case "Recordings":
+                    selectPanel(recordingPanel);
+                    break;
+//                case "Settings":
+//                    selectPanel(settingPanel);
+//                    break;
+//                case "About":
+//                    selectPanel(aboutPanel);
+//                    break;
+                case "Exit Game":
+                    closeUI();
+                    break;
+            }
+        }
+    }
 
-            case "<- Back":
-                selectPanel(mainPanel);
+    private class LevelActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            switch (button.getText()) {
+                case "<- Back":
+                    selectPanel(mainPanel);
+                    break;
+                case "Play ->":
+                    break;
+                default:
+                    FrameManager.showGameFrame(LevelManager.getNewLevel(button.getText()));
+                    closeUI();
+                    break;
+            }
+        }
+    }
 
-            default:
-                FrameManager.showGameFrame(LevelManager.getNewLevel(button.getText()));
-                closeUI();
+    private class RecordingActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            switch (button.getText()) {
+                case "<- Back":
+                    selectPanel(mainPanel);
+                    break;
+                case "NO RECORDINGS":
+                case "Replay ->":
+                    break;
+                default:
+                    FrameManager.showGameFrame(LevelManager.readLevelFromFile(Resource.PATH_RECORDING_ROOT + "/" + button.getText() + ".dat"));
+                    closeUI();
+                    break;
+            }
+        }
+    }
+
+    private class AboutActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            switch (button.getText()) {
+                case "<- Back":
+                    selectPanel(mainPanel);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

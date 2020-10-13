@@ -13,7 +13,8 @@ public class Resource
     public static final String PATH_LEVEL           = "src/resources/levels/%s.txt";
     public static final String PATH_LEVEL_ROOT      = "src/resources/levels";
     public static final String PATH_LEVEL_PAUSE     = "data/pause.dat";
-    public static final String PATH_LEVEL_RECORDING = "data/recordings/%s.dat";
+    public static final String PATH_RECORDING_ROOT  = "data/recordings";
+    public static final String PATH_RECORDING_FILE  = "data/recordings/%s (%d moves).dat";
 
     public static Image getImageFromResource(final String skinName, final String imageName) {
         final String    path = String.format(Resource.PATH_RESOURCES_IMAGE, skinName, imageName);
