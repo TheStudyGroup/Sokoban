@@ -66,25 +66,25 @@ public class Level
     public void addBaggage(final Baggage baggage) { baggages.add(baggage); remainingBaggages++; }
 
     /**
-     * �뵆�젅�씠�뼱�쓽 醫뚰몴 蹂��솕�웾�쓣 �엯�젰諛쏆븘 �뵆�젅�씠�뼱瑜� �씠�룞�븯怨�,
-     * 臾쇨굔�쓣 誘몃뒗 寃쎌슦 臾쇨굔�룄 �씠�룞�떆�궢�땲�떎.
+     * 플레이어의 좌표 변화량을 입력받아 플레이어를 이동하고,
+     * 물건을 미는 경우 물건도 이동시킵니다.
      *
-     * �씠�룞�븯�뒗 諛⑺뼢�뿉 臾쇨굔�씠 �엳�쑝硫� 臾쇨굔�룄 媛숈씠 �씠�룞�떆�궢�땲�떎.
-     * �떒, 臾쇨굔�씠 �뿰�냽�쑝濡� 2媛� �엳嫄곕굹 踰쎌씠 �엳�뒗 寃쎌슦�뿉�뒗 �씠�룞�븷 �닔 �뾾�뒿�땲�떎.
+     * 이동하는 방향에 물건이 있으면 물건도 같이 이동시킵니다.
+     * 단, 물건이 연속으로 2개 있거나 벽이 있는 경우에는 이동할 수 없습니다.
      *
-     * @param  playerIndex �씠�룞�븷 �뵆�젅�씠�뼱 踰덊샇 (0-based)
-     * @param  delta       �뵆�젅�씠�뼱�쓽 醫뚰몴 蹂��솕�웾
-     * @return             �씠�룞 �뿬遺� (�씠�룞 �떎�뙣�떆 false)
+     * @param  playerIndex 이동할 플레이어 번호 (0-based)
+     * @param  delta       플레이어의 좌표 변화량
+     * @return             이동 여부 (이동 실패시 false)
      */
     public boolean movePlayerAndBaggage(final int playerIndex, final Point delta) {
-        // �뵆�젅�씠�뼱媛� �씠�룞�븷 �깉濡쒖슫 醫뚰몴 怨꾩궛
+        // 플레이어가 이동할 새로운 좌표 계산
         final Player player       = getPlayer(playerIndex);
         final Point  newPlayerPos = Point.add(player.getPoint(), delta);
 
-        // �씠�룞�븷 �쐞移섏뿉 踰쎌씠 �엳�뒗 寃쎌슦 => �씠�룞 遺덇�
+        // 이동할 위치에 벽이 있는 경우 => 이동 불가
         if (isWallAt(newPlayerPos)) return false;
 
-        // �씠�룞�븷 �쐞移섏뿉 �떎瑜� �뵆�젅�씠�뼱媛� �엳�뒗 寃쎌슦 => �씠�룞 遺덇�
+        // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
         if (isPlayerAt(newPlayerPos)) return false;
         
         Trigger onTrigger = PlayerOnTrigger(newPlayerPos);
@@ -92,43 +92,43 @@ public class Level
         	if(isTriggerAt(onTrigger.getPoint()))  hp--;
         }
 
-        // �뵆�젅�씠�뼱媛� 臾쇨굔(baggage)�쓣 誘몃뒗 寃쎌슦
+        // 플레이어가 물건(baggage)을 미는 경우
         Baggage nearBaggage = getBaggageAt(newPlayerPos);
         if (nearBaggage != null) {
-            // 臾쇨굔�씠 �씠�룞�맆 �깉濡쒖슫 醫뚰몴 怨꾩궛
+            // 물건이 이동될 새로운 좌표 계산
             final Point newBaggagePos = Point.add(nearBaggage.getPoint(), delta);
 
-            // 臾쇨굔�씠 �씠�룞�맆 �쐞移섏뿉 踰쎌씠 �엳�뒗 寃쎌슦 => �씠�룞 遺덇�
+            // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
             if (isWallAt(newBaggagePos)) return false;
 
-            // 臾쇨굔�씠 �씠�룞�맆 �쐞移섏뿉 臾쇨굔�씠 �엳�뒗 寃쎌슦 (�뿰�냽 2媛�) => �씠�룞 遺덇�
+            // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
             if (getBaggageAt(newBaggagePos) != null) return false;
 
-            // 臾쇨굔�씠 �씠�룞�맆 �쐞移섏뿉 �떎瑜� �뵆�젅�씠�뼱媛� �엳�뒗 寃쎌슦 => �씠�룞 遺덇�
+            // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
             if (isPlayerAt(newBaggagePos)) return false;
 
-            // �씠�룞 �쟾�뿉 臾쇨굔�씠 紐⑹쟻吏��뿉 �엳�뒗 寃쎌슦
+            // 이동 전에 물건이 목적지에 있는 경우
             if (isGoalAt(nearBaggage.getPoint())) remainingBaggages++;
 
-            // 臾쇨굔�쓣 �씠�룞�떆�궗 �닔 �엳�뒗 怨듦컙�씠 �엳�쑝硫� 臾쇨굔�쓣 誘쇰떎
+            // 물건을 이동시킬 수 있는 공간이 있으면 물건을 민다
             nearBaggage.moveDelta(delta);
 
-            // �씠�룞 �썑�뿉 臾쇨굔�씠 紐⑹쟻吏��뿉 �엳�뒗 寃쎌슦
+            // 이동 후에 물건이 목적지에 있는 경우
             if (isGoalAt(nearBaggage.getPoint())) remainingBaggages--;
             
         }
 
-        // �뵆�젅�씠�뼱 �씠�룞
+        // 플레이어 이동
         player.moveDelta(delta);
         moveCount++;
         return true;
     }
 
     /**
-     * �빐�떦 醫뚰몴�뿉 踰쎌씠 �엳�뒗吏� �솗�씤�빀�땲�떎.
+     * 해당 좌표에 벽이 있는지 확인합니다.
      *
-     * @param  point 醫뚰몴
-     * @return       踰쎌쓽 議댁옱 �뿬遺�
+     * @param  point 좌표
+     * @return       벽의 존재 여부
      */
     private boolean isWallAt(final Point point) {
         for (final Wall wall: walls) {
@@ -140,10 +140,10 @@ public class Level
     }
 
     /**
-     * �빐�떦 醫뚰몴�뿉 紐⑹쟻吏�媛� �엳�뒗吏� �솗�씤�빀�땲�떎.
+     * 해당 좌표에 목적지가 있는지 확인합니다.
      *
-     * @param  point 醫뚰몴
-     * @return       紐⑹쟻吏��쓽 議댁옱 �뿬遺�
+     * @param  point 좌표
+     * @return       목적지의 존재 여부
      */
     private boolean isGoalAt(final Point point) {
         for (final Goal goal: goals) {
@@ -155,10 +155,10 @@ public class Level
     }
 
     /**
-     * �빐�떦 醫뚰몴�뿉 �뵆�젅�씠�뼱媛� �엳�뒗吏� �솗�씤�빀�땲�떎.
+     * 해당 좌표에 플레이어가 있는지 확인합니다.
      *
-     * @param  point 醫뚰몴
-     * @return       �뵆�젅�씠�뼱�쓽 議댁옱 �뿬遺�
+     * @param  point 좌표
+     * @return       플레이어의 존재 여부
      */
     private boolean isPlayerAt(final Point point) {
         for (final Player player: players) {
@@ -179,6 +179,7 @@ public class Level
     	}
 		return false;
     }
+
     private Trigger PlayerOnTrigger(final Point point) {
     	for(final Trigger trigger:triggers) {
     		if(trigger.isLocatedAt(point)) {
@@ -190,7 +191,7 @@ public class Level
 
 
     /**
-     * �빐�떦 醫뚰몴�뿉 �엳�뒗 臾쇨굔 媛앹껜瑜� 媛��졇�샃�땲�떎.
+     * 해당 좌표에 있는 물건 객체를 가져옵니다.
      *
      * @param  point 좌표
      * @return       물건 객체 (없을 경우 null)

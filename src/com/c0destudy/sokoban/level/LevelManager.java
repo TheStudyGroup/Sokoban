@@ -35,7 +35,7 @@ public class LevelManager
     }
 
     /**
-     * �뙆�씪濡쒕��꽣 �젅踰� �씤�뒪�꽩�뒪瑜� �깮�꽦�빀�땲�떎.
+     * 파일로부터 레벨 인스턴스를 생성합니다.
      *
      * @param  name     레벨 이름
      * @param  filePath 레벨 데이터가 저장된 파일 경로
@@ -54,9 +54,9 @@ public class LevelManager
     }
 
     /**
-     * 臾몄옄�뿴 由ъ뒪�듃濡쒕��꽣 �젅踰� �씤�뒪�꽩�뒪瑜� �깮�꽦�빀�땲�떎.
+     * 문자열 리스트로부터 레벨 인스턴스를 생성합니다.
      *
-     * �젅踰⑥쓽 媛�濡�/�꽭濡� �겕湲곕뒗 �옄�룞�쑝濡� 怨꾩궛�맗�땲�떎.
+     * 레벨의 가로/세로 크기는 자동으로 계산됩니다.
      *
      * @param  name      레벨 이름
      * @param  levelData 레벨 데이터가 행별로 구분된 리스트
@@ -73,7 +73,7 @@ public class LevelManager
         // 레밸 인스턴스 생성
         final Level level = new Level(name, width, height);
 
-        // 媛곸쥌 釉붾윮 異붽�
+        // 각종 블럭 추가
         for (int y = 0; y < levelData.size(); y++) {
             final String line = levelData.get(y);
             for (int x = 0; x < line.length(); x++) {
