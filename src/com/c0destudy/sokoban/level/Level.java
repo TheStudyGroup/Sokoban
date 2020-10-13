@@ -1,12 +1,13 @@
-package com.c0destudy.level;
+package com.c0destudy.sokoban.level;
 
-import com.c0destudy.misc.Point;
-import com.c0destudy.tile.*;
+import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.tile.*;
 
 import java.util.ArrayList;
 
 public class Level
 {
+    private final String             name;
     private final int                width;
     private final int                height;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
@@ -14,25 +15,32 @@ public class Level
     private final ArrayList<Baggage> baggages = new ArrayList<>();
     private final ArrayList<Trigger> triggers = new ArrayList<>();
     private final ArrayList<Player>  players  = new ArrayList<>();
+    private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
     private int                      hp = 3;
 
-    // �깮�꽦�옄
-    public Level(final int width, final int height) {
+    public Level(final String name, final int width, final int height) {
+        this.name   = name;
         this.width  = width;
         this.height = height;
     }
 
-    // �젅踰� �젙蹂�
-    public int getWidth()  { return width;  }
-    public int getHeight() { return height; }
-    public int getRemainingBaggages() { return remainingBaggages; }
-    public int getLeftHealth()        { return hp;     }
-    public boolean isFailed()         { return hp == 0;}
-    public boolean isCompleted()      { return remainingBaggages == 0; }
+    // 레벨 정보
+    public String  getName()      { return name;   }
+    public int     getWidth()     { return width;  }
+    public int     getHeight()    { return height; }
+    public int     getMoveCount() { return moveCount; }
+    public int     getRemainingBaggages() { return remainingBaggages; }
+    public int     getLeftHealth()        { return hp;     }
+    public boolean isFailed()             { return hp == 0;}
+    public boolean isCompleted()          { return remainingBaggages == 0; }
 
-    // ���씪
-    public ArrayList<Tile> getAllTiles() {
+    // 타일
+    public ArrayList<Wall>    getWalls()    { return walls;    }
+    public ArrayList<Goal>    getGoals()    { return goals;    }
+    public ArrayList<Baggage> getBaggages() { return baggages; }
+    public ArrayList<Player>  getPlayers()  { return players;  }
+    public ArrayList<Tile>    getAllTiles() {
         final ArrayList<Tile> tiles = new ArrayList<>();
         tiles.addAll(walls);
         tiles.addAll(goals);
@@ -111,6 +119,7 @@ public class Level
 
         // �뵆�젅�씠�뼱 �씠�룞
         player.moveDelta(delta);
+        moveCount++;
         return true;
     }
 
@@ -182,8 +191,8 @@ public class Level
     /**
      * �빐�떦 醫뚰몴�뿉 �엳�뒗 臾쇨굔 媛앹껜瑜� 媛��졇�샃�땲�떎.
      *
-     * @param  point 醫뚰몴
-     * @return       臾쇨굔 媛앹껜 (�뾾�뒗 寃쎌슦 null)
+     * @param  point 좌표
+     * @return       물건 객체 (없을 경우 null)
      */
     private Baggage getBaggageAt(final Point point) {
         for (final Baggage baggage: baggages) {
