@@ -41,13 +41,11 @@ public class Level implements Serializable
     public ArrayList<Goal>    getGoals()    { return goals;    }
     public ArrayList<Baggage> getBaggages() { return baggages; }
     public ArrayList<Player>  getPlayers()  { return players;  }
-    public ArrayList<Tile>    getAllTiles() {
-        final ArrayList<Tile> tiles = new ArrayList<>();
-        tiles.addAll(walls);
-        tiles.addAll(goals);
-        tiles.addAll(baggages);
-        tiles.addAll(players);
-        return tiles;
+    public ArrayList<Movable> getMovables() {
+        final ArrayList<Movable> movables = new ArrayList<>();
+        movables.addAll(baggages);
+        movables.addAll(players);
+        return movables;
     }
     public Player getPlayer(final int index) {
         try {
@@ -61,6 +59,20 @@ public class Level implements Serializable
     public void addPlayer (final Player player)   { players.add(player); }
     public void addBaggage(final Baggage baggage) { baggages.add(baggage); remainingBaggages++; }
 
+    public void reset() {
+        for (final Movable movable : getMovables()) {
+            movable.setPosition(movable.getOriginalPosition());
+        }
+        records.clear();
+        timeLastMove      = System.currentTimeMillis();
+        moveCount         = 0;
+        remainingBaggages = 0;
+        for (final Baggage baggage : getBaggages()) {
+            if (!isGoalAt(baggage.getPosition())) {
+                remainingBaggages++;
+            }
+        }
+    }
     /**
      * 플레이어의 좌표 변화량을 입력받아 플레이어를 이동하고,
      * 물건을 미는 경우 물건도 이동시킵니다.
@@ -118,16 +130,16 @@ public class Level implements Serializable
      */
     private boolean moveBaggage(final Baggage baggage, final Point direction) {
         // 물건이 이동될 새로운 좌표 계산
-        final Point newPosition = Point.add(baggage.getPosition(), direction);
+        final Point position = Point.add(baggage.getPosition(), direction);
 
         // 물건이 이동될 위치에 벽이 있는 경우 => 이동 불가
-        if (isWallAt(newPosition)) return false;
+        if (isWallAt(position)) return false;
 
         // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
-        if (getBaggageAt(newPosition) != null) return false;
+        if (getBaggageAt(position) != null) return false;
 
         // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
-        if (isPlayerAt(newPosition)) return false;
+        if (isPlayerAt(position)) return false;
 
         // 이동 전에 물건이 목적지에 있는 경우
         if (isGoalAt(baggage.getPosition())) remainingBaggages++;
@@ -176,7 +188,7 @@ public class Level implements Serializable
      */
     private boolean isWallAt(final Point position) {
         for (final Wall wall : walls) {
-            if (wall.isLocatedAt(position)) {
+            if (wall.getPosition().equals(position)) {
                 return true;
             }
         }
@@ -191,7 +203,7 @@ public class Level implements Serializable
      */
     private boolean isGoalAt(final Point position) {
         for (final Goal goal : goals) {
-            if (goal.isLocatedAt(position)) {
+            if (goal.getPosition().equals(position)) {
                 return true;
             }
         }
@@ -206,7 +218,7 @@ public class Level implements Serializable
      */
     private boolean isPlayerAt(final Point position) {
         for (final Player player : players) {
-            if (player.isLocatedAt(position)) {
+            if (player.getPosition().equals(position)) {
                 return true;
             }
         }
@@ -221,7 +233,7 @@ public class Level implements Serializable
      */
     private Baggage getBaggageAt(final Point position) {
         for (final Baggage baggage : baggages) {
-            if (baggage.isLocatedAt(position)) {
+            if (baggage.getPosition().equals(position)) {
                 return baggage;
             }
         }
@@ -236,7 +248,7 @@ public class Level implements Serializable
      */
     private Player getPlayerAt(final Point position) {
         for (final Player player : players) {
-            if (player.isLocatedAt(position)) {
+            if (player.getPosition().equals(position)) {
                 return player;
             }
         }
