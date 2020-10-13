@@ -57,6 +57,7 @@ public class GamePanel extends JPanel
             g.drawString("Completed", 25, 20);
         } else {
             g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 20);
+            g.drawString("Move Count : " + level.getMoveCount(), 25, 30);
         }
     }
 

@@ -73,6 +73,10 @@ public class GameFrame extends JFrame
                 case KeyEvent.VK_ESCAPE:
                     closeUI();
                     return;
+                case KeyEvent.VK_U:
+                    level.undoMove();
+                    gamePanel.repaint();
+                    return;
             }
 
             if (level.isCompleted()) { // 게임 클리어시 이동 불가
@@ -119,9 +123,7 @@ public class GameFrame extends JFrame
                     break;
             }
             level.movePlayerAndBaggage(playerIndex, delta);
-
-            // 다시 그리기
-            gamePanel.repaint();
+            gamePanel.repaint(); // 다시 그리기
         }
     }
 
