@@ -139,26 +139,26 @@ public class GameFrame extends JFrame
                     return;
             }
 
-            Point delta = null;
+            Point direction = null;
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_A:
-                    delta = new Point(-1, 0);
+                    direction = new Point(-1, 0);
                     break;
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_D:
-                    delta = new Point(1, 0);
+                    direction = new Point(1, 0);
                     break;
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
-                    delta = new Point(0, -1);
+                    direction = new Point(0, -1);
                     break;
                 case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
-                    delta = new Point(0, 1);
+                    direction = new Point(0, 1);
                     break;
             }
-            level.movePlayerAndBaggage(playerIndex, delta);
+            level.movePlayerAndBaggage(playerIndex, direction); // 플레이어 이동
             SoundManager.playPlayerMoveSound(); // 이동 사운드
             gamePanel.repaint(); // 다시 그리기
         }

@@ -9,7 +9,7 @@ import java.awt.*;
 public class FrameManager
 {
     public static void showMainFrame() {
-        Skin skin = new Skin();
+        Skin skin = new Skin("Default");
         EventQueue.invokeLater(() -> {
             final MainFrame frame = new MainFrame(skin);
             frame.setVisible(true);
@@ -21,7 +21,7 @@ public class FrameManager
     }
 
     public static void showGameFrame(final Level level, final boolean isReplay) {
-        Skin skin = new Skin();
+        Skin skin = new Skin("Default");
         EventQueue.invokeLater(() -> {
             final GameFrame frame = new GameFrame(skin, level, isReplay);
             frame.setVisible(true);

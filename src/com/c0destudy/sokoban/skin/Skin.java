@@ -7,27 +7,21 @@ import java.awt.*;
 public class Skin
 {
     public enum IMAGES {
-        Wall, Baggage, Goal, Player1, Player2,
-        Player1Left, Player1Right, Player1Up, Player1Down,
-        Player2Left, Player2Right, Player2Up, Player2Down,
-        Trigger,
+        Wall, Baggage, Goal, Player1, Player2, Trigger,
     }
 
     public enum FONTS {
         Title, LargeButton, SmallButton,
     }
 
-    private String  name;
-    private Image[] images;
-    private Font[]  fonts;
-
-    public Skin() {
-        this("Default");
-    }
+    private final String  name;
+    private final Image[] images;
+    private final Font[]  fonts;
 
     public Skin(final String name) {
-        images = new Image[IMAGES.values().length];
-        fonts  = new Font[FONTS.values().length];
+        this.name = name;
+        this.images = new Image[IMAGES.values().length];
+        this.fonts  = new Font[FONTS.values().length];
 
         Resource.loadFontFromResource("FORCED SQUARE");
 
@@ -35,11 +29,11 @@ public class Skin
         setFont(Skin.FONTS.LargeButton, new Font("FORCED SQUARE", Font.PLAIN, 30));
         setFont(Skin.FONTS.SmallButton, new Font("FORCED SQUARE", Font.PLAIN, 20));
 
-        setImage(IMAGES.Wall, Resource.getImageFromResource(name, "wall"));
+        setImage(IMAGES.Wall,    Resource.getImageFromResource(name, "wall"));
         setImage(IMAGES.Baggage, Resource.getImageFromResource(name, "baggage"));
-        setImage(IMAGES.Goal, Resource.getImageFromResource(name, "goal"));
-        setImage(IMAGES.Player1, Resource.getImageFromResource(name, "player"));
-        setImage(IMAGES.Player2, Resource.getImageFromResource(name, "player"));
+        setImage(IMAGES.Goal,    Resource.getImageFromResource(name, "goal"));
+        setImage(IMAGES.Player1, Resource.getImageFromResource(name, "player1"));
+        setImage(IMAGES.Player2, Resource.getImageFromResource(name, "player2"));
         setImage(IMAGES.Trigger, Resource.getImageFromResource(name, "trigger"));
 
     }
