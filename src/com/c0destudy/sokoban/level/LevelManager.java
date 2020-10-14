@@ -6,6 +6,7 @@ import com.c0destudy.sokoban.tile.Baggage;
 import com.c0destudy.sokoban.tile.Goal;
 import com.c0destudy.sokoban.tile.Player;
 import com.c0destudy.sokoban.tile.Wall;
+import com.c0destudy.sokoban.tile.Trigger;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -24,6 +25,7 @@ public class LevelManager
     private static final char LEVEL_SYMBOL_GOAL            = '.';
     private static final char LEVEL_SYMBOL_PLAYER          = '@';
     private static final char LEVEL_SYMBOL_PLAYER_AT_GOAL  = '+';
+    private static final char LEVEL_SYMBOL_TRIGGER         = '!';
 
     /**
      * 레벨 인스턴스를 생성합니다.
@@ -89,6 +91,9 @@ public class LevelManager
                         level.addPlayer(new Player(point));
                         level.addGoal(new Goal(new Point(point)));
                         break;
+                    case LEVEL_SYMBOL_TRIGGER:
+                    	level.addTrigger(new Trigger(point));
+                    	break;
                     default:
                         break;
                 }

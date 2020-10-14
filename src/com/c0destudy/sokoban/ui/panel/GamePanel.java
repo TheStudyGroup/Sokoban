@@ -43,6 +43,9 @@ public class GamePanel extends JPanel
         // Goal
         image = skin.getImage(Skin.IMAGES.Goal);
         for (final Tile tile : level.getGoals()) drawTile(g, tile, image);
+        // Trigger
+        image = skin.getImage(Skin.IMAGES.Trigger);
+        for (final Tile tile : level.getTriggers()) drawTile(g, tile, image);
         // Baggage
         image = skin.getImage(Skin.IMAGES.Baggage);
         for (final Tile tile : level.getBaggages()) drawTile(g, tile, image);
@@ -55,9 +58,13 @@ public class GamePanel extends JPanel
         g.setColor(new Color(0, 0, 0));
         if (level.isCompleted()) {
             g.drawString("Completed", 25, 20);
+        }
+        else if (level.isFailed()) {
+            g.drawString("Failed", 25, 25);
         } else {
-            g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 20);
-            g.drawString("Move Count : " + level.getMoveCount(), 25, 30);
+            g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 10);
+            g.drawString("Move Count : " + level.getMoveCount(), 25, 20);
+            g.drawString("HP:" + level.getLeftHealth(), 25, 30);
         }
     }
 

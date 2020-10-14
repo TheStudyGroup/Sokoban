@@ -6,6 +6,7 @@ import com.c0destudy.sokoban.level.Record;
 import com.c0destudy.sokoban.misc.Point;
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.sound.SoundManager;
 import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
@@ -60,6 +61,7 @@ public class GameFrame extends JFrame
                 LevelManager.saveLevelToFile(level, String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getMoveCount()));
             }
         }
+        SoundManager.stopBackgroundMusic();
         FrameManager.showMainFrame();
         stopReplay();
         dispose();
@@ -111,7 +113,7 @@ public class GameFrame extends JFrame
                     return;
             }
 
-            if (level.isCompleted()) { // 게임 클리어시 이동 불가
+            if (level.isCompleted() || level.isFailed()) {
                 return;
             }
 
@@ -157,6 +159,7 @@ public class GameFrame extends JFrame
                     break;
             }
             level.movePlayerAndBaggage(playerIndex, delta);
+            SoundManager.playPlayerMoveSound(); // 이동 사운드
             gamePanel.repaint(); // 다시 그리기
         }
     }

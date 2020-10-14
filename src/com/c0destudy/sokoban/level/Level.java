@@ -15,12 +15,14 @@ public class Level implements Serializable
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
+    private final ArrayList<Trigger> triggers = new ArrayList<>();
     private final ArrayList<Player>  players  = new ArrayList<>();
     private final ArrayList<Record>  records  = new ArrayList<>();
     private boolean                  isRecordEnabled;
     private long                     timeLastMove      = 0;
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
+    private int                      hp = 3;
 
     public Level(final String name, final int width, final int height) {
         this.name   = name;
@@ -36,6 +38,7 @@ public class Level implements Serializable
     public int     getMoveCount()         { return moveCount; }
     public int     getRemainingBaggages() { return remainingBaggages;      }
     public boolean isCompleted()          { return remainingBaggages == 0; }
+    public boolean isFailed()             { return hp == 0;                }
     public boolean getRecordEnabled()     { return isRecordEnabled;        }
     public void    setRecordEnabled(final boolean enabled) {
         isRecordEnabled = enabled;
@@ -49,6 +52,7 @@ public class Level implements Serializable
     public ArrayList<Goal>    getGoals()    { return goals;    }
     public ArrayList<Baggage> getBaggages() { return baggages; }
     public ArrayList<Player>  getPlayers()  { return players;  }
+    public ArrayList<Trigger> getTriggers() { return triggers; }    
     public ArrayList<Movable> getMovables() {
         final ArrayList<Movable> movables = new ArrayList<>();
         movables.addAll(baggages);
@@ -71,6 +75,7 @@ public class Level implements Serializable
     }
     public void addWall   (final Wall wall)       { walls.add(wall);     }
     public void addGoal   (final Goal goal)       { goals.add(goal);     }
+    public void addTrigger(final Trigger trigger) { triggers.add(trigger); }
     public void addPlayer (final Player player)   { players.add(player); }
     public void addBaggage(final Baggage baggage) { baggages.add(baggage); remainingBaggages++; }
 
@@ -114,6 +119,11 @@ public class Level implements Serializable
 
         // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
         if (isPlayerAt(newPlayerPos)) return false;
+        
+        Trigger onTrigger = PlayerOnTrigger(newPlayerPos);
+        if (onTrigger!= null) {
+        	if(isTriggerAt(onTrigger.getPoint()))  hp--;
+        }
 
         // 플레이어가 물건(baggage)을 미는 경우
         final Baggage baggage = getBaggageAt(newPlayerPos);
@@ -245,6 +255,26 @@ public class Level implements Serializable
         }
         return false;
     }
+    
+    private boolean isTriggerAt(final Point point) {
+    	for(final Trigger trigger: triggers) {
+    		if(trigger.isLocatedAt(point)) {
+    			
+    			return true;
+    		}
+    	}
+		return false;
+    }
+
+    private Trigger PlayerOnTrigger(final Point point) {
+    	for(final Trigger trigger:triggers) {
+    		if(trigger.isLocatedAt(point)) {
+    			return trigger;
+    		}
+    	}
+    	return null;
+    }
+
 
     /**
      * 해당 좌표에 있는 물건 객체를 가져옵니다.
