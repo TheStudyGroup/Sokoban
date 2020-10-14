@@ -7,7 +7,5 @@ import javax.swing.ImageIcon;
 
 public class Baggage extends Movable
 {
-    public Baggage(final Point point) {
-        super(point);
-    }
+    public Baggage(final Point position) { super(position); }
 }

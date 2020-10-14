@@ -1,16 +1,19 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.skin.SkinManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 
 public class MainPanel extends JPanel
 {
-    private final Skin skin;
+    private final Skin           skin;
     private final ActionListener buttonListener;
+    private       JButton        btnContinue;
 
     public MainPanel(final Skin skin, final ActionListener buttonListener) {
         super();
@@ -23,61 +26,30 @@ public class MainPanel extends JPanel
         setPreferredSize(new Dimension(800, 500));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel lblTitle = new JLabel("S O K O B A N");
-        JButton btnStart = new JButton("New Game");
-        JButton btnContinue = new JButton("Continue");
-        JButton btnRanking = new JButton("Ranking");
-        JButton btnSetting = new JButton("Setting");
-        JButton btnAbout = new JButton("About");
-        JButton btnExit = new JButton("Exit Game");
-        Box boxSettingAbout = Box.createHorizontalBox();
-        boxSettingAbout.add(btnSetting);
-        boxSettingAbout.add(Box.createHorizontalStrut(20));
-        boxSettingAbout.add(btnAbout);
+        final Font buttonFont = skin.getFont(Skin.FONTS.LargeButton);
+        Arrays.asList(
+            makeVSpace(50),
+            makeLabel("S O K O B A N", true, skin.getFont(Skin.FONTS.Title)),
+            makeVSpace(40),
+            makeButton("New Game", 450, 45, true, buttonFont, buttonListener),
+            makeVSpace(20),
+            btnContinue = makeButton("Continue", 450, 45, true, buttonFont, buttonListener),
+            makeVSpace(20),
+            makeHBox(450, 45, true, Arrays.asList(
+                makeButton("Ranking", 215, 45, false, buttonFont, buttonListener),
+                makeHSpace(20),
+                makeButton("Recordings", 215, 45, false, buttonFont, buttonListener))),
+            makeVSpace(20),
+            makeHBox(450, 45, true, Arrays.asList(
+                makeButton("Settings", 215, 45, false, buttonFont, buttonListener),
+                makeHSpace(20),
+                makeButton("About", 215, 45, false, buttonFont, buttonListener))),
+            makeVSpace(20),
+            makeButton("Exit Game", 450, 45, true, buttonFont, buttonListener)
+        ).forEach(this::add);
+    }
 
-        lblTitle.setFont(skin.getFont(Skin.FONTS.MainTitle));
-        final Font buttonFont = skin.getFont(Skin.FONTS.MainButton);
-        btnStart.setFont(buttonFont);
-        btnContinue.setFont(buttonFont);
-        btnRanking.setFont(buttonFont);
-        btnSetting.setFont(buttonFont);
-        btnAbout.setFont(buttonFont);
-        btnExit.setFont(buttonFont);
-
-        btnStart.addActionListener(buttonListener);
-        btnContinue.addActionListener(buttonListener);
-        btnRanking.addActionListener(buttonListener);
-        btnSetting.addActionListener(buttonListener);
-        btnAbout.addActionListener(buttonListener);
-        btnExit.addActionListener(buttonListener);
-
-        final Dimension dimButton = new Dimension(400,45);
-        btnStart.setMaximumSize(dimButton);
-        btnContinue.setMaximumSize(dimButton);
-        btnRanking.setMaximumSize(dimButton);
-        boxSettingAbout.setMaximumSize(dimButton);
-        btnSetting.setMaximumSize(new Dimension(260,45));
-        btnAbout.setMaximumSize(new Dimension(120,45));
-        btnExit.setMaximumSize(dimButton);
-
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnStart.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnContinue.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRanking.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boxSettingAbout.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnExit.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        add(Box.createVerticalStrut(50));
-        add(lblTitle);
-        add(Box.createVerticalStrut(40));
-        add(btnStart);
-        add(Box.createVerticalStrut(20));
-        add(btnContinue);
-        add(Box.createVerticalStrut(20));
-        add(btnRanking);
-        add(Box.createVerticalStrut(20));
-        add(boxSettingAbout);
-        add(Box.createVerticalStrut(20));
-        add(btnExit);
+    public void setContinueButtonEnabled(final boolean enabled) {
+        btnContinue.setEnabled(enabled);
     }
 }

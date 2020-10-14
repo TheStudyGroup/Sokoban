@@ -4,15 +4,26 @@ import com.c0destudy.sokoban.misc.Point;
 
 public class Movable extends Tile
 {
-    public Movable(final Point point) {
-        super(point);
+    private Point currentPosition;
+
+    public Movable(final Point position) {
+        super(position);
+        currentPosition = new Point(position);
     }
 
-    public void moveTo(final Point point) {
-        setPoint(point);
+    @Override
+    public Point getPosition() {
+        return currentPosition;
     }
 
-    public void moveDelta(final Point delta) {
-        getPoint().add(delta);
+    public Point getOriginalPosition() {
+        return new Point(super.getPosition());
     }
+
+    public void setPosition(final Point position) {
+        currentPosition = position;
+    }
+
+    public void moveTo   (final Point position)  { setPosition(position); }
+    public void moveDelta(final Point direction) { getPosition().add(direction); }
 }

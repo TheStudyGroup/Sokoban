@@ -2,7 +2,6 @@ package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.skin.SkinManager;
 import com.c0destudy.sokoban.sound.SoundManager;
 
 import java.awt.*;
@@ -10,8 +9,7 @@ import java.awt.*;
 public class FrameManager
 {
     public static void showMainFrame() {
-        Skin skin = SkinManager.getSkin();
-
+        Skin skin = new Skin();
         EventQueue.invokeLater(() -> {
             final MainFrame frame = new MainFrame(skin);
             frame.setVisible(true);
@@ -19,10 +17,13 @@ public class FrameManager
     }
 
     public static void showGameFrame(final Level level) {
-        Skin skin = SkinManager.getSkin();
+        showGameFrame(level, false);
+    }
 
+    public static void showGameFrame(final Level level, final boolean isReplay) {
+        Skin skin = new Skin();
         EventQueue.invokeLater(() -> {
-            final GameFrame frame = new GameFrame(skin, level);
+            final GameFrame frame = new GameFrame(skin, level, isReplay);
             frame.setVisible(true);
             SoundManager.playBackgroundMusic();
         });
