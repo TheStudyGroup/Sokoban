@@ -2,16 +2,19 @@ package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.sound.SoundManager;
 
 import java.awt.*;
 
 public class FrameManager
 {
+    private static Skin skin = new Skin("Soccer");
+
+    public static Skin getSkin()                { return skin;              }
+    public static void setSkin(final Skin skin) { FrameManager.skin = skin; }
+
     public static void showMainFrame() {
-        Skin skin = new Skin("Default");
         EventQueue.invokeLater(() -> {
-            final MainFrame frame = new MainFrame(skin);
+            final MainFrame frame = new MainFrame();
             frame.setVisible(true);
         });
     }
@@ -21,11 +24,9 @@ public class FrameManager
     }
 
     public static void showGameFrame(final Level level, final boolean isReplay) {
-        Skin skin = new Skin("Default");
         EventQueue.invokeLater(() -> {
-            final GameFrame frame = new GameFrame(skin, level, isReplay);
+            final GameFrame frame = new GameFrame(level, isReplay);
             frame.setVisible(true);
-            SoundManager.playBackgroundMusic();
         });
     }
 }

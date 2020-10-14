@@ -2,6 +2,7 @@ package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +19,9 @@ public class RecordingPanel extends JPanel
     private final Skin           skin;
     private final ActionListener buttonListener;
 
-    public RecordingPanel(final Skin skin, final ActionListener buttonListener) {
+    public RecordingPanel(final ActionListener buttonListener) {
         super();
-        this.skin = skin;
+        this.skin           = FrameManager.getSkin();
         this.buttonListener = buttonListener;
         initUI();
     }
@@ -53,10 +54,7 @@ public class RecordingPanel extends JPanel
             makeVSpace(40),
             makeScroll(450, 240, true, levels),
             makeVSpace(20),
-            makeHBox(450, 45, true, Arrays.asList(
-                makeButton("<- Back", 215, 45, false, buttonFont, buttonListener),
-                makeHSpace(20),
-                makeButton("Replay ->", 215, 45, false, buttonFont, buttonListener)))
+            makeButton("Back", 450, 45, true, buttonFont, buttonListener)
         ).forEach(this::add);
     }
 }

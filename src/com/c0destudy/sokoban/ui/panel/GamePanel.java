@@ -3,6 +3,7 @@ package com.c0destudy.sokoban.ui.panel;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.tile.Tile;
+import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,32 +11,26 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel
 {
-    private final int MARGIN = 30;
-    private final int BLOCK_SIZE = 20;
+    private final int MARGIN = 50;
 
-    private       Skin  skin;
+    private final Skin  skin;
     private final Level level;
 
-    public GamePanel(final Skin skin, final Level level) {
+    public GamePanel(final Level level) {
         super();
         this.level = level;
-        this.skin  = skin;
-        final int width  = MARGIN * 2 + level.getWidth() * BLOCK_SIZE;
-        final int height = MARGIN * 2 + level.getHeight() * BLOCK_SIZE;
+        this.skin  = FrameManager.getSkin();
+        final int width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
+        final int height = MARGIN * 2 + level.getHeight() * skin.getImageSize();
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
-    }
-
-    public void setSkin(final Skin skin) {
-        this.skin = skin;
-        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(new Color(250, 240, 170));
+        g.setColor(skin.getColor());
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // 타일 그리기
@@ -64,8 +59,8 @@ public class GamePanel extends JPanel
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {
-        final int drawX = MARGIN + tile.getPosition().getX() * BLOCK_SIZE;
-        final int drawY = MARGIN + tile.getPosition().getY() * BLOCK_SIZE;
+        final int drawX = MARGIN + tile.getPosition().getX() * skin.getImageSize();
+        final int drawY = MARGIN + tile.getPosition().getY() * skin.getImageSize();
         g.drawImage(image, drawX, drawY, this);
     }
 

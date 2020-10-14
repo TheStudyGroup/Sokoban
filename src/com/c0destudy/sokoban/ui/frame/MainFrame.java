@@ -26,13 +26,13 @@ public class MainFrame extends JFrame
     private final SettingPanel      settingPanel;
     private final AboutPanel        aboutPanel;
 
-    public MainFrame(final Skin skin) {
+    public MainFrame() {
         super();
-        panels.add(mainPanel      = new MainPanel(skin, new MainActionListener()));
-        panels.add(levelPanel     = new LevelPanel(skin, new LevelActionListener()));
+        panels.add(mainPanel      = new MainPanel(new MainActionListener()));
+        panels.add(levelPanel     = new LevelPanel(new LevelActionListener()));
         panels.add(rankingPanel   = new RankingPanel());
-        panels.add(recordingPanel = new RecordingPanel(skin, new RecordingActionListener()));
-        panels.add(settingPanel   = new SettingPanel());
+        panels.add(recordingPanel = new RecordingPanel(new RecordingActionListener()));
+        panels.add(settingPanel   = new SettingPanel(new SettingActionListener()));
         panels.add(aboutPanel     = new AboutPanel());
         if (!LevelManager.isPausedLevelExisting()) {
             mainPanel.setContinueButtonEnabled(false);
@@ -92,9 +92,9 @@ public class MainFrame extends JFrame
                 case "Recordings":
                     selectPanel(recordingPanel);
                     break;
-//                case "Settings":
-//                    selectPanel(settingPanel);
-//                    break;
+                case "Settings":
+                    selectPanel(settingPanel);
+                    break;
 //                case "About":
 //                    selectPanel(aboutPanel);
 //                    break;
@@ -130,15 +130,31 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
-                case "<- Back":
-                    selectPanel(mainPanel);
-                    break;
+                case "Back":
                 case "NO RECORDINGS":
-                case "Replay ->":
+                    selectPanel(mainPanel);
                     break;
                 default:
                     final Level level = LevelManager.readLevelFromFile(Resource.PATH_RECORDING_ROOT + "/" + button.getText() + ".dat");
                     FrameManager.showGameFrame(level, true);
+                    closeUI();
+                    break;
+            }
+        }
+    }
+
+    private class SettingActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            switch (button.getText()) {
+                case "Back":
+                    selectPanel(mainPanel);
+                    break;
+                default:
+                    FrameManager.setSkin(new Skin(button.getText()));
+                    FrameManager.showMainFrame();
                     closeUI();
                     break;
             }
@@ -151,7 +167,7 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
-                case "<- Back":
+                case "Back":
                     selectPanel(mainPanel);
                     break;
                 default:

@@ -2,6 +2,7 @@ package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +18,9 @@ public class LevelPanel extends JPanel
     private final Skin           skin;
     private final ActionListener buttonListener;
 
-    public LevelPanel(final Skin skin, final ActionListener buttonListener) {
+    public LevelPanel(final ActionListener buttonListener) {
         super();
-        this.skin = skin;
+        this.skin           = FrameManager.getSkin();
         this.buttonListener = buttonListener;
         initUI();
     }

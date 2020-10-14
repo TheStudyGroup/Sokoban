@@ -1,6 +1,7 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +16,9 @@ public class MainPanel extends JPanel
     private final ActionListener buttonListener;
     private       JButton        btnContinue;
 
-    public MainPanel(final Skin skin, final ActionListener buttonListener) {
+    public MainPanel(final ActionListener buttonListener) {
         super();
-        this.skin = skin;
+        this.skin           = FrameManager.getSkin();
         this.buttonListener = buttonListener;
         initUI();
     }
