@@ -11,7 +11,6 @@ import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -80,14 +79,15 @@ public class GameFrame extends JFrame
                     return;
                 }
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
-                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection());
+                    SoundManager.playPlayerMoveSound(); // 이동 사운드
+                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
                     gamePanel.repaint();
                     replayTime = System.currentTimeMillis();
                     replayIndex++;
                 }
             }
         };
-        replayTimer.scheduleAtFixedRate(replayTask, 0, 10);
+        replayTimer.schedule(replayTask, 0, 10);
     }
 
     private void stopReplay() {
