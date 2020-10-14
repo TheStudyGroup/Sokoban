@@ -40,6 +40,7 @@ public class Skin
         setImage(IMAGES.Goal, Resource.getImageFromResource(name, "goal"));
         setImage(IMAGES.Player1, Resource.getImageFromResource(name, "player"));
         setImage(IMAGES.Player2, Resource.getImageFromResource(name, "player"));
+        setImage(IMAGES.Trigger, Resource.getImageFromResource(name, "trigger"));
 
     }
 

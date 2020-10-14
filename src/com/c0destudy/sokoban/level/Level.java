@@ -37,6 +37,7 @@ public class Level implements Serializable
     public int     getHeight()            { return height;    }
     public int     getMoveCount()         { return moveCount; }
     public int     getRemainingBaggages() { return remainingBaggages;      }
+    public int     getLeftHealth()        { return hp;                     }
     public boolean isCompleted()          { return remainingBaggages == 0; }
     public boolean isFailed()             { return hp == 0;                }
     public boolean getRecordEnabled()     { return isRecordEnabled;        }
@@ -120,9 +121,9 @@ public class Level implements Serializable
         // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
         if (isPlayerAt(newPlayerPos)) return false;
         
-        Trigger onTrigger = PlayerOnTrigger(newPlayerPos);
-        if (onTrigger!= null) {
-        	if(isTriggerAt(onTrigger.getPoint()))  hp--;
+        Trigger trigger = getTriggerAt(newPlayerPos);
+        if (trigger != null) {
+        	hp--;
         }
 
         // 플레이어가 물건(baggage)을 미는 경우
@@ -256,19 +257,18 @@ public class Level implements Serializable
         return false;
     }
     
-    private boolean isTriggerAt(final Point point) {
+    private boolean isTriggerAt(final Point position) {
     	for(final Trigger trigger: triggers) {
-    		if(trigger.isLocatedAt(point)) {
-    			
+    		if(trigger.getPosition().equals(position)) {
     			return true;
     		}
     	}
 		return false;
     }
 
-    private Trigger PlayerOnTrigger(final Point point) {
-    	for(final Trigger trigger:triggers) {
-    		if(trigger.isLocatedAt(point)) {
+    private Trigger getTriggerAt(final Point position) {
+    	for(final Trigger trigger: triggers) {
+    		if(trigger.getPosition().equals(position)) {
     			return trigger;
     		}
     	}
