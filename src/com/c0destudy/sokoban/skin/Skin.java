@@ -8,6 +8,7 @@ public class Skin
         Wall, Baggage, Goal, Player1, Player2,
         Player1Left, Player1Right, Player1Up, Player1Down,
         Player2Left, Player2Right, Player2Up, Player2Down,
+        Trigger,
     }
 
     public enum FONTS {

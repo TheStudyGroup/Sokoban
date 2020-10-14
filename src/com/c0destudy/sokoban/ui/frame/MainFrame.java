@@ -34,7 +34,7 @@ public class MainFrame extends JFrame implements ActionListener
         final JButton button = (JButton) e.getSource();
         switch (button.getText()) {
             case "New Game":
-                FrameManager.showGameFrame(LevelManager.getNewLevel("Level 2"));
+                FrameManager.showGameFrame(LevelManager.getNewLevel("Level 1"));
                 break;
             case "Continue":
                 break;

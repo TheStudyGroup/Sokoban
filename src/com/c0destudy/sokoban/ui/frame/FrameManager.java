@@ -3,6 +3,7 @@ package com.c0destudy.sokoban.ui.frame;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.skin.SkinManager;
+import com.c0destudy.sokoban.sound.SoundManager;
 
 import java.awt.*;
 
@@ -23,6 +24,7 @@ public class FrameManager
         EventQueue.invokeLater(() -> {
             final GameFrame frame = new GameFrame(skin, level);
             frame.setVisible(true);
+            SoundManager.playBackgroundMusic();
         });
     }
 }

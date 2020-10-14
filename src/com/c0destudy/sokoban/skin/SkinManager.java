@@ -25,6 +25,7 @@ public class SkinManager
         skin.setImage(Skin.IMAGES.Goal, getImageFromResource(skinName, "goal"));
         skin.setImage(Skin.IMAGES.Player1, getImageFromResource(skinName, "player"));
         skin.setImage(Skin.IMAGES.Player2, getImageFromResource(skinName, "player"));
+        skin.setImage(Skin.IMAGES.Trigger, getImageFromResource(skinName, "trigger"));
 
         return skin;
     }
