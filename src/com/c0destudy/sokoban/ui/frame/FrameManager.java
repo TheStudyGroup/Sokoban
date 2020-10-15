@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class FrameManager
 {
-    private static Skin skin = new Skin("Soccer");
+    private static Skin skin = new Skin("Construction");
 
     public static Skin getSkin()                { return skin;              }
     public static void setSkin(final Skin skin) { FrameManager.skin = skin; }

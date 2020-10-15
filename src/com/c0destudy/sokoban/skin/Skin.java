@@ -25,10 +25,6 @@ public class Skin
     private final Font[]  fonts;
     private final int     imageSize;
 
-    public Skin() {
-        this("Default");
-    }
-
     public Skin(final String name) {
         this.name = name;
         this.images = new Image[IMAGES.values().length];
@@ -63,6 +59,7 @@ public class Skin
         final String backColor = props.getProperty("background_color", "255,255,255");
         final String[] backColors = backColor.split(",");
         color = new Color(Integer.parseInt(backColors[0]), Integer.parseInt(backColors[1]), Integer.parseInt(backColors[2]));
+//        new Color(180,180,180)
     }
 
     // private

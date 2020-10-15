@@ -18,3 +18,13 @@
   - [Soccer Player](https://icons8.com/icons/set/beach-soccer)
   - [Spiderweb](https://icons8.com/icons/set/spiderweb)
 
+### Construction
++ Designer: [Icons8](https://icons8.com)
++ License: [use for free, but link to Icons8](https://icons8.com/license)
++ Downloads:
+  - [Brick Wall](https://icons8.com/icons/set/brick-wall)
+  - [Mine Cart](https://icons8.com/icons/set/mine-cart)
+  - [Brick Ball](https://icons8.com/icons/set/brick-emoji)
+  - [Worker](https://icons8.com/icons/set/worker-male--v1)
+  - [Medium Risk](https://icons8.com/icons/set/medium-risk)
+  
