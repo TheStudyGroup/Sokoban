@@ -1,6 +1,7 @@
 package com.c0destudy.sokoban.level;
 
 import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.tile.*;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ public class Level implements Serializable
     private final String             name;
     private final int                width;
     private final int                height;
+    private final int                difficult;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
@@ -24,10 +26,11 @@ public class Level implements Serializable
     private int                      remainingBaggages = 0;
     private int                      hp = 3;
 
-    public Level(final String name, final int width, final int height) {
+    public Level(final String name, final int width, final int height, final int difficult) {
         this.name   = name;
         this.width  = width;
         this.height = height;
+        this.difficult = difficult;
         setRecordEnabled(true);
     }
 
@@ -90,6 +93,7 @@ public class Level implements Serializable
             movable.setPosition(movable.getOriginalPosition());
         }
         timeLastMove      = System.currentTimeMillis();
+        hp                = 3;
         moveCount         = 0;
         remainingBaggages = 0;
         for (final Baggage baggage : getBaggages()) {
@@ -305,4 +309,32 @@ public class Level implements Serializable
         }
         return null;
     }
+    public char getGrade(int count) {//점수채점
+    	
+    	switch((count - difficult) / 10) {
+    	case 0:
+    		return 'A';
+    	case 1: 
+    		return 'B';
+    	case 2:
+    		return 'C';
+    	case 3:
+    		return 'D';
+    	case 4:
+    		return 'E';
+    	default:
+    		return 'F';
+    	}
+    }
+
+//    public static char callHighGrade(int stage) {
+//    	char HG;
+////    	text에서 char 호출
+//    	
+//    	return HG;
+//    }
+//    public static char writeHighGrade(char grade) {
+////    	return text 파일에 grade 입력
+//    	
+//    }
 }

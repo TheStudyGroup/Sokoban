@@ -1,6 +1,7 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.Level;
+import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.tile.Tile;
 
@@ -11,7 +12,7 @@ public class GamePanel extends JPanel
 {
     private final int MARGIN = 30;
     private final int BLOCK_SIZE = 20;
-
+    
     private       Skin  skin;
     private final Level level;
 
@@ -56,15 +57,22 @@ public class GamePanel extends JPanel
         }
 
         g.setColor(new Color(0, 0, 0));
+        
         if (level.isCompleted()) {
             g.drawString("Completed", 25, 20);
+            g.drawString("Grade:" + level.getGrade(level.getMoveCount()), 25, 30);
+//            if(int(level.getGrade(level.getMoveCount(), stage))< int(level.callHighGrade(stage)) )
+//            	level.writeHighGrade(grade);
         }
         else if (level.isFailed()) {
             g.drawString("Failed", 25, 25);
         } else {
+        	
             g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 10);
             g.drawString("Move Count : " + level.getMoveCount(), 25, 20);
             g.drawString("HP:" + level.getLeftHealth(), 25, 30);
+//            g.drawString("" + level.getGrade(level.getMoveCount()), 25, 40);
+//            g.drawString("High Grade:" + level.callHighGrade(stage), 25, 40);
         }
     }
 
