@@ -1,5 +1,9 @@
 package com.c0destudy.sokoban.sound;
 
+import com.c0destudy.sokoban.misc.Resource;
+import com.c0destudy.sokoban.ui.frame.MainFrame;
+
+import java.awt.*;
 import java.io.File;
 
 import javax.sound.sampled.AudioInputStream;
@@ -9,20 +13,31 @@ import javax.sound.sampled.FloatControl;
 
 public class SoundManager
 {
-    private static final String SOUND_BACKGROUND = "src/resources/test.wav";
-    private static final String SOUND_PLAYER_MOVE = "src/resources/move.wav";
-
     private static Clip backgroundClip;
+    private static boolean isBackgroundEnabled = true;
 
 	public static void playPlayerMoveSound() {
-        playSound(SOUND_PLAYER_MOVE, false);
+        playSound(Resource.PATH_SOUND_PLAYER_MOVE, false);
+    }
+
+    public static boolean getBackgroundEnabled() {
+	    return isBackgroundEnabled;
+    }
+
+    public static void setBackgroundEnabled(final boolean enabled) {
+	    isBackgroundEnabled = enabled;
+	    if (!isBackgroundEnabled) {
+            stopBackgroundMusic();
+        }
     }
 
     public static void playBackgroundMusic() {
 	    if (backgroundClip != null) {
             stopBackgroundMusic();
         }
-        backgroundClip = playSound(SOUND_BACKGROUND, true, -8.0f);
+	    if (isBackgroundEnabled) {
+            backgroundClip = playSound(Resource.PATH_SOUND_BACKGROUND, true, -8.0f);
+        }
     }
 
     public static void stopBackgroundMusic() {
@@ -36,20 +51,15 @@ public class SoundManager
         return playSound(fileName, isContinuing, 0);
     }
 
-    // volume
-    //   0 = 100%
-    // -10 = 50%?
     private static Clip playSound(final String fileName,
                                   final boolean isContinuing,
                                   final float volume) {
         try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
-            Clip clip = AudioSystem.getClip();
+            final AudioInputStream ais     = AudioSystem.getAudioInputStream(new File(fileName));
+            final Clip             clip    = AudioSystem.getClip();
             clip.open(ais);
-
-            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(volume);
-
+            final FloatControl     control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            control.setValue(volume);
             clip.start();
             if (isContinuing) {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
