@@ -11,17 +11,20 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel
 {
+    private final int PADDING_TOP = 50;
     private final int MARGIN = 50;
 
-    private final Skin  skin;
-    private final Level level;
+    private final Skin    skin;
+    private final Level   level;
+    private final boolean isReplay;
 
-    public GamePanel(final Level level) {
+    public GamePanel(final Level level, final boolean isReplay) {
         super();
-        this.level = level;
-        this.skin  = FrameManager.getSkin();
+        this.level    = level;
+        this.skin     = FrameManager.getSkin();
+        this.isReplay = isReplay;
         final int width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
-        final int height = MARGIN * 2 + level.getHeight() * skin.getImageSize();
+        final int height = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP;
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
     }
@@ -46,21 +49,26 @@ public class GamePanel extends JPanel
         }
 
         g.setColor(new Color(0, 0, 0));
+        g.setFont(skin.getFont(Skin.FONTS.Text));
+        String levelState;
         if (level.isCompleted()) {
-            g.drawString("Completed", 25, 20);
-        }
-        else if (level.isFailed()) {
-            g.drawString("Failed", 25, 25);
+            levelState = "Completed";
+        } else if (level.isFailed()) {
+            levelState = "Failed";
+        } else if (isReplay) {
+            levelState = "Replay: " + level.getName();
         } else {
-            g.drawString("Remaining : " + level.getRemainingBaggages(), 25, 10);
-            g.drawString("Move Count : " + level.getMoveCount(), 25, 20);
-            g.drawString("HP:" + level.getLeftHealth(), 25, 30);
+            levelState = "Play: " + level.getName();
         }
+        g.drawString(levelState, 30, 30);
+        g.drawString("Remaining : " + level.getRemainingBaggages(), 300, 30);
+        g.drawString("Move Count : " + level.getMoveCount(), 30, 70);
+        g.drawString("HP:" + level.getLeftHealth(), 300, 70);
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {
         final int drawX = MARGIN + tile.getPosition().getX() * skin.getImageSize();
-        final int drawY = MARGIN + tile.getPosition().getY() * skin.getImageSize();
+        final int drawY = MARGIN + tile.getPosition().getY() * skin.getImageSize() + PADDING_TOP;
         g.drawImage(image, drawX, drawY, this);
     }
 

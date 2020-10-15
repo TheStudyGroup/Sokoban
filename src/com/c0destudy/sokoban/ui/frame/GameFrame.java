@@ -43,7 +43,7 @@ public class GameFrame extends JFrame
     }
 
     private void initUI() {
-        gamePanel = new GamePanel(level);
+        gamePanel = new GamePanel(level, isReplay);
         gamePanel.addKeyListener(new TKeyAdapter());
         getContentPane().add(gamePanel);
         setSize(gamePanel.getSize());
@@ -161,6 +161,10 @@ public class GameFrame extends JFrame
             level.movePlayerAndBaggage(playerIndex, direction); // 플레이어 이동
             SoundManager.playPlayerMoveSound(); // 이동 사운드
             gamePanel.repaint(); // 다시 그리기
+
+            if (level.isCompleted() || level.isFailed()) {
+                SoundManager.stopBackgroundMusic();
+            }
         }
     }
 

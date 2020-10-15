@@ -51,7 +51,7 @@ public class Skin
         final String fontName = props.getProperty("font", "FORCED SQUARE");
         Resource.loadFontFromResource(fontName);
         setFont(Skin.FONTS.Title,       getFont(fontName, false, props.getProperty("font_size_title", "60")));
-        setFont(Skin.FONTS.Text,        getFont(fontName, false, props.getProperty("font_size_text",  "20")));
+        setFont(Skin.FONTS.Text,        getFont(fontName, false, props.getProperty("font_size_text",  "30")));
         setFont(Skin.FONTS.LargeButton, getFont(fontName, false, props.getProperty("font_size_large_button", "30")));
         setFont(Skin.FONTS.SmallButton, getFont(fontName, false, props.getProperty("font_size_small_button", "20")));
 
