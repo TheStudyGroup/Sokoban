@@ -40,7 +40,7 @@ public class GamePanel extends JPanel
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(skin.getColor());
+        g.setColor(skin.getBackgroundColor());
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // 타일 그리기
