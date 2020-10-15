@@ -112,10 +112,8 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
-                case "<- Back":
+                case "Back":
                     selectPanel(mainPanel);
-                    break;
-                case "Play ->":
                     break;
                 default:
                     FrameManager.showGameFrame(LevelManager.getNewLevel(button.getText()));

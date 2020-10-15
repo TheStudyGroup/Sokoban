@@ -16,9 +16,9 @@ import java.util.TimerTask;
 
 public class GameFrame extends JFrame
 {
-    private Level           level;
+    private final Level     level;
     private GamePanel       gamePanel = null;
-    private boolean         isReplay;
+    private final boolean   isReplay;
     private final Timer     replayTimer = new Timer();
     private TimerTask       replayTask;
     private long            replayTime;
@@ -90,6 +90,9 @@ public class GameFrame extends JFrame
     }
 
     private void stopReplay() {
+        if (level.isCompleted() || level.isFailed()) {
+            SoundManager.stopBackgroundMusic();
+        }
         if (replayTask != null) {
             replayTask.cancel();
         }

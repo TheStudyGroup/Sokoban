@@ -14,6 +14,10 @@ public class GamePanel extends JPanel
     private final int PADDING_TOP = 50;
     private final int MARGIN = 50;
 
+    private int           width;
+    private int           height;
+    private int           drawLeft;
+    private int           drawTop;
     private final Skin    skin;
     private final Level   level;
     private final boolean isReplay;
@@ -23,8 +27,11 @@ public class GamePanel extends JPanel
         this.level    = level;
         this.skin     = FrameManager.getSkin();
         this.isReplay = isReplay;
-        final int width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
-        final int height = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP;
+        width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
+        height = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP;
+        if (width < 500) width = 500;
+        drawLeft = width / 2 - (level.getWidth() * skin.getImageSize()) / 2;
+        drawTop  = MARGIN + PADDING_TOP;
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
     }
@@ -67,8 +74,8 @@ public class GamePanel extends JPanel
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {
-        final int drawX = MARGIN + tile.getPosition().getX() * skin.getImageSize();
-        final int drawY = MARGIN + tile.getPosition().getY() * skin.getImageSize() + PADDING_TOP;
+        final int drawX = drawLeft + tile.getPosition().getX() * skin.getImageSize();
+        final int drawY = drawTop  + tile.getPosition().getY() * skin.getImageSize();
         g.drawImage(image, drawX, drawY, this);
     }
 
