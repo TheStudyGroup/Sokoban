@@ -39,8 +39,13 @@ public class LevelPanel extends JPanel
         if (files != null && files.length > 0) {
             for (final String fileName : files) {
                 final String levelName = fileName.substring(0, fileName.lastIndexOf("."));
-                levels.add(makeButton(levelName, 400, 30, true, buttonFont2, buttonListener));
-                levels.add(makeVSpace(10));
+                Arrays.asList(
+                    makeHBox(400, 30, true, Arrays.asList(
+                        makeButton(levelName, 280, 30, false, buttonFont, buttonListener),
+                        makeHSpace(20),
+                        makeLabel("Best: 0", false, skin.getFont(Skin.FONTS.Text)))),
+                    makeVSpace(10)
+                ).forEach(levels::add);
             }
         } else {
             levels.add(makeButton("NO LEVELS", 400, 30, true, buttonFont2, buttonListener));
@@ -53,10 +58,7 @@ public class LevelPanel extends JPanel
             makeVSpace(40),
             makeScroll(450, 240, true, levels),
             makeVSpace(20),
-            makeHBox(450, 45, true, Arrays.asList(
-                makeButton("<- Back", 215, 45, false, buttonFont, buttonListener),
-                makeHSpace(20),
-                makeButton("Play ->", 215, 45, false, buttonFont, buttonListener)))
+            makeButton("Back", 450, 45, true, buttonFont, buttonListener)
         ).forEach(this::add);
     }
 }
