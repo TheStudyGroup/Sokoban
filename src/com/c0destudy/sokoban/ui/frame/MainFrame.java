@@ -4,6 +4,7 @@ import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.sound.SoundManager;
 import com.c0destudy.sokoban.ui.panel.*;
 
 import javax.swing.*;
@@ -151,6 +152,14 @@ public class MainFrame extends JFrame
             switch (button.getText()) {
                 case "Back":
                     selectPanel(mainPanel);
+                    break;
+                case "BGM: ON":
+                    button.setText("BGM: OFF");
+                    SoundManager.setBackgroundEnabled(false);
+                    break;
+                case "BGM: OFF":
+                    button.setText("BGM: ON");
+                    SoundManager.setBackgroundEnabled(true);
                     break;
                 default:
                     FrameManager.setSkin(new Skin(button.getText()));
