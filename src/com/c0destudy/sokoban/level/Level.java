@@ -1,14 +1,8 @@
 package com.c0destudy.sokoban.level;
 
 import com.c0destudy.sokoban.misc.Point;
-import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.tile.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -18,8 +12,6 @@ public class Level implements Serializable
     private final String             name;
     private final int                width;
     private final int                height;
-    private final int                difficult;
-    public  char                     high;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
@@ -27,29 +19,32 @@ public class Level implements Serializable
     private final ArrayList<Player>  players  = new ArrayList<>();
     private final ArrayList<Record>  records  = new ArrayList<>();
     private boolean                  isRecordEnabled;
-    private long                     timeLastMove      = 0;
+    private final int                minMoveCount;
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
-    private int                      hp = 3;
+    private long                     timeLastMove      = 0;
+    private int                      hp                = 3;
 
-    public Level(final String name, final int width, final int height, final int difficult) {
-        this.name   = name;
-        this.width  = width;
-        this.height = height;
-        this.difficult = difficult;
+    public Level(final String name, final int width, final int height, final int minMoveCount) {
+        this.name         = name;
+        this.width        = width;
+        this.height       = height;
+        this.minMoveCount = minMoveCount;
         setRecordEnabled(true);
     }
  
     // 레벨 정보
-    public String  getName()              { return name;      }
-    public int     getWidth()             { return width;     }
-    public int     getHeight()            { return height;    }
-    public int     getMoveCount()         { return moveCount; }
-    public int     getRemainingBaggages() { return remainingBaggages;      }
-    public int     getLeftHealth()        { return hp;                     }
-    public boolean isCompleted()          { return remainingBaggages == 0; }
-    public boolean isFailed()             { return hp == 0;                }
-    public boolean getRecordEnabled()     { return isRecordEnabled;        }
+    public String  getName()              { return name;              }
+    public int     getWidth()             { return width;             }
+    public int     getHeight()            { return height;            }
+    public int     getMinMoveCount()      { return minMoveCount;      }
+    public int     getMoveCount()         { return moveCount;         }
+    public int     getRemainingBaggages() { return remainingBaggages; }
+    public int     getLeftHealth()        { return hp;                }
+    public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
+    public boolean isCompleted()          { return remainingBaggages == 0;              }
+    public boolean isFailed()             { return hp == 0 || getScore() < 0;           }
+    public boolean getRecordEnabled()     { return isRecordEnabled;                     }
     public void    setRecordEnabled(final boolean enabled) {
         isRecordEnabled = enabled;
         if (isRecordEnabled) {
@@ -99,9 +94,9 @@ public class Level implements Serializable
             movable.setPosition(movable.getOriginalPosition());
         }
         timeLastMove      = System.currentTimeMillis();
-        hp                = 3;
         moveCount         = 0;
         remainingBaggages = 0;
+        hp                = 3;
         for (final Baggage baggage : getBaggages()) {
             if (!isGoalAt(baggage.getPosition())) {
                 remainingBaggages++;
@@ -314,51 +309,5 @@ public class Level implements Serializable
             }
         }
         return null;
-    }
-    
-    public char getGrade() {//점수채점
-    	switch((getMoveCount() - difficult) / 10) {
-    	case 0:
-    		return 'A';
-    	case 1: 
-    		return 'B';
-    	case 2:
-    		return 'C';
-    	case 3:
-    		return 'D';
-    	case 4:
-    		return 'E';
-    	default:
-    		return 'F';
-    	}
-    }
-    
-    public char getHigh() {
-    	return high;
-    }
-    
-    public void recordHigh(char high) {
-    	System.out.println(name);
-    	try {
-    		File recordFile = new File("src/resources/levelscores/ high.txt");
-    		FileWriter fw = new FileWriter(recordFile);
-    		fw.write(high);
-    		fw.close();
-    	}catch(IOException e) {
-    		System.out.println(e);
-    	}
-    }
-    
-    public char callHigh() {
-    	
-    	try {
-    		File recordFile = new File("src/resources/levelscores/ high.txt");
-    		FileReader fr = new FileReader(recordFile);
-    		high = (char) fr.read();
-    		fr.close();
-    	}catch(IOException e) {
-    		System.out.println(e);
-    	}
-    	return high;
     }
 }

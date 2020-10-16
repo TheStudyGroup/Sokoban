@@ -16,6 +16,8 @@ public class Resource
     public static final String PATH_RECORDING_ROOT  = "data/recordings";
     public static final String PATH_RECORDING_FILE  = "data/recordings/%s (%d moves).dat";
 
+    public static final String PATH_BEST_SCORE      = "data/bestscores.txt";
+
     public static Image getImageFromResource(final String skinName, final String imageName) {
         final String    path = String.format(Resource.PATH_RESOURCES_IMAGE, skinName, imageName);
         final ImageIcon icon = new ImageIcon(path);
