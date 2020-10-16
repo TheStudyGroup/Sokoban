@@ -28,8 +28,6 @@ public class BasePanel extends JPanel
         this.fontSmallButton = skin.getFont(Skin.FONTS.SmallButton);
         this.colorButtonBack = skin.getButtonBackgroundColor();
         this.colorButton     = skin.getButtonForegroundColor();
-        System.out.println(colorButtonBack);
-        System.out.println(colorButton);
         initUI();
     }
 
