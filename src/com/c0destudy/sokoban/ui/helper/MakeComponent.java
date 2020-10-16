@@ -49,7 +49,6 @@ public class MakeComponent
                 }
                 super.paintComponent(g);
             }
-
         };
         final Dimension size = new Dimension(width, height);
         button.setMaximumSize(size);   // for BoxLayout
@@ -69,7 +68,9 @@ public class MakeComponent
                                    final boolean isCenter,
                                    final Font Font
     ) {
-        final JLabel label = new JLabel(text);
+        final RichJLabel label = new RichJLabel(text);
+        label.setForeground(Color.GRAY);
+        label.setRightShadow(Font.getSize() / 15,Font.getSize() / 15, Color.BLACK);
         if (isCenter) label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setFont(Font);
         return label;
