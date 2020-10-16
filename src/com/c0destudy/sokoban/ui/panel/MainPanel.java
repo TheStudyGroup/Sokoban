@@ -1,7 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 

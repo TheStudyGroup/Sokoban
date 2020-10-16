@@ -64,7 +64,8 @@ public class GameFrame extends JFrame
                     LevelManager.setBestScore(level.getName(), level.getScore());
                 }
                 // 리플레이용 파일 저장
-                LevelManager.saveLevelToFile(level, String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getMoveCount()));
+                final String fileName = String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getScore(), level.getMoveCount());
+                LevelManager.saveLevelToFile(level, fileName);
             }
         }
         stopReplay();

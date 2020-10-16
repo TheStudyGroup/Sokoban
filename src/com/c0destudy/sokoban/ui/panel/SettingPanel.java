@@ -32,7 +32,7 @@ public class SettingPanel extends BasePanel
             skinComps.add(makeButton("NO SKIN", 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
             skinComps.add(makeVSpace(10));
         }
-//new Color()
+
         final String soundText = SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
         Arrays.asList(
             makeVSpace(50),
