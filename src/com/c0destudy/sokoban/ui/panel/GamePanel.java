@@ -29,7 +29,7 @@ public class GamePanel extends JPanel
         this.isReplay = isReplay;
         width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
         height = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP;
-        if (width < 500) width = 500;
+        if (width < 600) width = 600;
         drawLeft = width / 2 - (level.getWidth() * skin.getImageSize()) / 2;
         drawTop  = MARGIN + PADDING_TOP;
         setPreferredSize(new Dimension(width, height));
@@ -40,7 +40,7 @@ public class GamePanel extends JPanel
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(skin.getColor());
+        g.setColor(skin.getBackgroundColor());
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // 타일 그리기
@@ -63,14 +63,14 @@ public class GamePanel extends JPanel
         } else if (level.isFailed()) {
             levelState = "Failed";
         } else if (isReplay) {
-            levelState = "Replay: " + level.getName();
+            levelState = "REPLAY: " + level.getName();
         } else {
-            levelState = "Play: " + level.getName();
+            levelState = "PLAY: " + level.getName();
         }
         g.drawString(levelState, 30, 30);
-        g.drawString("Remaining : " + level.getRemainingBaggages(), 300, 30);
+        g.drawString("Remaining : " + level.getRemainingBaggages(), 400, 30);
         g.drawString("Move Count : " + level.getMoveCount(), 30, 70);
-        g.drawString("HP:" + level.getLeftHealth(), 300, 70);
+        g.drawString("HP:" + level.getLeftHealth(), 400, 70);
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {

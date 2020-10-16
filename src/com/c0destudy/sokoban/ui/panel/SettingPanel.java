@@ -1,11 +1,8 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.skin.Skin;
 import com.c0destudy.sokoban.sound.SoundManager;
-import com.c0destudy.sokoban.ui.frame.FrameManager;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,52 +12,41 @@ import java.util.Arrays;
 import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeButton;
 
-public class SettingPanel extends JPanel
+public class SettingPanel extends BasePanel
 {
-    private final Skin           skin;
-    private final ActionListener buttonListener;
-
-    public SettingPanel(final ActionListener buttonListener) {
-        super();
-        this.skin           = FrameManager.getSkin();
-        this.buttonListener = buttonListener;
+    public SettingPanel(final ActionListener listener) {
+        super(listener);
         initUI();
     }
 
     private void initUI() {
-        setPreferredSize(new Dimension(800, 500));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        final Font fontBtnLarge = skin.getFont(Skin.FONTS.LargeButton);
-        final Font fontBtnSmall = skin.getFont(Skin.FONTS.SmallButton);
-
-        final File     skinRoot = new File(Resource.PATH_SKIN_ROOT);
-        final String[] skinDirs = skinRoot.list();
-        final ArrayList<Component> skinComponents = new ArrayList<>();
-
+        final File                 skinRoot  = new File(Resource.PATH_SKIN_ROOT);
+        final String[]             skinDirs  = skinRoot.list();
+        final ArrayList<Component> skinComps = new ArrayList<>();
         if (skinDirs != null && skinDirs.length > 0) {
             for (final String skinName : skinDirs) {
-                skinComponents.add(makeButton(skinName, 400, 30, true, fontBtnSmall, buttonListener));
-                skinComponents.add(makeVSpace(10));
+                skinComps.add(makeButton(skinName, 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
+                skinComps.add(makeVSpace(10));
             }
         } else {
-            skinComponents.add(makeButton("NO SKIN", 400, 30, true, fontBtnSmall, buttonListener));
-            skinComponents.add(makeVSpace(10));
+            skinComps.add(makeButton("NO SKIN", 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
+            skinComps.add(makeVSpace(10));
         }
-
+//new Color()
+        final String soundText = SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("S E T T I N G S", true, skin.getFont(Skin.FONTS.Title)),
+            makeLabel("S E T T I N G S", true, fontTitle),
             makeVSpace(40),
-            makeLabel("S K I N", true, fontBtnLarge),
+            makeLabel("S K I N", true, fontLargeButton),
             makeVSpace(10),
-            makeScroll(450, 120, true, skinComponents),
+            makeScroll(450, 120, true, true, skinComps),
             makeVSpace(20),
-            makeLabel("S O U N D", true, fontBtnLarge),
+            makeLabel("S O U N D", true, fontLargeButton),
             makeVSpace(10),
-            makeButton(SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF", 400, 30, true, fontBtnSmall, buttonListener),
+            makeButton(soundText, 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack),
             makeVSpace(20),
-            makeButton("Back", 450, 45, true, fontBtnLarge, buttonListener)
+            makeButton("Back", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
         ).forEach(this::add);
     }
 }

@@ -7,12 +7,13 @@ import java.util.List;
 
 public class MakeComponent
 {
-    public static JButton makeButton(final String text,
-                                     final int width,
-                                     final int height,
-                                     final boolean isCenter,
-                                     final Font font,
-                                     final ActionListener listener
+    public static JButton makeButton(
+            final String         text,
+            final int            width,
+            final int            height,
+            final boolean        isCenter,
+            final Font           font,
+            final ActionListener listener
     ) {
         final JButton button = new JButton(text);
         final Dimension size = new Dimension(width, height);
@@ -22,6 +23,45 @@ public class MakeComponent
         if (isCenter) button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setFont(font);
         button.addActionListener(listener);
+        return button;
+    }
+
+    public static JButton makeButton(
+            final String         text,
+            final int            width,
+            final int            height,
+            final boolean        isCenter,
+            final Font           font,
+            final ActionListener listener,
+            final Color          foregroundColor,
+            final Color          backgroundColor
+    ) {
+        if (backgroundColor == null || foregroundColor == null) {
+            return makeButton(text, width, height, isCenter, font, listener);
+        }
+        final JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (!isOpaque() && getBackground().getAlpha() < 255) {
+                    g.setColor(getBackground());
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                    g.setColor(getForeground());
+                }
+                super.paintComponent(g);
+            }
+
+        };
+        final Dimension size = new Dimension(width, height);
+        button.setMaximumSize(size);   // for BoxLayout
+        button.setMinimumSize(size);   // for BoxLayout
+        button.setPreferredSize(size); // for JScrollPane
+        if (isCenter) button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setFont(font);
+        button.addActionListener(listener);
+        button.setBackground(backgroundColor);
+        button.setForeground(foregroundColor);
+        button.setFocusPainted(false); // 포커스 테두리 제거
+        if (backgroundColor.getAlpha() < 255) button.setOpaque(false);
         return button;
     }
 
@@ -60,14 +100,23 @@ public class MakeComponent
     public static JScrollPane makeScroll(final int width,
                                          final int height,
                                          final boolean isCenter,
+                                         final boolean isTransparent,
                                          final List<Component> components
+
     ) {
         final JPanel      panel  = new JPanel();
         final JScrollPane scroll = new JScrollPane(panel);
+        final Dimension   size   = new Dimension(width, height);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        scroll.setMaximumSize(new Dimension(width, height));
+        scroll.setMaximumSize(size);
+        scroll.setPreferredSize(size);
         if (isCenter) scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
         scroll.setBorder(BorderFactory.createEmptyBorder());
+        if (isTransparent) {
+            panel.setOpaque(false);
+            scroll.setOpaque(false);
+            scroll.getViewport().setOpaque(false);
+        }
         components.forEach(panel::add);
         return scroll;
     }

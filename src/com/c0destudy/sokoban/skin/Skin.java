@@ -4,8 +4,10 @@ import com.c0destudy.sokoban.misc.Resource;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class Skin
@@ -19,65 +21,96 @@ public class Skin
         LargeButton, SmallButton,
     }
 
-    private final String  name;
-    private final Color   color;
-    private final Image[] images;
-    private final Font[]  fonts;
-    private final int     imageSize;
+    private final String     name;
+    private final Properties properties = new Properties();
+    private final Color      backgroundColor;
+    private final Image      backgroundImage;
+    private final Color      buttonBackgroundColor;
+    private final Color      buttonForegroundColor;
+    private final Image[]    images;
+    private final Font[]     fonts;
+    private final int        imageSize;
 
     public Skin(final String name) {
         this.name = name;
         this.images = new Image[IMAGES.values().length];
         this.fonts  = new Font[FONTS.values().length];
 
-        final Properties props = new Properties();
         try {
             final FileReader propFile = new FileReader(getResourcePath("skin.properties"));
-            props.load(propFile);
+            properties.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // 이미지
-        imageSize = Integer.parseInt(props.getProperty("image_size"));
-        setImage(IMAGES.Wall,    getImage(props.getProperty("image_wall")));
-        setImage(IMAGES.Baggage, getImage(props.getProperty("image_baggage")));
-        setImage(IMAGES.Goal,    getImage(props.getProperty("image_goal")));
-        setImage(IMAGES.Player1, getImage(props.getProperty("image_player1")));
-        setImage(IMAGES.Player2, getImage(props.getProperty("image_player2")));
-        setImage(IMAGES.Trigger, getImage(props.getProperty("image_trigger")));
+        imageSize = getIntProp("image_size", 20);
+        setImage(IMAGES.Wall,    getImage(getStringProp("image_wall",    "wall.png")));
+        setImage(IMAGES.Baggage, getImage(getStringProp("image_baggage", "baggage.png")));
+        setImage(IMAGES.Goal,    getImage(getStringProp("image_goal",    "goal.png")));
+        setImage(IMAGES.Player1, getImage(getStringProp("image_player1", "player.png")));
+        setImage(IMAGES.Player2, getImage(getStringProp("image_player2", "player.png")));
+        setImage(IMAGES.Trigger, getImage(getStringProp("image_trigger", "trigger.png")));
 
         // 폰트
-        final String fontName = props.getProperty("font", "FORCED SQUARE");
+        final String fontName = getStringProp("font", "FORCED SQUARE");
         Resource.loadFontFromResource(fontName);
-        setFont(Skin.FONTS.Title,       getFont(fontName, false, props.getProperty("font_size_title", "60")));
-        setFont(Skin.FONTS.Text,        getFont(fontName, false, props.getProperty("font_size_text",  "30")));
-        setFont(Skin.FONTS.LargeButton, getFont(fontName, false, props.getProperty("font_size_large_button", "30")));
-        setFont(Skin.FONTS.SmallButton, getFont(fontName, false, props.getProperty("font_size_small_button", "20")));
+        setFont(Skin.FONTS.Title,       getFont(fontName, false, getIntProp("font_size_title", 60)));
+        setFont(Skin.FONTS.Text,        getFont(fontName, false, getIntProp("font_size_text",  30)));
+        setFont(Skin.FONTS.LargeButton, getFont(fontName, false, getIntProp("font_size_large_button", 30)));
+        setFont(Skin.FONTS.SmallButton, getFont(fontName, false, getIntProp("font_size_small_button", 20)));
 
-        // 기타
-        final String backColor = props.getProperty("background_color", "255,255,255");
-        final String[] backColors = backColor.split(",");
-        color = new Color(Integer.parseInt(backColors[0]), Integer.parseInt(backColors[1]), Integer.parseInt(backColors[2]));
-//        new Color(180,180,180)
+        // 배경
+        backgroundColor = getColorProp("background_color", "255,255,255");
+        backgroundImage = getImage(getStringProp("background_image", "background.png"));
+        buttonBackgroundColor = getColorProp("button_background", "");
+        buttonForegroundColor = getColorProp("button_foreground", "");
     }
 
     // private
-    private Image  getImage(final String fileName)         { return getImageFromFile(fileName); }
-    private Image  getImageFromFile(final String filePath) { return (new ImageIcon(getResourcePath(filePath))).getImage(); }
-    private Font getFont(final String name, final boolean isBold, final String size) {
-        return getFont(name, isBold, Integer.parseInt(size));
+    private String getStringProp(final String key, final String defaultValue) {
+        return properties.getProperty(key, defaultValue);
+    }
+    private int getIntProp(final String key, final int defaultValue) {
+        return Integer.parseInt(getStringProp(key, Integer.toString(defaultValue)));
+    }
+    private Color getColorProp(final String key, final String defaultValue) {
+        try {
+            final String[] strings = getStringProp(key, defaultValue).split(",");
+            final int[]    values  = Arrays.stream(strings).mapToInt(Integer::parseInt).toArray();
+            switch (values.length) {
+                case 3:
+                    return new Color(values[0], values[1], values[2]);
+                case 4:
+                    return new Color(values[0], values[1], values[2], values[3]);
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    private Image getImage(final String fileName) {
+        final String filePath = getResourcePath(fileName);
+        final File   file     = new File(filePath);
+        if (!file.exists()) return null;
+        return (new ImageIcon(filePath)).getImage();
     }
     private Font getFont(final String name, final boolean isBold, final int size) {
         return new Font(name, isBold ? Font.BOLD : Font.PLAIN, size);
     }
-    private String getResourcePath(final String fileName)  { return Resource.PATH_SKIN_ROOT + name + "/" + fileName; }
-    private void   setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
-    private void   setFont(final FONTS type, final Font font)     { fonts[type.ordinal()] = font;   }
+    private String getResourcePath(final String fileName)  {
+        return Resource.PATH_SKIN_ROOT + name + "/" + fileName;
+    }
+    private void setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
+    private void setFont(final FONTS type, final Font font)     { fonts[type.ordinal()] = font;   }
 
     // public
     public String getName()                   { return name;                   }
-    public Color  getColor()                  { return color;                  }
+    public Color  getBackgroundColor()        { return backgroundColor;        }
+    public Image  getBackgroundImage()        { return backgroundImage;        }
+    public Color  getButtonBackgroundColor()  { return buttonBackgroundColor;  }
+    public Color  getButtonForegroundColor()  { return buttonForegroundColor;  }
     public Image  getImage(final IMAGES type) { return images[type.ordinal()]; }
     public Font   getFont(final FONTS type)   { return fonts[type.ordinal()];  }
     public int    getImageSize()              { return imageSize;              }

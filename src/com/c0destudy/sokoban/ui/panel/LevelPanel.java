@@ -1,8 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,52 +11,40 @@ import java.util.Arrays;
 
 import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 
-public class LevelPanel extends JPanel
+public class LevelPanel extends BasePanel
 {
-    private final Skin           skin;
-    private final ActionListener buttonListener;
-
-    public LevelPanel(final ActionListener buttonListener) {
-        super();
-        this.skin           = FrameManager.getSkin();
-        this.buttonListener = buttonListener;
+    public LevelPanel(final ActionListener listener) {
+        super(listener);
         initUI();
     }
 
     private void initUI() {
-        setPreferredSize(new Dimension(800, 500));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        final Font buttonFont = skin.getFont(Skin.FONTS.LargeButton);
-        final Font buttonFont2 = skin.getFont(Skin.FONTS.SmallButton);
-
-        File levelDir = new File(Resource.PATH_LEVEL_ROOT);
-        String[] files = levelDir.list();
-        ArrayList<Component> levels = new ArrayList<>();
-
+        final File                 levelDir = new File(Resource.PATH_LEVEL_ROOT);
+        final String[]             files    = levelDir.list();
+        final ArrayList<Component> levels   = new ArrayList<>();
         if (files != null && files.length > 0) {
             for (final String fileName : files) {
                 final String levelName = fileName.substring(0, fileName.lastIndexOf("."));
                 Arrays.asList(
                     makeHBox(400, 30, true, Arrays.asList(
-                        makeButton(levelName, 280, 30, false, buttonFont, buttonListener),
+                        makeButton(levelName, 280, 30, false, fontLargeButton, listener, colorButton, colorButtonBack),
                         makeHSpace(20),
-                        makeLabel("Best: 0", false, skin.getFont(Skin.FONTS.Text)))),
+                        makeLabel("Best: 0", false, fontText))),
                     makeVSpace(10)
                 ).forEach(levels::add);
             }
         } else {
-            levels.add(makeButton("NO LEVELS", 400, 30, true, buttonFont2, buttonListener));
+            levels.add(makeButton("NO LEVELS", 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
             levels.add(makeVSpace(10));
         }
 
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("L E V E L S", true, skin.getFont(Skin.FONTS.Title)),
+            makeLabel("L E V E L S", true, fontTitle),
             makeVSpace(40),
-            makeScroll(450, 240, true, levels),
+            makeScroll(450, 240, true, true, levels),
             makeVSpace(20),
-            makeButton("Back", 450, 45, true, buttonFont, buttonListener)
+            makeButton("Back", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
         ).forEach(this::add);
     }
 }
