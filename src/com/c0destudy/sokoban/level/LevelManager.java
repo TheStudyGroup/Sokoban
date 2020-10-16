@@ -162,7 +162,7 @@ public class LevelManager
     }
 
     public static Map<String, Integer> getBestScores() {
-        final Path    path    = Paths.get(Resource.PATH_BEST_SCORE);
+        final Path    path    = Paths.get(Resource.PATH_LEVEL_BEST_SCORES);
         final Charset charset = StandardCharsets.UTF_8;
         try {
             final List<String> lines = Files.readAllLines(path, charset);
@@ -188,7 +188,7 @@ public class LevelManager
                 .map(Objects::toString)
                 .reduce("", (a, b) -> a + b + "\n");
         try {
-            final FileWriter     file   = new FileWriter(Resource.PATH_BEST_SCORE);
+            final FileWriter     file   = new FileWriter(Resource.PATH_LEVEL_BEST_SCORES);
             final BufferedWriter writer = new BufferedWriter(file);
             writer.write(newScores);
             writer.close();

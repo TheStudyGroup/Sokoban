@@ -12,7 +12,7 @@ public class Resource
     public static final String PATH_LEVEL             = "src/resources/levels/%s.txt";
     public static final String PATH_LEVEL_ROOT        = "src/resources/levels";
     public static final String PATH_LEVEL_PAUSE       = "data/pause.dat";
-    public static final String PATH_BEST_SCORE        = "data/bestscores.txt";
+    public static final String PATH_LEVEL_BEST_SCORES = "data/bestscores.txt";
   
     public static final String PATH_RECORDING_ROOT    = "data/recordings";
     public static final String PATH_RECORDING_FILE    = "data/recordings/%s (%d pts) (%d moves).dat";
