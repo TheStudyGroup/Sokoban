@@ -4,6 +4,11 @@ import com.c0destudy.sokoban.misc.Point;
 import com.c0destudy.sokoban.misc.Resource;
 import com.c0destudy.sokoban.tile.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,6 +19,7 @@ public class Level implements Serializable
     private final int                width;
     private final int                height;
     private final int                difficult;
+    public  char                     high;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
@@ -33,7 +39,7 @@ public class Level implements Serializable
         this.difficult = difficult;
         setRecordEnabled(true);
     }
-
+ 
     // 레벨 정보
     public String  getName()              { return name;      }
     public int     getWidth()             { return width;     }
@@ -309,9 +315,9 @@ public class Level implements Serializable
         }
         return null;
     }
-    public char getGrade(int count) {//점수채점
-    	
-    	switch((count - difficult) / 10) {
+    
+    public char getGrade() {//점수채점
+    	switch((getMoveCount() - difficult) / 10) {
     	case 0:
     		return 'A';
     	case 1: 
@@ -326,15 +332,33 @@ public class Level implements Serializable
     		return 'F';
     	}
     }
-
-//    public static char callHighGrade(int stage) {
-//    	char HG;
-////    	text에서 char 호출
-//    	
-//    	return HG;
-//    }
-//    public static char writeHighGrade(char grade) {
-////    	return text 파일에 grade 입력
-//    	
-//    }
+    
+    public char getHigh() {
+    	return high;
+    }
+    
+    public void recordHigh(char high) {
+    	System.out.println(name);
+    	try {
+    		File recordFile = new File("src/resources/levelscores/ high.txt");
+    		FileWriter fw = new FileWriter(recordFile);
+    		fw.write(high);
+    		fw.close();
+    	}catch(IOException e) {
+    		System.out.println(e);
+    	}
+    }
+    
+    public char callHigh() {
+    	
+    	try {
+    		File recordFile = new File("src/resources/levelscores/ high.txt");
+    		FileReader fr = new FileReader(recordFile);
+    		high = (char) fr.read();
+    		fr.close();
+    	}catch(IOException e) {
+    		System.out.println(e);
+    	}
+    	return high;
+    }
 }

@@ -38,8 +38,6 @@ public class LevelManager
     public static Level getNewLevel(final String levelName) {
         final Path    path    = Paths.get(String.format(Resource.PATH_LEVEL, levelName));
         final Charset charset = StandardCharsets.UTF_8;
-        final String getStage = Resource.PATH_LEVEL.replace("[^0-9]", "");
-        final String getGrade = Resource.PATH_LEVEL.replace("[^A-F]", "");
         try {
             final List<String> lines = Files.readAllLines(path, charset);
             return getNewLevelFromStringList(levelName, lines);
@@ -68,11 +66,9 @@ public class LevelManager
         
         // 레벨 메타데이터 불러오기
         for (int i = 0; !levelData.get(i).equals("map"); ++i) {
-            final String[] data = levelData.get(i).split(":");
-
-            metaData.put(data[0], data[1]);
+            final String[] scoreData = levelData.get(i).split(":");
+            metaData.put(scoreData[0], scoreData[1]);
         }
-        
         // 레밸 인스턴스 생성
         final Level level = new Level(levelName, width, height, Integer.parseInt(metaData.get("difficulty"), 10));
 
