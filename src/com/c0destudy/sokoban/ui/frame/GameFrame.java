@@ -11,24 +11,21 @@ import com.c0destudy.sokoban.ui.panel.GamePanel;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameFrame extends JFrame
 {
-    private Skin            skin;
-    private Level           level;
+    private final Level     level;
     private GamePanel       gamePanel = null;
-    private boolean         isReplay;
+    private final boolean   isReplay;
     private final Timer     replayTimer = new Timer();
     private TimerTask       replayTask;
     private long            replayTime;
     private int             replayIndex;
 
-    public GameFrame(final Skin skin, final Level level, final boolean isReplay) {
+    public GameFrame(final Level level, final boolean isReplay) {
         super();
-        this.skin     = skin;
         this.level    = level;
         this.isReplay = isReplay;
         setTitle("Sokoban - " + level.getName());
@@ -42,10 +39,11 @@ public class GameFrame extends JFrame
             gamePanel.repaint();
             startReplay();
         }
+        SoundManager.playBackgroundMusic();
     }
 
     private void initUI() {
-        gamePanel = new GamePanel(skin, level);
+        gamePanel = new GamePanel(level, isReplay);
         gamePanel.addKeyListener(new TKeyAdapter());
         getContentPane().add(gamePanel);
         setSize(gamePanel.getSize());
@@ -69,9 +67,9 @@ public class GameFrame extends JFrame
                 LevelManager.saveLevelToFile(level, String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getMoveCount()));
             }
         }
+        stopReplay();
         SoundManager.stopBackgroundMusic();
         FrameManager.showMainFrame();
-        stopReplay();
         dispose();
     }
 
@@ -88,17 +86,21 @@ public class GameFrame extends JFrame
                     return;
                 }
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
-                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection());
+                    SoundManager.playPlayerMoveSound(); // 이동 사운드
+                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
                     gamePanel.repaint();
                     replayTime = System.currentTimeMillis();
                     replayIndex++;
                 }
             }
         };
-        replayTimer.scheduleAtFixedRate(replayTask, 0, 10);
+        replayTimer.schedule(replayTask, 0, 10);
     }
 
     private void stopReplay() {
+        if (level.isCompleted() || level.isFailed()) {
+            SoundManager.stopBackgroundMusic();
+        }
         if (replayTask != null) {
             replayTask.cancel();
         }
@@ -147,28 +149,33 @@ public class GameFrame extends JFrame
                     return;
             }
 
-            Point delta = null;
+            Point direction = null;
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_A:
-                    delta = new Point(-1, 0);
+                    direction = new Point(-1, 0);
                     break;
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_D:
-                    delta = new Point(1, 0);
+                    direction = new Point(1, 0);
                     break;
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
-                    delta = new Point(0, -1);
+                    direction = new Point(0, -1);
                     break;
                 case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
-                    delta = new Point(0, 1);
+                    direction = new Point(0, 1);
                     break;
             }
-            level.movePlayerAndBaggage(playerIndex, delta);
+
+            level.movePlayerAndBaggage(playerIndex, direction); // 플레이어 이동
             SoundManager.playPlayerMoveSound(); // 이동 사운드
             gamePanel.repaint(); // 다시 그리기
+
+            if (level.isCompleted() || level.isFailed()) {
+                SoundManager.stopBackgroundMusic();
+            }
         }
     }
 

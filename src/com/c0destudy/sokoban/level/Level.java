@@ -125,11 +125,9 @@ public class Level implements Serializable
 
         // 이동할 위치에 다른 플레이어가 있는 경우 => 이동 불가
         if (isPlayerAt(newPlayerPos)) return false;
-        
-        Trigger trigger = getTriggerAt(newPlayerPos);
-        if (trigger != null) {
-        	hp--;
-        }
+
+        // 함정이 있는 경우 => 체력 감소
+        if (isTriggerAt(newPlayerPos)) hp--;
 
         // 플레이어가 물건(baggage)을 미는 경우
         final Baggage baggage = getBaggageAt(newPlayerPos);
