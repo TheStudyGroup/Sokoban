@@ -11,13 +11,14 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel
 {
-    private final int PADDING_TOP = 80;
-    private final int MARGIN      = 50;
+    private final int PADDING_TOP    = 80;
+    private final int PADDING_BOTTOM = 20;
+    private final int MARGIN         = 50;
 
-    private int           width;
-    private int           height;
-    private int           drawLeft;
-    private int           drawTop;
+    private final int     width;
+    private final int     height;
+    private final int     drawLeft;
+    private final int     drawTop;
     private final Skin    skin;
     private final Level   level;
     private final boolean isReplay;
@@ -27,9 +28,8 @@ public class GamePanel extends JPanel
         this.level    = level;
         this.skin     = FrameManager.getSkin();
         this.isReplay = isReplay;
-        width  = MARGIN * 2 + level.getWidth()  * skin.getImageSize();
-        height = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP;
-        if (width < 600) width = 600;
+        width    = Math.max(MARGIN * 2 + level.getWidth()  * skin.getImageSize(), 600);
+        height   = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP + PADDING_BOTTOM;
         drawLeft = width / 2 - (level.getWidth() * skin.getImageSize()) / 2;
         drawTop  = MARGIN + PADDING_TOP;
         setPreferredSize(new Dimension(width, height));
@@ -59,19 +59,19 @@ public class GamePanel extends JPanel
         g.setFont(skin.getFont(Skin.FONTS.Text));
         String levelState;
         if (level.isCompleted()) {
-            levelState = "Completed";
+            levelState = "Completed!!";
         } else if (level.isFailed()) {
-            levelState = "Failed";
+            levelState = "Failed...";
         } else if (isReplay) {
-            levelState = "REPLAY: " + level.getName();
+            levelState = ">> REPLAY: " + level.getName();
         } else {
             levelState = "PLAY: " + level.getName();
         }
-        g.drawString(levelState, 30, 30);
-        g.drawString("Remaining : "  + level.getRemainingBaggages(), 400,  30);
-        g.drawString("Move Count : " + level.getMoveCount(),          30,  70);
-        g.drawString("HP:"           + level.getLeftHealth(),        400,  70);
-        g.drawString("Score: "       + level.getScore(),              25, 110);
+        g.drawString("Remaining : "  + level.getRemainingBaggages(), 400, 30);
+        g.drawString("Move Count : " + level.getMoveCount(),          30, 70);
+        g.drawString("HP:"           + level.getLeftHealth(),        400, 70);
+        g.drawString("Score: "       + level.getScore(),              30, 30);
+        g.drawString(levelState, 30, height - 30);
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {

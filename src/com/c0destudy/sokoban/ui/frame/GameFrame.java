@@ -52,7 +52,7 @@ public class GameFrame extends JFrame
     }
 
     private void closeUI() {
-        if (!isReplay) {
+        if (!isReplay || !level.isFailed()) {
             if (!level.isCompleted()) {
                 LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
             } else {
