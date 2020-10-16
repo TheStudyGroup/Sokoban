@@ -12,9 +12,11 @@ public class Resource
     public static final String PATH_LEVEL             = "src/resources/levels/%s.txt";
     public static final String PATH_LEVEL_ROOT        = "src/resources/levels";
     public static final String PATH_LEVEL_PAUSE       = "data/pause.dat";
+    public static final String PATH_BEST_SCORE        = "data/bestscores.txt";
+  
     public static final String PATH_RECORDING_ROOT    = "data/recordings";
     public static final String PATH_RECORDING_FILE    = "data/recordings/%s (%d moves).dat";
-
+    
     public static final String PATH_SOUND_BACKGROUND  = "src/resources/sounds/game.wav";
     public static final String PATH_SOUND_PLAYER_MOVE = "src/resources/sounds/move.wav";
 

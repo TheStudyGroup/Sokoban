@@ -56,6 +56,14 @@ public class GameFrame extends JFrame
             if (!level.isCompleted()) {
                 LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
             } else {
+                // 최고 기록 업데이트
+                final int bestScore = LevelManager.getBestScore(level.getName());
+                System.out.println(bestScore);
+                System.out.println(level.getScore());
+                if (bestScore < level.getScore() || bestScore == 0) {
+                    LevelManager.setBestScore(level.getName(), level.getScore());
+                }
+                // 리플레이용 파일 저장
                 LevelManager.saveLevelToFile(level, String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getMoveCount()));
             }
         }

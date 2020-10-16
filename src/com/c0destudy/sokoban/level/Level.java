@@ -19,28 +19,32 @@ public class Level implements Serializable
     private final ArrayList<Player>  players  = new ArrayList<>();
     private final ArrayList<Record>  records  = new ArrayList<>();
     private boolean                  isRecordEnabled;
-    private long                     timeLastMove      = 0;
+    private final int                minMoveCount;
     private int                      moveCount         = 0;
     private int                      remainingBaggages = 0;
-    private int                      hp = 3;
+    private long                     timeLastMove      = 0;
+    private int                      hp                = 3;
 
-    public Level(final String name, final int width, final int height) {
-        this.name   = name;
-        this.width  = width;
-        this.height = height;
+    public Level(final String name, final int width, final int height, final int minMoveCount) {
+        this.name         = name;
+        this.width        = width;
+        this.height       = height;
+        this.minMoveCount = minMoveCount;
         setRecordEnabled(true);
     }
-
+ 
     // 레벨 정보
-    public String  getName()              { return name;      }
-    public int     getWidth()             { return width;     }
-    public int     getHeight()            { return height;    }
-    public int     getMoveCount()         { return moveCount; }
-    public int     getRemainingBaggages() { return remainingBaggages;      }
-    public int     getLeftHealth()        { return hp;                     }
-    public boolean isCompleted()          { return remainingBaggages == 0; }
-    public boolean isFailed()             { return hp == 0;                }
-    public boolean getRecordEnabled()     { return isRecordEnabled;        }
+    public String  getName()              { return name;              }
+    public int     getWidth()             { return width;             }
+    public int     getHeight()            { return height;            }
+    public int     getMinMoveCount()      { return minMoveCount;      }
+    public int     getMoveCount()         { return moveCount;         }
+    public int     getRemainingBaggages() { return remainingBaggages; }
+    public int     getLeftHealth()        { return hp;                }
+    public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
+    public boolean isCompleted()          { return remainingBaggages == 0;              }
+    public boolean isFailed()             { return hp == 0 || getScore() < 0;           }
+    public boolean getRecordEnabled()     { return isRecordEnabled;                     }
     public void    setRecordEnabled(final boolean enabled) {
         isRecordEnabled = enabled;
         if (isRecordEnabled) {
@@ -92,6 +96,7 @@ public class Level implements Serializable
         timeLastMove      = System.currentTimeMillis();
         moveCount         = 0;
         remainingBaggages = 0;
+        hp                = 3;
         for (final Baggage baggage : getBaggages()) {
             if (!isGoalAt(baggage.getPosition())) {
                 remainingBaggages++;

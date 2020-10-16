@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel
 {
-    private final int PADDING_TOP = 50;
-    private final int MARGIN = 50;
+    private final int PADDING_TOP = 80;
+    private final int MARGIN      = 50;
 
     private int           width;
     private int           height;
@@ -68,9 +68,10 @@ public class GamePanel extends JPanel
             levelState = "PLAY: " + level.getName();
         }
         g.drawString(levelState, 30, 30);
-        g.drawString("Remaining : " + level.getRemainingBaggages(), 400, 30);
-        g.drawString("Move Count : " + level.getMoveCount(), 30, 70);
-        g.drawString("HP:" + level.getLeftHealth(), 400, 70);
+        g.drawString("Remaining : "  + level.getRemainingBaggages(), 400,  30);
+        g.drawString("Move Count : " + level.getMoveCount(),          30,  70);
+        g.drawString("HP:"           + level.getLeftHealth(),        400,  70);
+        g.drawString("Score: "       + level.getScore(),              25, 110);
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {

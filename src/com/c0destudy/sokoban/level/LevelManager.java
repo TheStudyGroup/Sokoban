@@ -14,7 +14,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LevelManager
 {
@@ -36,10 +38,10 @@ public class LevelManager
     public static Level getNewLevel(final String levelName) {
         final Path    path    = Paths.get(String.format(Resource.PATH_LEVEL, levelName));
         final Charset charset = StandardCharsets.UTF_8;
-
         try {
-            final List<String> lines = Files.readAllLines(path, charset);
-            return getNewLevelFromStringList(levelName, lines);
+            final List<String> lines        = Files.readAllLines(path, charset);
+            final int          minMoveCount = Integer.parseInt(lines.remove(0));
+            return getNewLevelFromStringList(levelName, lines, minMoveCount);
         } catch (IOException e) {
             return null;
         }
@@ -54,7 +56,10 @@ public class LevelManager
      * @param  levelData 레벨 데이터가 행별로 구분된 리스트
      * @return Level     레벨 인스턴스
      */
-    private static Level getNewLevelFromStringList(final String levelName, final List<String> levelData) {
+    private static Level getNewLevelFromStringList(final String       levelName,
+                                                   final List<String> levelData,
+                                                   final int          minMoveCount
+    ) {
         // 레벨의 가로, 세로 크기 계산
         final int width = levelData
                 .stream()
@@ -63,7 +68,7 @@ public class LevelManager
         final int height = levelData.size();
 
         // 레밸 인스턴스 생성
-        final Level level = new Level(levelName, width, height);
+        final Level level = new Level(levelName, width, height, minMoveCount);
 
         // 각종 블럭 추가
         for (int y = 0; y < levelData.size(); y++) {
@@ -150,5 +155,46 @@ public class LevelManager
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static int getBestScore(final String levelName) {
+        return getBestScores().getOrDefault(levelName, 0);
+    }
+
+    public static Map<String, Integer> getBestScores() {
+        final Path    path    = Paths.get(Resource.PATH_BEST_SCORE);
+        final Charset charset = StandardCharsets.UTF_8;
+        try {
+            final List<String> lines = Files.readAllLines(path, charset);
+            return lines
+                    .stream()
+                    .filter(e -> e.contains("="))
+                    .map(e -> e.split("="))
+                    .map(e -> Stream.of(e)
+                        .map(String::trim)
+                        .toArray(String[]::new))
+                    .collect(Collectors.toMap(e -> e[0], e -> Integer.parseInt(e[1])));
+        } catch (IOException e) {
+            return new HashMap<>();
+        }
+    }
+
+    public static boolean setBestScore(final String levelName, final int score) {
+        final Map<String, Integer> scores = getBestScores();
+        scores.put(levelName, score);
+        final String newScores = scores
+                .entrySet()
+                .stream()
+                .map(Objects::toString)
+                .reduce("", (a, b) -> a + b + "\n");
+        try {
+            final FileWriter     file   = new FileWriter(Resource.PATH_BEST_SCORE);
+            final BufferedWriter writer = new BufferedWriter(file);
+            writer.write(newScores);
+            writer.close();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 }
