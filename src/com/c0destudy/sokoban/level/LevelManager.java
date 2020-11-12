@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -196,5 +197,21 @@ public class LevelManager
             return false;
         }
         return true;
+    }
+
+    public static ArrayList<String> getLevelList() {
+        final ArrayList<String> levels    = new ArrayList<>();
+        final File              directory = new File(Resource.PATH_LEVEL_ROOT);
+        final String[]          files     = directory.list();
+
+        if (files != null && files.length > 0) {
+            Arrays
+                .stream(files)
+                .filter(e -> e.contains(".txt"))
+                .map(e -> e.substring(0, e.lastIndexOf(".")))
+                .forEach(levels::add);
+        }
+
+        return levels;
     }
 }
