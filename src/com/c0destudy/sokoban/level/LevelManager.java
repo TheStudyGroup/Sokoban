@@ -31,6 +31,15 @@ public class LevelManager
     private static final char LEVEL_SYMBOL_TRIGGER         = '!';
 
     /**
+     * 빈 레벨 인스턴스를 생성합니다.
+     *
+     * @return Level     레벨 인스턴스
+     */
+    public static Level createEmptyLevel() {
+        return new Level("empty", 20, 20, 0);
+    }
+
+    /**
      * 레벨 인스턴스를 생성합니다.
      *
      * @param  levelName 레벨 이름

@@ -25,9 +25,9 @@ public class MainPanel extends BasePanel
             btnContinue = makeButton("Continue", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack),
             makeVSpace(20),
             makeHBox(450, 45, true, Arrays.asList(
-                makeButton("Ranking", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack),
+                makeButton("Recordings", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack),
                 makeHSpace(20),
-                makeButton("Recordings", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack))),
+                makeButton("Editor", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack))),
             makeVSpace(20),
             makeHBox(450, 45, true, Arrays.asList(
                 makeButton("Settings", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack),
