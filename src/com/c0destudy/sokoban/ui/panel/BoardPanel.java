@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel
+public class BoardPanel extends JPanel
 {
     private final int PADDING_TOP    = 80;
     private final int PADDING_BOTTOM = 20;
@@ -22,16 +22,20 @@ public class GamePanel extends JPanel
     private final Skin    skin;
     private final Level   level;
     private final boolean isReplay;
+    private final boolean showInfo;
 
-    public GamePanel(final Level level, final boolean isReplay) {
+    public BoardPanel(final Level level, final boolean isReplay, final boolean showInfo) {
         super();
         this.level    = level;
         this.skin     = FrameManager.getSkin();
         this.isReplay = isReplay;
+        this.showInfo = showInfo;
+
         width    = Math.max(MARGIN * 2 + level.getWidth()  * skin.getImageSize(), 600);
         height   = MARGIN * 2 + level.getHeight() * skin.getImageSize() + PADDING_TOP + PADDING_BOTTOM;
         drawLeft = width / 2 - (level.getWidth() * skin.getImageSize()) / 2;
         drawTop  = MARGIN + PADDING_TOP;
+
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
     }
@@ -55,23 +59,25 @@ public class GamePanel extends JPanel
             drawTile(g, level.getPlayer(1), skin.getImage(Skin.IMAGES.Player2));
         }
 
-        g.setColor(new Color(0, 0, 0));
-        g.setFont(skin.getFont(Skin.FONTS.Text));
-        String levelState;
-        if (level.isCompleted()) {
-            levelState = "Completed!!";
-        } else if (level.isFailed()) {
-            levelState = "Failed...";
-        } else if (isReplay) {
-            levelState = ">> REPLAY: " + level.getName();
-        } else {
-            levelState = "PLAY: " + level.getName();
+        if (showInfo) {
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(skin.getFont(Skin.FONTS.Text));
+            String levelState;
+            if (level.isCompleted()) {
+                levelState = "Completed!!";
+            } else if (level.isFailed()) {
+                levelState = "Failed...";
+            } else if (isReplay) {
+                levelState = ">> REPLAY: " + level.getName();
+            } else {
+                levelState = "PLAY: " + level.getName();
+            }
+            g.drawString("Remaining : "  + level.getRemainingBaggages(), 400, 30);
+            g.drawString("Move Count : " + level.getMoveCount(), 30, 70);
+            g.drawString("HP : "         + level.getLeftHealth(), 400, 70);
+            g.drawString("Score : "      + level.getScore(), 30, 30);
+            g.drawString(levelState, 30, height - 30);
         }
-        g.drawString("Remaining : "  + level.getRemainingBaggages(), 400, 30);
-        g.drawString("Move Count : " + level.getMoveCount(),          30, 70);
-        g.drawString("HP:"           + level.getLeftHealth(),        400, 70);
-        g.drawString("Score: "       + level.getScore(),              30, 30);
-        g.drawString(levelState, 30, height - 30);
     }
 
     private void drawTile(final Graphics g, final Tile tile, final Image image) {
