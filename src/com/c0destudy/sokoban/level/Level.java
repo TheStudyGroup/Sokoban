@@ -259,7 +259,13 @@ public class Level implements Serializable
         }
         return false;
     }
-    
+
+    /**
+     * 해당 좌표에 함정이 있는지 확인합니다.
+     *
+     * @param  position 좌표
+     * @return          함정의 존재 여부
+     */
     private boolean isTriggerAt(final Point position) {
     	for(final Trigger trigger: triggers) {
     		if(trigger.getPosition().equals(position)) {
@@ -268,16 +274,6 @@ public class Level implements Serializable
     	}
 		return false;
     }
-
-    private Trigger getTriggerAt(final Point position) {
-    	for(final Trigger trigger: triggers) {
-    		if(trigger.getPosition().equals(position)) {
-    			return trigger;
-    		}
-    	}
-    	return null;
-    }
-
 
     /**
      * 해당 좌표에 있는 물건 객체를 가져옵니다.
@@ -289,21 +285,6 @@ public class Level implements Serializable
         for (final Baggage baggage : baggages) {
             if (baggage.getPosition().equals(position)) {
                 return baggage;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 해당 좌표에 있는 플레이어 객체를 가져옵니다.
-     *
-     * @param  position 좌표
-     * @return          플레이어 객체
-     */
-    private Player getPlayerAt(final Point position) {
-        for (final Player player : players) {
-            if (player.getPosition().equals(position)) {
-                return player;
             }
         }
         return null;
