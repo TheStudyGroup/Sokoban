@@ -100,7 +100,7 @@ public class MainFrame extends JFrame
                     selectPanel(aboutPanel);
                     break;
                 case "Exit Game":
-                    closeUI();
+                    System.exit(0);
                     break;
             }
         }
