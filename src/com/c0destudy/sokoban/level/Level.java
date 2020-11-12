@@ -43,7 +43,7 @@ public class Level implements Serializable
     public int     getLeftHealth()        { return hp;                }
     public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
     public boolean isCompleted()          { return remainingBaggages == 0;              }
-    public boolean isFailed()             { return hp == 0 || getScore() < 0;           }
+    public boolean isFailed()             { return hp == 0 || getScore() <= 0;          }
     public boolean getRecordEnabled()     { return isRecordEnabled;                     }
     public void    setRecordEnabled(final boolean enabled) {
         isRecordEnabled = enabled;
@@ -174,7 +174,7 @@ public class Level implements Serializable
         // 물건이 이동될 위치에 물건이 있는 경우 (연속 2개) => 이동 불가
         if (getBaggageAt(position) != null) return false;
 
-        // 물건이 이동될 위치에 다른 플레이어가 있는 경우 => 이동 불가
+        // 물건이 이동될 위치에 플레이어가 있는 경우 => 이동 불가
         if (isPlayerAt(position)) return false;
 
         // 이동 전에 물건이 목적지에 있는 경우
