@@ -45,7 +45,7 @@ public class MainFrame extends JFrame
     }
 
     private void initUI() {
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new OverlayLayout(panel));
         panel.addKeyListener(new TKeyAdapter());
         panels.forEach(e -> {
@@ -55,9 +55,9 @@ public class MainFrame extends JFrame
         selectPanel(mainPanel);
 //        mainPanel.setBackground(new Color(255, 255, 255, 100));
         add(panel);
-        setSize(mainPanel.getSize());
-        pack();
-        setLocationRelativeTo(null);
+        setSize(mainPanel.getSize()); // 크기 설정
+        pack();                       // 크기 맞추기
+        setLocationRelativeTo(null);  // 화면 중앙으로 이동
     }
 
     private void selectPanel(final JPanel panel) {

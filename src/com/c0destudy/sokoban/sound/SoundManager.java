@@ -51,9 +51,7 @@ public class SoundManager
         return playSound(fileName, isContinuing, 0);
     }
 
-    private static Clip playSound(final String fileName,
-                                  final boolean isContinuing,
-                                  final float volume) {
+    private static Clip playSound(final String fileName, final boolean isContinuing, final float volume) {
         try {
             final AudioInputStream ais     = AudioSystem.getAudioInputStream(new File(fileName));
             final Clip             clip    = AudioSystem.getClip();
