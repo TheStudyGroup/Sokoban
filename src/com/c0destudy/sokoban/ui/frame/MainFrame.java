@@ -2,9 +2,9 @@ package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
-import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.sound.SoundManager;
+import com.c0destudy.sokoban.resource.Resource;
+import com.c0destudy.sokoban.resource.Skin;
+import com.c0destudy.sokoban.resource.SoundManager;
 import com.c0destudy.sokoban.ui.panel.*;
 
 import javax.swing.*;

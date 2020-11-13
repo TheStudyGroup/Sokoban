@@ -1,7 +1,7 @@
 package com.c0destudy.sokoban.level;
 
-import com.c0destudy.sokoban.misc.Point;
-import com.c0destudy.sokoban.misc.Resource;
+import com.c0destudy.sokoban.tile.Point;
+import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.tile.Baggage;
 import com.c0destudy.sokoban.tile.Goal;
 import com.c0destudy.sokoban.tile.Player;

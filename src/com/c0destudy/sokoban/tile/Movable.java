@@ -1,7 +1,5 @@
 package com.c0destudy.sokoban.tile;
 
-import com.c0destudy.sokoban.misc.Point;
-
 public class Movable extends Tile
 {
     private Point currentPosition;

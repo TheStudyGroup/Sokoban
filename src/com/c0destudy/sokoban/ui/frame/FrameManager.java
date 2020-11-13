@@ -1,7 +1,7 @@
 package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
-import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.resource.Skin;
 
 import javax.swing.*;
 import java.awt.*;

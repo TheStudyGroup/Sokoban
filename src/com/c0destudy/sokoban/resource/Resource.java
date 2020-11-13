@@ -1,4 +1,4 @@
-package com.c0destudy.sokoban.misc;
+package com.c0destudy.sokoban.resource;
 
 import javax.swing.*;
 import java.awt.*;

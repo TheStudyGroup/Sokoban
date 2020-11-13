@@ -1,9 +1,5 @@
-package com.c0destudy.sokoban.sound;
+package com.c0destudy.sokoban.resource;
 
-import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.ui.frame.MainFrame;
-
-import java.awt.*;
 import java.io.File;
 
 import javax.sound.sampled.AudioInputStream;

@@ -1,6 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
-import com.c0destudy.sokoban.skin.Skin;
+import com.c0destudy.sokoban.resource.Skin;
 import com.c0destudy.sokoban.ui.frame.FrameManager;
 import com.c0destudy.sokoban.ui.helper.MakeComponent;
 

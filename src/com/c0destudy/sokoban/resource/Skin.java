@@ -1,6 +1,6 @@
-package com.c0destudy.sokoban.skin;
+package com.c0destudy.sokoban.resource;
 
-import com.c0destudy.sokoban.misc.Resource;
+import com.c0destudy.sokoban.resource.Resource;
 
 import java.awt.*;
 import java.io.FileReader;
