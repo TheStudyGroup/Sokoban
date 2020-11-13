@@ -21,6 +21,7 @@ public class Level implements Serializable
     private boolean                  isRecordEnabled;
     private final int                minMoveCount;
     private int                      moveCount         = 0;
+    private int                      undoCount         = 0;
     private int                      remainingBaggages = 0;
     private long                     timeLastMove      = 0;
     private int                      hp                = 3;
@@ -39,6 +40,7 @@ public class Level implements Serializable
     public int     getHeight()            { return height;            }
     public int     getMinMoveCount()      { return minMoveCount;      }
     public int     getMoveCount()         { return moveCount;         }
+    public int     getUndoCount()         { return undoCount;         }
     public int     getRemainingBaggages() { return remainingBaggages; }
     public int     getLeftHealth()        { return hp;                }
     public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
@@ -213,6 +215,7 @@ public class Level implements Serializable
         }
 
         moveCount--;
+        undoCount++;
     }
 
     /**
