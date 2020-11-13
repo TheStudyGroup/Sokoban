@@ -37,8 +37,7 @@ public class BoardPanel extends JPanel
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        g.setColor(skin.getBackgroundColor());
+        g.setColor(skin.getColor(Skin.COLORS.Background));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // 타일 그리기
@@ -58,8 +57,8 @@ public class BoardPanel extends JPanel
         if (showInfo) {
             final int textLeft = width - PADDING_RIGHT;
             final int textTop  = 30;
-            g.setColor(new Color(0, 0, 0));
-            g.setFont(skin.getFont(Skin.FONTS.SmallButton));
+            g.setColor(skin.getColor(Skin.COLORS.Text));
+            g.setFont(skin.getFont(Skin.FONTS.Medium));
             String levelState;
             if (level.isCompleted()) {
                 levelState = "Completed!!";

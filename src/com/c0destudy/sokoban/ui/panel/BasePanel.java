@@ -30,17 +30,17 @@ public class BasePanel extends JPanel
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        final Image backgroundImage = skin.getBackgroundImage();
-        if (backgroundImage != null) {
-            final int imageWidth  = backgroundImage.getWidth(null);
-            final int imageHeight = backgroundImage.getHeight(null);
+        final Image image = skin.getImage(Skin.IMAGES.Background);
+        if (image != null) {
+            final int imageWidth  = image.getWidth(null);
+            final int imageHeight = image.getHeight(null);
             int imageX = 0;
             int imageY = 0;
             if (getWidth()  < imageWidth)  imageX = -((imageWidth  - getWidth())  / 2);
             if (getHeight() < imageHeight) imageY = -((imageHeight - getHeight()) / 2);
-            g.drawImage(backgroundImage, imageX, imageY, null);
+            g.drawImage(image, imageX, imageY, null);
         } else {
-            g.setColor(skin.getBackgroundColor());
+            g.setColor(skin.getColor(Skin.COLORS.Background));
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
         }
     }
@@ -55,16 +55,16 @@ public class BasePanel extends JPanel
                 isCenter,
                 font,
                 listener,
-                skin.getButtonForegroundColor(),
-                skin.getButtonBackgroundColor());
+                skin.getColor(Skin.COLORS.ButtonText),
+                skin.getColor(Skin.COLORS.Button));
     }
 
     protected JButton makeButton(final String text, final int width, final int height, final boolean isCenter) {
-        return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.SmallButton));
+        return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Medium));
     }
 
     protected JButton makeLargeButton(final String text, final int width, final int height, final boolean isCenter) {
-        return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.LargeButton));
+        return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Large));
     }
 
     protected JLabel makeLabel(final String text, final boolean isCenter, final Font font) {
@@ -72,10 +72,14 @@ public class BasePanel extends JPanel
     }
 
     protected JLabel makeLabel(final String text, final boolean isCenter) {
-        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Text));
+        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Medium));
     }
 
     protected JLabel makeTitleLabel(final String text, final boolean isCenter) {
         return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Title));
+    }
+
+    protected JLabel makeLargeLabel(final String text, final boolean isCenter) {
+        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Large));
     }
 }
