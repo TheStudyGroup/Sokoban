@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class FrameManager
 {
-    private static Skin skin = new Skin("Construction");
+    private static Skin skin = new Skin("Builder");
     private static Image icon = new ImageIcon("src/resources/skins/Construction/wall.png").getImage();
 
     public static Skin getSkin()                { return skin;              }
