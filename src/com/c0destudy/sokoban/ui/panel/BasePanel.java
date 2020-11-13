@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
 
 public class BasePanel extends JPanel
 {
-    protected final Skin           skin;
-    protected final ActionListener listener;
+    private final Skin           skin;
+    private final ActionListener listener;
 
     public BasePanel(final ActionListener listener, final int width, final int height) {
         super();
-        this.skin            = FrameManager.getSkin();
-        this.listener        = listener;
+        this.skin     = FrameManager.getSkin();
+        this.listener = listener;
 
         setMaximumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
@@ -32,7 +32,13 @@ public class BasePanel extends JPanel
         super.paintComponent(g);
         final Image backgroundImage = skin.getBackgroundImage();
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, null);
+            final int imageWidth  = backgroundImage.getWidth(null);
+            final int imageHeight = backgroundImage.getHeight(null);
+            int imageX = 0;
+            int imageY = 0;
+            if (getWidth()  < imageWidth)  imageX = -((imageWidth  - getWidth())  / 2);
+            if (getHeight() < imageHeight) imageY = -((imageHeight - getHeight()) / 2);
+            g.drawImage(backgroundImage, imageX, imageY, null);
         } else {
             g.setColor(skin.getBackgroundColor());
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
