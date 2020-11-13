@@ -37,7 +37,7 @@ public class Skin
         this.fonts  = new Font[FONTS.values().length];
 
         try {
-            final FileReader propFile = new FileReader(getResourcePath("skin.properties"));
+            final FileReader propFile = new FileReader(Resource.getSkinResourcePath(name, "skin.properties"));
             properties.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,14 +56,14 @@ public class Skin
         // 폰트
         final String fontName = getStringProp("font", "FORCED SQUARE");
         Resource.loadFontFromResource(fontName);
-        setFont(Skin.FONTS.Title,       getFont(fontName, false, getIntProp("font_size_title", 60)));
-        setFont(Skin.FONTS.Text,        getFont(fontName, false, getIntProp("font_size_text",  30)));
-        setFont(Skin.FONTS.LargeButton, getFont(fontName, false, getIntProp("font_size_large_button", 30)));
-        setFont(Skin.FONTS.SmallButton, getFont(fontName, false, getIntProp("font_size_small_button", 23)));
+        setFont(Skin.FONTS.Title,       Resource.getFont(fontName, false, getIntProp("font_size_title", 60)));
+        setFont(Skin.FONTS.Text,        Resource.getFont(fontName, false, getIntProp("font_size_text",  30)));
+        setFont(Skin.FONTS.LargeButton, Resource.getFont(fontName, false, getIntProp("font_size_large_button", 30)));
+        setFont(Skin.FONTS.SmallButton, Resource.getFont(fontName, false, getIntProp("font_size_small_button", 23)));
 
         // 배경
         backgroundColor = getColorProp("background_color", "255,255,255");
-        backgroundImage = getImage(getStringProp("background_image", "background.png"));
+        backgroundImage = getImage(getStringProp("background_image"));
         buttonBackgroundColor = getColorProp("button_background", "");
         buttonForegroundColor = getColorProp("button_foreground", "");
     }
@@ -94,21 +94,9 @@ public class Skin
             return null;
         }
     }
-    private Image getImage(final String fileName) {
-        if (fileName == null || "".equals(fileName)) return null;
-        final String filePath = getResourcePath(fileName);
-        final File   file     = new File(filePath);
-        if (!file.exists()) return null;
-        return (new ImageIcon(filePath)).getImage();
-    }
-    private Font getFont(final String name, final boolean isBold, final int size) {
-        return new Font(name, isBold ? Font.BOLD : Font.PLAIN, size);
-    }
-    private String getResourcePath(final String fileName)  {
-        return Resource.PATH_SKIN_ROOT + name + "/" + fileName;
-    }
+    private Image getImage(final String imageName) { return Resource.getSkinImage(name, imageName); }
     private void setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
-    private void setFont(final FONTS type, final Font font)     { fonts[type.ordinal()] = font;   }
+    private void setFont (final FONTS type,  final Font font)   { fonts[type.ordinal()] = font;   }
 
     // public
     public String getName()                   { return name;                   }
