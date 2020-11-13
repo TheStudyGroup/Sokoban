@@ -18,23 +18,23 @@ public class MainPanel extends BasePanel
     private void initUI() {
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("S O K O B A N", true, fontTitle),
+            makeTitleLabel("S O K O B A N", true),
             makeVSpace(40),
-            makeButton("New Game", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack),
+            makeLargeButton("New Game", 450, 45, true),
             makeVSpace(20),
-            btnContinue = makeButton("Continue", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack),
-            makeVSpace(20),
-            makeHBox(450, 45, true, Arrays.asList(
-                makeButton("Recordings", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack),
-                makeHSpace(20),
-                makeButton("Editor", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack))),
+            btnContinue = makeLargeButton("Continue", 450, 45, true),
             makeVSpace(20),
             makeHBox(450, 45, true, Arrays.asList(
-                makeButton("Settings", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack),
+                makeLargeButton("Recordings", 215, 45, false),
                 makeHSpace(20),
-                makeButton("About", 215, 45, false, fontLargeButton, listener, colorButton, colorButtonBack))),
+                makeLargeButton("Editor", 215, 45, false))),
             makeVSpace(20),
-            makeButton("Exit Game", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
+            makeHBox(450, 45, true, Arrays.asList(
+                makeLargeButton("Settings", 215, 45, false),
+                makeHSpace(20),
+                makeLargeButton("About", 215, 45, false))),
+            makeVSpace(20),
+            makeLargeButton("Exit Game", 450, 45, true)
         ).forEach(this::add);
     }
 

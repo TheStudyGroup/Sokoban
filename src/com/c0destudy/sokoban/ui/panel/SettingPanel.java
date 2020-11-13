@@ -25,28 +25,28 @@ public class SettingPanel extends BasePanel
         final ArrayList<Component> skinComps = new ArrayList<>();
         if (skinDirs != null && skinDirs.length > 0) {
             for (final String skinName : skinDirs) {
-                skinComps.add(makeButton(skinName, 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
+                skinComps.add(makeButton(skinName, 400, 30, true));
                 skinComps.add(makeVSpace(10));
             }
         } else {
-            skinComps.add(makeButton("NO SKIN", 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack));
+            skinComps.add(makeButton("NO SKIN", 400, 30, true));
             skinComps.add(makeVSpace(10));
         }
 
         final String soundText = SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("S E T T I N G S", true, fontTitle),
+            makeTitleLabel("S E T T I N G S", true),
             makeVSpace(40),
-            makeLabel("S K I N", true, fontLargeButton),
+            makeLabel("S K I N", true),
             makeVSpace(10),
             makeScroll(450, 120, true, true, skinComps),
             makeVSpace(20),
-            makeLabel("S O U N D", true, fontLargeButton),
+            makeLabel("S O U N D", true),
             makeVSpace(10),
-            makeButton(soundText, 400, 30, true, fontSmallButton, listener, colorButton, colorButtonBack),
+            makeButton(soundText, 400, 30, true),
             makeVSpace(20),
-            makeButton("Back", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
+            makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);
     }
 }

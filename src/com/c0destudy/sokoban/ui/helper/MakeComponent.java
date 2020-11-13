@@ -66,13 +66,13 @@ public class MakeComponent
 
     public static JLabel makeLabel(final String text,
                                    final boolean isCenter,
-                                   final Font Font
+                                   final Font font
     ) {
         final RichJLabel label = new RichJLabel(text);
         label.setForeground(Color.GRAY);
-        label.setRightShadow(Font.getSize() / 15,Font.getSize() / 15, Color.BLACK);
+        label.setRightShadow(font.getSize() / 15, font.getSize() / 15, Color.BLACK);
         if (isCenter) label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setFont(Font);
+        label.setFont(font);
         return label;
     }
 

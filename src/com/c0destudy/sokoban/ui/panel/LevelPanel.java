@@ -1,11 +1,9 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.LevelManager;
-import com.c0destudy.sokoban.misc.Resource;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -26,24 +24,24 @@ public class LevelPanel extends BasePanel
         final ArrayList<String>    levels   = LevelManager.getLevelList();
         final ArrayList<Component> levelBox = new ArrayList<>();
         if (levels.isEmpty()) {
-            levelBox.add(makeButton("NO LEVELS", 220, 30, false, fontSmallButton, listener, colorButton, colorButtonBack));
+            levelBox.add(makeButton("NO LEVELS", 220, 30, false));
         } else {
             levels.forEach(levelName -> {
-                levelBox.add(makeButton(levelName, 220, 30, false, fontSmallButton, listener, colorButton, colorButtonBack));
+                levelBox.add(makeButton(levelName, 220, 30, false));
                 levelBox.add(makeVSpace(10));
             });
         }
 
         Arrays.asList(
             makeVSpace(50),
-            makeLabel("L E V E L S", true, fontTitle),
+            makeTitleLabel("L E V E L S", true),
             makeVSpace(40),
             makeHBox(450, 240, true, Arrays.asList(
                 makeScroll(250, 240, false, true, levelBox),
                 makeHSpace(10),
-                makeButton("INFO", 200, 240, false, fontSmallButton, listener, colorButton, colorButtonBack))),
+                makeButton("INFO", 200, 240, false))),
             makeVSpace(20),
-            makeButton("Back", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
+            makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);
     }
 }
