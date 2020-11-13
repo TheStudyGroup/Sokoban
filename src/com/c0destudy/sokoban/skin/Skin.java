@@ -45,12 +45,13 @@ public class Skin
 
         // 이미지
         imageSize = getIntProp("image_size", 20);
-        setImage(IMAGES.Wall,    getImage(getStringProp("image_wall",    "wall.png")));
-        setImage(IMAGES.Baggage, getImage(getStringProp("image_baggage", "baggage.png")));
-        setImage(IMAGES.Goal,    getImage(getStringProp("image_goal",    "goal.png")));
-        setImage(IMAGES.Player1, getImage(getStringProp("image_player1", "player.png")));
-        setImage(IMAGES.Player2, getImage(getStringProp("image_player2", "player.png")));
-        setImage(IMAGES.Trigger, getImage(getStringProp("image_trigger", "trigger.png")));
+        setImage(IMAGES.Wall,    getImage(getStringProp("image_wall"   )));
+        setImage(IMAGES.Baggage, getImage(getStringProp("image_baggage")));
+        setImage(IMAGES.Goal,    getImage(getStringProp("image_goal"   )));
+        setImage(IMAGES.Player1, getImage(getStringProp("image_player1")));
+        setImage(IMAGES.Player2, getImage(getStringProp("image_player2")));
+        setImage(IMAGES.Trigger, getImage(getStringProp("image_trigger")));
+        setImage(IMAGES.Trigger, getImage(getStringProp("image_pointer")));
 
         // 폰트
         final String fontName = getStringProp("font", "FORCED SQUARE");
@@ -58,7 +59,7 @@ public class Skin
         setFont(Skin.FONTS.Title,       getFont(fontName, false, getIntProp("font_size_title", 60)));
         setFont(Skin.FONTS.Text,        getFont(fontName, false, getIntProp("font_size_text",  30)));
         setFont(Skin.FONTS.LargeButton, getFont(fontName, false, getIntProp("font_size_large_button", 30)));
-        setFont(Skin.FONTS.SmallButton, getFont(fontName, false, getIntProp("font_size_small_button", 20)));
+        setFont(Skin.FONTS.SmallButton, getFont(fontName, false, getIntProp("font_size_small_button", 23)));
 
         // 배경
         backgroundColor = getColorProp("background_color", "255,255,255");
@@ -68,6 +69,9 @@ public class Skin
     }
 
     // private
+    private String getStringProp(final String key) {
+        return properties.getProperty(key, "");
+    }
     private String getStringProp(final String key, final String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
@@ -91,6 +95,7 @@ public class Skin
         }
     }
     private Image getImage(final String fileName) {
+        if (fileName == null || "".equals(fileName)) return null;
         final String filePath = getResourcePath(fileName);
         final File   file     = new File(filePath);
         if (!file.exists()) return null;
