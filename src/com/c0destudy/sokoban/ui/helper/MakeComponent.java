@@ -64,21 +64,21 @@ public class MakeComponent
         return button;
     }
 
-    public static JLabel makeLabel(final String text,
+    public static JLabel makeLabel(final String  text,
                                    final boolean isCenter,
-                                   final Font Font
+                                   final Font    font
     ) {
         final RichJLabel label = new RichJLabel(text);
         label.setForeground(Color.GRAY);
-        label.setRightShadow(Font.getSize() / 15,Font.getSize() / 15, Color.BLACK);
+        label.setRightShadow(font.getSize() / 15, font.getSize() / 15, Color.BLACK);
         if (isCenter) label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setFont(Font);
+        label.setFont(font);
         return label;
     }
 
-    public static Box makeHBox(final int width,
-                               final int height,
-                               final boolean isCenter,
+    public static Box makeHBox(final int             width,
+                               final int             height,
+                               final boolean         isCenter,
                                final List<Component> components
     ) {
         final Box box = Box.createHorizontalBox();
@@ -98,10 +98,10 @@ public class MakeComponent
         return Box.createHorizontalStrut(size);
     }
 
-    public static JScrollPane makeScroll(final int width,
-                                         final int height,
-                                         final boolean isCenter,
-                                         final boolean isTransparent,
+    public static JScrollPane makeScroll(final int             width,
+                                         final int             height,
+                                         final boolean         isCenter,
+                                         final boolean         isTransparent,
                                          final List<Component> components
 
     ) {

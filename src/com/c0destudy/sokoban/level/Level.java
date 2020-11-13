@@ -1,6 +1,6 @@
 package com.c0destudy.sokoban.level;
 
-import com.c0destudy.sokoban.misc.Point;
+import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.tile.*;
 
 import java.io.Serializable;
@@ -21,6 +21,7 @@ public class Level implements Serializable
     private boolean                  isRecordEnabled;
     private final int                minMoveCount;
     private int                      moveCount         = 0;
+    private int                      undoCount         = 0;
     private int                      remainingBaggages = 0;
     private long                     timeLastMove      = 0;
     private int                      hp                = 3;
@@ -39,6 +40,7 @@ public class Level implements Serializable
     public int     getHeight()            { return height;            }
     public int     getMinMoveCount()      { return minMoveCount;      }
     public int     getMoveCount()         { return moveCount;         }
+    public int     getUndoCount()         { return undoCount;         }
     public int     getRemainingBaggages() { return remainingBaggages; }
     public int     getLeftHealth()        { return hp;                }
     public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
@@ -213,6 +215,7 @@ public class Level implements Serializable
         }
 
         moveCount--;
+        undoCount++;
     }
 
     /**
@@ -259,7 +262,13 @@ public class Level implements Serializable
         }
         return false;
     }
-    
+
+    /**
+     * 해당 좌표에 함정이 있는지 확인합니다.
+     *
+     * @param  position 좌표
+     * @return          함정의 존재 여부
+     */
     private boolean isTriggerAt(final Point position) {
     	for(final Trigger trigger: triggers) {
     		if(trigger.getPosition().equals(position)) {
@@ -268,16 +277,6 @@ public class Level implements Serializable
     	}
 		return false;
     }
-
-    private Trigger getTriggerAt(final Point position) {
-    	for(final Trigger trigger: triggers) {
-    		if(trigger.getPosition().equals(position)) {
-    			return trigger;
-    		}
-    	}
-    	return null;
-    }
-
 
     /**
      * 해당 좌표에 있는 물건 객체를 가져옵니다.
@@ -289,21 +288,6 @@ public class Level implements Serializable
         for (final Baggage baggage : baggages) {
             if (baggage.getPosition().equals(position)) {
                 return baggage;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 해당 좌표에 있는 플레이어 객체를 가져옵니다.
-     *
-     * @param  position 좌표
-     * @return          플레이어 객체
-     */
-    private Player getPlayerAt(final Point position) {
-        for (final Player player : players) {
-            if (player.getPosition().equals(position)) {
-                return player;
             }
         }
         return null;

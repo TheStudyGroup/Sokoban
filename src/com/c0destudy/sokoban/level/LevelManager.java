@@ -1,7 +1,7 @@
 package com.c0destudy.sokoban.level;
 
-import com.c0destudy.sokoban.misc.Point;
-import com.c0destudy.sokoban.misc.Resource;
+import com.c0destudy.sokoban.tile.Point;
+import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.tile.Baggage;
 import com.c0destudy.sokoban.tile.Goal;
 import com.c0destudy.sokoban.tile.Player;
@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,6 +29,15 @@ public class LevelManager
     private static final char LEVEL_SYMBOL_PLAYER          = '@';
     private static final char LEVEL_SYMBOL_PLAYER_AT_GOAL  = '+';
     private static final char LEVEL_SYMBOL_TRIGGER         = '!';
+
+    /**
+     * 빈 레벨 인스턴스를 생성합니다.
+     *
+     * @return Level 레벨 인스턴스
+     */
+    public static Level createEmptyLevel() {
+        return new Level("MyLevel", 15, 15, 0);
+    }
 
     /**
      * 레벨 인스턴스를 생성합니다.
@@ -196,5 +206,21 @@ public class LevelManager
             return false;
         }
         return true;
+    }
+
+    public static ArrayList<String> getLevelList() {
+        final ArrayList<String> levels    = new ArrayList<>();
+        final File              directory = new File(Resource.PATH_LEVEL_ROOT);
+        final String[]          files     = directory.list();
+
+        if (files != null && files.length > 0) {
+            Arrays
+                .stream(files)
+                .filter(e -> e.contains(".txt"))
+                .map(e -> e.substring(0, e.lastIndexOf(".")))
+                .forEach(levels::add);
+        }
+
+        return levels;
     }
 }

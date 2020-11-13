@@ -1,5 +1,6 @@
-package com.c0destudy.sokoban.misc;
+package com.c0destudy.sokoban.resource;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -31,4 +32,21 @@ public class Resource
             e.printStackTrace();
         }
     }
+
+    public static String getSkinResourcePath(final String skinName, final String fileName)  {
+        return Resource.PATH_SKIN_ROOT + skinName + "/" + fileName;
+    }
+
+    public static Image getSkinImage(final String skinName, final String imageName) {
+        if (imageName == null || "".equals(imageName)) return null;
+        final String filePath = getSkinResourcePath(skinName, imageName);
+        final File   file     = new File(filePath);
+        if (!file.exists()) return null;
+        return (new ImageIcon(filePath)).getImage();
+    }
+
+    public static Font getFont(final String name, final boolean isBold, final int size) {
+        return new Font(name, isBold ? Font.BOLD : Font.PLAIN, size);
+    }
+
 }

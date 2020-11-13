@@ -1,9 +1,5 @@
-package com.c0destudy.sokoban.sound;
+package com.c0destudy.sokoban.resource;
 
-import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.ui.frame.MainFrame;
-
-import java.awt.*;
 import java.io.File;
 
 import javax.sound.sampled.AudioInputStream;
@@ -51,9 +47,7 @@ public class SoundManager
         return playSound(fileName, isContinuing, 0);
     }
 
-    private static Clip playSound(final String fileName,
-                                  final boolean isContinuing,
-                                  final float volume) {
+    private static Clip playSound(final String fileName, final boolean isContinuing, final float volume) {
         try {
             final AudioInputStream ais     = AudioSystem.getAudioInputStream(new File(fileName));
             final Clip             clip    = AudioSystem.getClip();

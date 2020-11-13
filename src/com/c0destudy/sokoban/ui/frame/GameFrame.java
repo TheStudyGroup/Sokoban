@@ -3,11 +3,10 @@ package com.c0destudy.sokoban.ui.frame;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.level.Record;
-import com.c0destudy.sokoban.misc.Point;
-import com.c0destudy.sokoban.misc.Resource;
-import com.c0destudy.sokoban.skin.Skin;
-import com.c0destudy.sokoban.sound.SoundManager;
-import com.c0destudy.sokoban.ui.panel.GamePanel;
+import com.c0destudy.sokoban.tile.Point;
+import com.c0destudy.sokoban.resource.Resource;
+import com.c0destudy.sokoban.resource.SoundManager;
+import com.c0destudy.sokoban.ui.panel.BoardPanel;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -17,7 +16,7 @@ import java.util.TimerTask;
 public class GameFrame extends JFrame
 {
     private final Level     level;
-    private GamePanel       gamePanel = null;
+    private BoardPanel      boardPanel = null;
     private final boolean   isReplay;
     private final Timer     replayTimer = new Timer();
     private TimerTask       replayTask;
@@ -36,17 +35,17 @@ public class GameFrame extends JFrame
             setTitle(getTitle() + " (replay mode)");
             level.setRecordEnabled(false);
             level.resetWithoutRecords();
-            gamePanel.repaint();
+            boardPanel.repaint();
             startReplay();
         }
         SoundManager.playBackgroundMusic();
     }
 
     private void initUI() {
-        gamePanel = new GamePanel(level, isReplay);
-        gamePanel.addKeyListener(new TKeyAdapter());
-        getContentPane().add(gamePanel);
-        setSize(gamePanel.getSize());
+        boardPanel = new BoardPanel(level, isReplay, true);
+        boardPanel.addKeyListener(new TKeyAdapter());
+        getContentPane().add(boardPanel);
+        setSize(boardPanel.getSize());
         pack();                      // 프레임 사이즈 맞추기
         setLocationRelativeTo(null); // 화면 중앙으로 이동
     }
@@ -89,7 +88,7 @@ public class GameFrame extends JFrame
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
                     SoundManager.playPlayerMoveSound(); // 이동 사운드
                     level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
-                    gamePanel.repaint();
+                    boardPanel.repaint();
                     replayTime = System.currentTimeMillis();
                     replayIndex++;
                 }
@@ -117,7 +116,7 @@ public class GameFrame extends JFrame
             switch (keyCode) {
                 case KeyEvent.VK_R: // 재시작
                     level.reset();
-                    gamePanel.repaint();
+                    boardPanel.repaint();
                     return;
                 case KeyEvent.VK_ESCAPE:
                     closeUI();
@@ -132,7 +131,7 @@ public class GameFrame extends JFrame
             switch (keyCode) {
                 case KeyEvent.VK_U: // undo
                     level.undoMove();
-                    gamePanel.repaint();
+                    boardPanel.repaint();
                     return;
                 case KeyEvent.VK_LEFT: // Player1
                 case KeyEvent.VK_RIGHT:
@@ -172,7 +171,7 @@ public class GameFrame extends JFrame
 
             level.movePlayerAndBaggage(playerIndex, direction); // 플레이어 이동
             SoundManager.playPlayerMoveSound(); // 이동 사운드
-            gamePanel.repaint(); // 다시 그리기
+            boardPanel.repaint(); // 다시 그리기
 
             if (level.isCompleted() || level.isFailed()) {
                 SoundManager.stopBackgroundMusic();

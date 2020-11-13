@@ -4,7 +4,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeButton;
 
 public class AboutPanel extends BasePanel
 {
@@ -15,13 +14,13 @@ public class AboutPanel extends BasePanel
 
     private void initUI() {
         Arrays.asList(
-                makeVSpace(50),
-                makeLabel("A B O U T", true, fontTitle),
-                makeVSpace(40),
-                makeLabel("Sokoban Game", true, fontText),
-                makeVSpace(220),
-                makeVSpace(20),
-                makeButton("Back", 450, 45, true, fontLargeButton, listener, colorButton, colorButtonBack)
+            makeVSpace(50),
+            makeTitleLabel("A B O U T", true),
+            makeVSpace(40),
+            makeLabel("Sokoban Game", true),
+            makeVSpace(220),
+            makeVSpace(20),
+            makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);
     }
 }
