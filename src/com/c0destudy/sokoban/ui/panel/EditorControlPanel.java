@@ -15,7 +15,7 @@ public class EditorControlPanel extends BasePanel
     private void initUI() {
         Arrays.asList(
             makeVSpace(30),
-            makeLabel("< LEVEL EDITOR >", true),
+            makeLargeLabel("< LEVEL EDITOR >", true),
             makeVSpace(30),
             makeButton("Eraser",      220, 30, true),
             makeVSpace(10),

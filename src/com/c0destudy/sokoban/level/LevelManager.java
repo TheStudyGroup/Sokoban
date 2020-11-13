@@ -33,10 +33,10 @@ public class LevelManager
     /**
      * 빈 레벨 인스턴스를 생성합니다.
      *
-     * @return Level     레벨 인스턴스
+     * @return Level 레벨 인스턴스
      */
     public static Level createEmptyLevel() {
-        return new Level("empty", 20, 20, 0);
+        return new Level("MyLevel", 15, 15, 0);
     }
 
     /**

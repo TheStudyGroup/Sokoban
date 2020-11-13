@@ -39,7 +39,7 @@ public class LevelPanel extends BasePanel
             makeHBox(450, 240, true, Arrays.asList(
                 makeScroll(250, 240, false, true, levelBox),
                 makeHSpace(10),
-                makeButton("INFO", 200, 240, false))),
+                makeButton("TODO", 200, 240, false))),
             makeVSpace(20),
             makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);

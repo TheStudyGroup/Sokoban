@@ -71,7 +71,6 @@ public class MainFrame extends JFrame
         dispose();
     }
 
-
     private class MainActionListener implements ActionListener
     {
         @Override
@@ -111,6 +110,8 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
+                case "NO LEVELS":
+                    break;
                 case "Back":
                     selectPanel(mainPanel);
                     break;
@@ -128,8 +129,9 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
-                case "Back":
                 case "NO RECORDINGS":
+                    break;
+                case "Back":
                     selectPanel(mainPanel);
                     break;
                 default:
@@ -147,7 +149,7 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
-                case "Add Level":
+                case "CREATE NEW":
                     final Level emptyLevel = LevelManager.createEmptyLevel();
                     FrameManager.showEditorFrame(emptyLevel);
                     closeUI();
@@ -157,7 +159,7 @@ public class MainFrame extends JFrame
                     break;
                 default:
                     final Level level = LevelManager.getNewLevel(button.getText());
-                    FrameManager.showGameFrame(level);
+                    FrameManager.showEditorFrame(level);
                     closeUI();
                     break;
             }
