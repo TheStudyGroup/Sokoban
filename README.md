@@ -12,23 +12,5 @@ The less you move, the higher your score!
 <p align="center"><img src="https://raw.githubusercontent.com/C0deStudy/Sokoban/main/demo/main.png"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/C0deStudy/Sokoban/main/demo/play.png"></p>
 
-<details>
-  <summary>More screenshots</summary>
-
-<p align="center"><img src="https://raw.githubusercontent.com/C0deStudy/Sokoban/main/demo/level.png"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/C0deStudy/Sokoban/main/demo/recording.png"></p>
-</details>
-
-
-## Download
-TODO
-<!-- https://github.com/C0deStudy/Sokoban/releases -->
-
-
-## Development setup
-+ Java 8+
-+ `git clone https://github.com/C0deStudy/Sokoban`
-
 ## License
-MIT License <br>
-For more information about license, see [LICENSE.md](./LICENSE.md).
+MIT License
