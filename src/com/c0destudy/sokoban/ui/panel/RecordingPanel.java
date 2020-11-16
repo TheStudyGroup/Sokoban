@@ -19,25 +19,21 @@ public class RecordingPanel extends BasePanel
     }
 
     private void initUI() {
-        final File                 levelDir = new File(Resource.PATH_RECORDING_ROOT);
-        final String[]             files    = levelDir.list();
-        final ArrayList<Component> levels   = new ArrayList<>();
-        if (files != null && files.length > 0) {
-            for (final String fileName : files) {
-                final String levelName = fileName.substring(0, fileName.lastIndexOf("."));
-                levels.add(makeButton(levelName, 400, 30, true));
-                levels.add(makeVSpace(10));
-            }
-        } else {
-            levels.add(makeButton("NO RECORDINGS", 400, 30, true));
-            levels.add(makeVSpace(10));
+        final String[]             recordings   = Resource.getRecordingList();
+        final ArrayList<Component> recordingBox = new ArrayList<>();
+        for (final String recording : recordings) {
+            recordingBox.add(makeButton(recording, 350, 30, true));
+            recordingBox.add(makeVSpace(10));
+        }
+        if (recordings.length == 0) {
+            recordingBox.add(makeButton("NO RECORDINGS", 400, 30, true));
         }
 
         Arrays.asList(
             makeVSpace(50),
             makeTitleLabel("R E C O R D I N G S", true),
             makeVSpace(40),
-            makeScroll(450, 240, true, true, levels),
+            makeScroll(450, 240, true, true, recordingBox),
             makeVSpace(20),
             makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);

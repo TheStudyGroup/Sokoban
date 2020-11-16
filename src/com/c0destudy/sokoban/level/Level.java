@@ -9,9 +9,10 @@ import java.util.ArrayList;
 public class Level implements Serializable
 {
     private static final long        serialVersionUID = 1L;
-    private final String             name;
-    private final int                width;
-    private final int                height;
+    private String                   name;
+    private int                      width;
+    private int                      height;
+    private int                      difficulty;
     private final ArrayList<Wall>    walls    = new ArrayList<>();
     private final ArrayList<Goal>    goals    = new ArrayList<>();
     private final ArrayList<Baggage> baggages = new ArrayList<>();
@@ -19,52 +20,71 @@ public class Level implements Serializable
     private final ArrayList<Player>  players  = new ArrayList<>();
     private final ArrayList<Record>  records  = new ArrayList<>();
     private boolean                  isRecordEnabled;
-    private final int                minMoveCount;
     private int                      moveCount         = 0;
     private int                      undoCount         = 0;
     private int                      remainingBaggages = 0;
     private long                     timeLastMove      = 0;
     private int                      hp                = 3;
 
-    public Level(final String name, final int width, final int height, final int minMoveCount) {
-        this.name         = name;
-        this.width        = width;
-        this.height       = height;
-        this.minMoveCount = minMoveCount;
+    public Level(final String name, final int width, final int height, final int difficulty) {
+        this.name       = name;
+        this.width      = width;
+        this.height     = height;
+        this.difficulty = difficulty;
         setRecordEnabled(true);
     }
- 
+
     // 레벨 정보
     public String  getName()              { return name;              }
     public int     getWidth()             { return width;             }
     public int     getHeight()            { return height;            }
-    public int     getMinMoveCount()      { return minMoveCount;      }
+    public int     getDifficulty()        { return difficulty;        }
     public int     getMoveCount()         { return moveCount;         }
     public int     getUndoCount()         { return undoCount;         }
     public int     getRemainingBaggages() { return remainingBaggages; }
     public int     getLeftHealth()        { return hp;                }
-    public int     getScore()             { return (minMoveCount * 4 - moveCount) * 10; }
-    public boolean isCompleted()          { return remainingBaggages == 0;              }
-    public boolean isFailed()             { return hp == 0 || getScore() <= 0;          }
-    public boolean getRecordEnabled()     { return isRecordEnabled;                     }
+    public int     getScore()             { return (difficulty * 4 - moveCount) * 10;  }
+    public boolean isCompleted()          { return remainingBaggages == 0;             }
+    public boolean isFailed()             { return hp == 0 || getScore() <= 0;         }
+    public boolean getRecordEnabled()     { return isRecordEnabled;                    }
+    public void    setName      (final String name)    { this.name = name;             }
+    public void    setDifficulty(final int difficulty) { this.difficulty = difficulty; }
     public void    setRecordEnabled(final boolean enabled) {
         isRecordEnabled = enabled;
         if (isRecordEnabled) {
             timeLastMove = System.currentTimeMillis();
         }
     }
+    private void updateRemainingBaggages() {
+        int count = 0;
+        for (final Baggage baggage : getBaggages()) {
+            if (!isGoalAt(baggage.getPosition())) {
+                count++;
+            }
+        }
+        remainingBaggages = count;
+    }
 
-    // 타일
+    // Tile
     public ArrayList<Wall>    getWalls()    { return walls;    }
-    public ArrayList<Goal>    getGoals()    { return goals;    }
     public ArrayList<Baggage> getBaggages() { return baggages; }
+    public ArrayList<Goal>    getGoals()    { return goals;    }
+    public ArrayList<Trigger> getTriggers() { return triggers; }
     public ArrayList<Player>  getPlayers()  { return players;  }
-    public ArrayList<Trigger> getTriggers() { return triggers; }    
     public ArrayList<Movable> getMovables() {
         final ArrayList<Movable> movables = new ArrayList<>();
         movables.addAll(baggages);
         movables.addAll(players);
         return movables;
+    }
+    public ArrayList<Tile> getTiles() {
+        final ArrayList<Tile> tiles = new ArrayList<>();
+        tiles.addAll(walls);
+        tiles.addAll(goals);
+        tiles.addAll(baggages);
+        tiles.addAll(players);
+        tiles.addAll(triggers);
+        return tiles;
     }
     public Player getPlayer(final int index) {
         try {
@@ -73,6 +93,80 @@ public class Level implements Serializable
             return null;
         }
     }
+    private Baggage getBaggageAt(final Point position) {
+        for (final Baggage baggage : baggages) {
+            if (baggage.getPosition().equals(position)) {
+                return baggage;
+            }
+        }
+        return null;
+    }
+
+    private boolean isInRange(final Point position) {
+        if (position.getX() < 0 || position.getX() >= width)  return false;
+        if (position.getY() < 0 || position.getY() >= height) return false;
+        return true;
+    }
+
+    public boolean addTile(final Tile tile) {
+        final Point pos = tile.getPosition();
+        if (tile instanceof Wall) {           // Wall
+            if (isTileAt(pos)) return false;
+            walls.add((Wall) tile);
+        } else if (tile instanceof Baggage) { // Baggage
+            if (isWallAt(pos) || isBaggageAt(pos) || isTriggerAt(pos) || isPlayerAt(pos)) return false;
+            baggages.add((Baggage) tile);
+            updateRemainingBaggages();
+        } else if (tile instanceof Goal) {    // Goal
+            if (isWallAt(pos) || isTriggerAt(pos) || isGoalAt(pos)) return false;
+            goals.add((Goal) tile);
+            updateRemainingBaggages();
+        } else if (tile instanceof Trigger) { // Trigger
+            if (isTileAt(pos)) return false;
+            triggers.add((Trigger) tile);
+        } else if (tile instanceof Player) {  // Player
+            if (isWallAt(pos) || isBaggageAt(pos) || isTriggerAt(pos) || isPlayerAt(pos)) return false;
+            players.add((Player) tile);
+        }
+        return true;
+    }
+
+    public boolean removeTile(final Tile tile) {
+        if (tile instanceof Wall) {           // Wall
+            return walls.remove(tile);
+        } else if (tile instanceof Baggage) { // Baggage
+            if (baggages.remove(tile)) {
+                updateRemainingBaggages();
+                return true;
+            }
+        } else if (tile instanceof Goal) {    // Goal
+            if (goals.remove(tile)) {
+                updateRemainingBaggages();
+                return true;
+            }
+        } else if (tile instanceof Trigger) { // Trigger
+            return triggers.remove(tile);
+        } else if (tile instanceof Player) {  // Player
+            return players.remove(tile);
+        }
+        return false;
+    }
+
+    public void removeTileAt(final Point point) {
+        getTiles()
+            .stream()
+            .filter(e -> e.getPosition().equals(point))
+            .forEach(this::removeTile);
+        updateRemainingBaggages();
+    }
+
+    public boolean isWallAt   (final Point p) { return walls     .stream().anyMatch(e -> e.getPosition().equals(p)); }
+    public boolean isBaggageAt(final Point p) { return baggages  .stream().anyMatch(e -> e.getPosition().equals(p)); }
+    public boolean isGoalAt   (final Point p) { return goals     .stream().anyMatch(e -> e.getPosition().equals(p)); }
+    public boolean isTriggerAt(final Point p) { return triggers  .stream().anyMatch(e -> e.getPosition().equals(p)); }
+    public boolean isPlayerAt (final Point p) { return players   .stream().anyMatch(e -> e.getPosition().equals(p)); }
+    public boolean isTileAt   (final Point p) { return getTiles().stream().anyMatch(e -> e.getPosition().equals(p)); }
+
     public Record getRecord(final int index) {
         if (index >= 0 && index < records.size()) {
             return records.get(index);
@@ -80,11 +174,6 @@ public class Level implements Serializable
             return null;
         }
     }
-    public void addWall   (final Wall wall)       { walls.add(wall);     }
-    public void addGoal   (final Goal goal)       { goals.add(goal);     }
-    public void addTrigger(final Trigger trigger) { triggers.add(trigger); }
-    public void addPlayer (final Player player)   { players.add(player); }
-    public void addBaggage(final Baggage baggage) { baggages.add(baggage); remainingBaggages++; }
 
     public void reset() {
         records.clear();
@@ -95,15 +184,21 @@ public class Level implements Serializable
         for (final Movable movable : getMovables()) {
             movable.setPosition(movable.getOriginalPosition());
         }
-        timeLastMove      = System.currentTimeMillis();
-        moveCount         = 0;
-        remainingBaggages = 0;
-        hp                = 3;
-        for (final Baggage baggage : getBaggages()) {
-            if (!isGoalAt(baggage.getPosition())) {
-                remainingBaggages++;
-            }
-        }
+        timeLastMove = System.currentTimeMillis();
+        moveCount    = 0;
+        hp           = 3;
+        updateRemainingBaggages();
+    }
+
+    public void resetAndResize(final int width, final int height) {
+        if (width <= 0 || width > 30 || height <= 0 || height > 30) return;
+        this.width  = width;
+        this.height = height;
+        reset();
+        getTiles()
+            .stream()
+            .filter(e -> !isInRange(e.getPosition()))
+            .forEach(this::removeTile); // 범위를 벗어난 타일은 제거한다.
     }
 
     /**
@@ -117,10 +212,13 @@ public class Level implements Serializable
      * @param  direction   플레이어의 이동 방향 (좌표 변화량)
      * @return             성공 여부
      */
-    public boolean movePlayerAndBaggage(final int playerIndex, final Point direction) {
+    public boolean movePlayer(final int playerIndex, final Point direction) {
         // 플레이어가 이동할 새로운 좌표 계산
         final Player player       = getPlayer(playerIndex);
         final Point  newPlayerPos = Point.add(player.getPosition(), direction);
+
+        // 범위를 벗어나는 경우 => 이동 불가
+        if (!isInRange(newPlayerPos)) return false;
 
         // 이동할 위치에 벽이 있는 경우 => 이동 불가
         if (isWallAt(newPlayerPos)) return false;
@@ -216,80 +314,5 @@ public class Level implements Serializable
 
         moveCount--;
         undoCount++;
-    }
-
-    /**
-     * 해당 좌표에 벽이 있는지 확인합니다.
-     *
-     * @param  position 좌표
-     * @return          벽의 존재 여부
-     */
-    private boolean isWallAt(final Point position) {
-        for (final Wall wall : walls) {
-            if (wall.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 해당 좌표에 목적지가 있는지 확인합니다.
-     *
-     * @param  position 좌표
-     * @return          목적지의 존재 여부
-     */
-    private boolean isGoalAt(final Point position) {
-        for (final Goal goal : goals) {
-            if (goal.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 해당 좌표에 플레이어가 있는지 확인합니다.
-     *
-     * @param  position 좌표
-     * @return          플레이어의 존재 여부
-     */
-    private boolean isPlayerAt(final Point position) {
-        for (final Player player : players) {
-            if (player.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 해당 좌표에 함정이 있는지 확인합니다.
-     *
-     * @param  position 좌표
-     * @return          함정의 존재 여부
-     */
-    private boolean isTriggerAt(final Point position) {
-    	for(final Trigger trigger: triggers) {
-    		if(trigger.getPosition().equals(position)) {
-    			return true;
-    		}
-    	}
-		return false;
-    }
-
-    /**
-     * 해당 좌표에 있는 물건 객체를 가져옵니다.
-     *
-     * @param  position 좌표
-     * @return          물건 객체
-     */
-    private Baggage getBaggageAt(final Point position) {
-        for (final Baggage baggage : baggages) {
-            if (baggage.getPosition().equals(position)) {
-                return baggage;
-            }
-        }
-        return null;
     }
 }

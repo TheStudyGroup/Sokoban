@@ -22,13 +22,14 @@ import java.util.stream.Stream;
 public class LevelManager
 {
     // txt 파일에서 사용하는 레벨 기호 모음
+    private static final char LEVEL_SYMBOL_SPACE           = ' ';
     private static final char LEVEL_SYMBOL_WALL            = '#';
     private static final char LEVEL_SYMBOL_BAGGAGE         = '$';
     private static final char LEVEL_SYMBOL_BAGGAGE_AT_GOAL = '*';
     private static final char LEVEL_SYMBOL_GOAL            = '.';
+    private static final char LEVEL_SYMBOL_TRIGGER         = '!';
     private static final char LEVEL_SYMBOL_PLAYER          = '@';
     private static final char LEVEL_SYMBOL_PLAYER_AT_GOAL  = '+';
-    private static final char LEVEL_SYMBOL_TRIGGER         = '!';
 
     /**
      * 빈 레벨 인스턴스를 생성합니다.
@@ -36,7 +37,7 @@ public class LevelManager
      * @return Level 레벨 인스턴스
      */
     public static Level createEmptyLevel() {
-        return new Level("MyLevel", 15, 15, 0);
+        return new Level("MyLevel", 15, 15, 100);
     }
 
     /**
@@ -45,13 +46,13 @@ public class LevelManager
      * @param  levelName 레벨 이름
      * @return Level     레벨 인스턴스
      */
-    public static Level getNewLevel(final String levelName) {
-        final Path    path    = Paths.get(String.format(Resource.PATH_LEVEL, levelName));
+    public static Level createLevelFromFile(final String levelName) {
+        final Path    path    = Paths.get(Resource.getLevelPath(levelName));
         final Charset charset = StandardCharsets.UTF_8;
         try {
             final List<String> lines        = Files.readAllLines(path, charset);
             final int          minMoveCount = Integer.parseInt(lines.remove(0));
-            return getNewLevelFromStringList(levelName, lines, minMoveCount);
+            return createLevelFromStringList(levelName, lines, minMoveCount);
         } catch (IOException e) {
             return null;
         }
@@ -66,10 +67,7 @@ public class LevelManager
      * @param  levelData 레벨 데이터가 행별로 구분된 리스트
      * @return Level     레벨 인스턴스
      */
-    private static Level getNewLevelFromStringList(final String       levelName,
-                                                   final List<String> levelData,
-                                                   final int          minMoveCount
-    ) {
+    private static Level createLevelFromStringList(final String levelName, final List<String> levelData, final int minMoveCount) {
         // 레벨의 가로, 세로 크기 계산
         final int width = levelData
                 .stream()
@@ -87,28 +85,28 @@ public class LevelManager
                 final Point point = new Point(x, y);
                 switch (line.charAt(x)) {
                     case LEVEL_SYMBOL_WALL:
-                        level.addWall(new Wall(point));
+                        level.addTile(new Wall(point));
                         break;
                     case LEVEL_SYMBOL_BAGGAGE:
-                        level.addBaggage(new Baggage(point));
+                        level.addTile(new Baggage(point));
                         break;
                     case LEVEL_SYMBOL_BAGGAGE_AT_GOAL:
-                        level.addBaggage(new Baggage(point));
-                        level.addGoal(new Goal(new Point(point)));
+                        level.addTile(new Baggage(point));
+                        level.addTile(new Goal(new Point(point)));
                         break;
                     case LEVEL_SYMBOL_GOAL:
-                        level.addGoal(new Goal(point));
-                        break;
-                    case LEVEL_SYMBOL_PLAYER:
-                        level.addPlayer(new Player(point));
-                        break;
-                    case LEVEL_SYMBOL_PLAYER_AT_GOAL:
-                        level.addPlayer(new Player(point));
-                        level.addGoal(new Goal(new Point(point)));
+                        level.addTile(new Goal(point));
                         break;
                     case LEVEL_SYMBOL_TRIGGER:
-                    	level.addTrigger(new Trigger(point));
-                    	break;
+                        level.addTile(new Trigger(point));
+                        break;
+                    case LEVEL_SYMBOL_PLAYER:
+                        level.addTile(new Player(point));
+                        break;
+                    case LEVEL_SYMBOL_PLAYER_AT_GOAL:
+                        level.addTile(new Player(point));
+                        level.addTile(new Goal(new Point(point)));
+                        break;
                     default:
                         break;
                 }
@@ -116,6 +114,41 @@ public class LevelManager
         }
 
         return level;
+    }
+
+    private static char getLevelSymbolAt(final Level level, final int x, final int y) {
+        final Point p = new Point(x, y);
+        if (level.isWallAt(p))    return LEVEL_SYMBOL_WALL;
+        if (level.isTriggerAt(p)) return LEVEL_SYMBOL_TRIGGER;
+        if (level.isBaggageAt(p)) return level.isGoalAt(p) ? LEVEL_SYMBOL_BAGGAGE_AT_GOAL : LEVEL_SYMBOL_BAGGAGE;
+        if (level.isPlayerAt(p))  return level.isGoalAt(p) ? LEVEL_SYMBOL_PLAYER_AT_GOAL  : LEVEL_SYMBOL_PLAYER;
+        if (level.isGoalAt(p))    return LEVEL_SYMBOL_GOAL;
+        return LEVEL_SYMBOL_SPACE;
+    }
+
+    private static String convertLevelToString(final Level level) {
+        final StringBuilder lines = new StringBuilder();
+        for (int y = 0; y < level.getHeight(); y++) {
+            final StringBuilder line = new StringBuilder();
+            for (int x = 0; x < level.getWidth(); x++) {
+                line.append(getLevelSymbolAt(level, x, y));
+            }
+            lines.append(trimRight(line.toString()));
+            lines.append("\n");
+        }
+        return trimVertical(lines.toString());
+    }
+
+    public static boolean saveLevelToTextFile(final Level level) {
+        try {
+            final OutputStream output    = new FileOutputStream(Resource.getLevelPath(level.getName()));
+            final String       levelData = level.getDifficulty() + "\n" + convertLevelToString(level);
+            output.write(levelData.getBytes());
+        } catch (Exception e) {
+            e.getStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -208,19 +241,26 @@ public class LevelManager
         return true;
     }
 
-    public static ArrayList<String> getLevelList() {
-        final ArrayList<String> levels    = new ArrayList<>();
-        final File              directory = new File(Resource.PATH_LEVEL_ROOT);
-        final String[]          files     = directory.list();
 
-        if (files != null && files.length > 0) {
-            Arrays
-                .stream(files)
-                .filter(e -> e.contains(".txt"))
-                .map(e -> e.substring(0, e.lastIndexOf(".")))
-                .forEach(levels::add);
+    // String Helper
+    public static String trimLeft    (final String string) { return string.replaceAll("^\\s+",""); }
+    public static String trimRight   (final String string) { return string.replaceAll("\\s+$",""); }
+    public static String trimVertical(final String string) {
+        final String[] lines = string.split("\\n");
+        int start = 0, end = lines.length - 1;
+        for (; start < lines.length; start++) {
+            if (!lines[start].trim().equals("")) break;
         }
-
-        return levels;
+        for (; end >= 0; end--) {
+            if (!lines[end].trim().equals("")) break;
+        }
+        final StringBuilder result = new StringBuilder();
+        for (int i = start; i <= end; i++) {
+            result.append(lines[i]);
+            if (i != end) {
+                result.append("\n");
+            }
+        }
+        return result.toString();
     }
 }

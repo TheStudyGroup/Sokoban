@@ -1,5 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
+import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
 import com.c0destudy.sokoban.ui.frame.FrameManager;
 import com.c0destudy.sokoban.ui.helper.MakeComponent;
@@ -10,12 +11,12 @@ import java.awt.event.ActionListener;
 
 public class BasePanel extends JPanel
 {
-    private final Skin           skin;
-    private final ActionListener listener;
+    protected final Skin           skin;
+    private   final ActionListener listener;
 
     public BasePanel(final ActionListener listener, final int width, final int height) {
         super();
-        this.skin     = FrameManager.getSkin();
+        this.skin     = Resource.getSkin();
         this.listener = listener;
 
         setMaximumSize(new Dimension(width, height));
@@ -47,39 +48,52 @@ public class BasePanel extends JPanel
 
     // UI helper methods
 
+    // Button
     protected JButton makeButton(final String text, final int width, final int height, final boolean isCenter, final Font font) {
         return MakeComponent.makeButton(
-                text,
-                width,
-                height,
-                isCenter,
-                font,
-                listener,
+                text, width, height, isCenter, font, listener,
                 skin.getColor(Skin.COLORS.ButtonText),
                 skin.getColor(Skin.COLORS.Button));
     }
-
     protected JButton makeButton(final String text, final int width, final int height, final boolean isCenter) {
         return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Medium));
     }
-
     protected JButton makeLargeButton(final String text, final int width, final int height, final boolean isCenter) {
         return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Large));
     }
 
-    protected JLabel makeLabel(final String text, final boolean isCenter, final Font font) {
-        return MakeComponent.makeLabel(text, isCenter, font);
-    }
-
+    // Label
     protected JLabel makeLabel(final String text, final boolean isCenter) {
-        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Medium));
+        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Medium));
     }
-
     protected JLabel makeTitleLabel(final String text, final boolean isCenter) {
-        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Title));
+        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Title));
+    }
+    protected JLabel makeLargeLabel(final String text, final boolean isCenter) {
+        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Large));
+    }
+    protected JLabel makeSmallLabel(final String text, final boolean isCenter) {
+        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Small));
     }
 
-    protected JLabel makeLargeLabel(final String text, final boolean isCenter) {
-        return makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Large));
+    // Text
+    public JTextField makeTextBox(
+            final int     width,
+            final int     height,
+            final boolean isCenter,
+            final String  defaultText,
+            final int     textAlignment
+    ) {
+        return MakeComponent.makeTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultText, textAlignment);
+    }
+
+    public JFormattedTextField makeNumberTextBox(
+            final int     width,
+            final int     height,
+            final boolean isCenter,
+            final int     defaultValue,
+            final int     textAlignment
+    ) {
+        return MakeComponent.makeNumberTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultValue, textAlignment);
     }
 }

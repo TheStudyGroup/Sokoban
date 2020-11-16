@@ -1,6 +1,7 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.LevelManager;
+import com.c0destudy.sokoban.resource.Resource;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -19,27 +20,27 @@ public class LevelPanel extends BasePanel
 
     private void initUI() {
         final Map<String, Integer> bestScores = LevelManager.getBestScores();
-        // final int    bestScore = bestScores.getOrDefault(levelName, 0);
-        
-        final ArrayList<String>    levels   = LevelManager.getLevelList();
+        final String[]             levels   = Resource.getLevelList();
         final ArrayList<Component> levelBox = new ArrayList<>();
-        if (levels.isEmpty()) {
+        for (final String level : levels) {
+            final int bestScore = bestScores.getOrDefault(level, 0);
+            Arrays.asList(
+                makeHBox(400, 30, true, Arrays.asList(
+                    makeButton(level, 230, 30, false),
+                    makeHSpace(20),
+                    makeLargeLabel("Best: " + (bestScore == 0 ? "none" : bestScore), false))),
+                makeVSpace(10)
+            ).forEach(levelBox::add);
+        }
+        if (levels.length == 0) {
             levelBox.add(makeButton("NO LEVELS", 220, 30, false));
-        } else {
-            levels.forEach(levelName -> {
-                levelBox.add(makeButton(levelName, 220, 30, false));
-                levelBox.add(makeVSpace(10));
-            });
         }
 
         Arrays.asList(
             makeVSpace(50),
             makeTitleLabel("L E V E L S", true),
             makeVSpace(40),
-            makeHBox(450, 240, true, Arrays.asList(
-                makeScroll(250, 240, false, true, levelBox),
-                makeHSpace(10),
-                makeButton("TODO", 200, 240, false))),
+            makeScroll(450, 240, true, true, levelBox),
             makeVSpace(20),
             makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);

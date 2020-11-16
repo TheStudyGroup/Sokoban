@@ -20,17 +20,14 @@ public class SettingPanel extends BasePanel
     }
 
     private void initUI() {
-        final File                 skinRoot  = new File(Resource.PATH_SKIN_ROOT);
-        final String[]             skinDirs  = skinRoot.list();
-        final ArrayList<Component> skinComps = new ArrayList<>();
-        if (skinDirs != null && skinDirs.length > 0) {
-            for (final String skinName : skinDirs) {
-                skinComps.add(makeButton(skinName, 400, 30, true));
-                skinComps.add(makeVSpace(10));
-            }
-        } else {
-            skinComps.add(makeButton("NO SKIN", 400, 30, true));
-            skinComps.add(makeVSpace(10));
+        final String[]             skins   = Resource.getSkinList();
+        final ArrayList<Component> skinBox = new ArrayList<>();
+        for (final String skin : skins) {
+            skinBox.add(makeButton(skin, 400, 30, true));
+            skinBox.add(makeVSpace(10));
+        }
+        if (skins.length == 0) {
+            skinBox.add(makeButton("NO SKIN", 400, 30, true));
         }
 
         final String soundText = SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
@@ -40,7 +37,7 @@ public class SettingPanel extends BasePanel
             makeVSpace(40),
             makeLabel("S K I N", true),
             makeVSpace(10),
-            makeScroll(450, 120, true, true, skinComps),
+            makeScroll(450, 120, true, true, skinBox),
             makeVSpace(20),
             makeLabel("S O U N D", true),
             makeVSpace(10),

@@ -101,9 +101,9 @@ public class Skin
 
     // private
     private Image getImage(final String imageName) { return Resource.getSkinImage(name, imageName); }
-    private void setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
-    private void setColor(final COLORS type, final Color color) { colors[type.ordinal()] = color; }
-    private void setFont (final FONTS type,  final Font font)   { fonts[type.ordinal()] = font;   }
+    private void  setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
+    private void  setColor(final COLORS type, final Color color) { colors[type.ordinal()] = color; }
+    private void  setFont (final FONTS type,  final Font font)   { fonts[type.ordinal()] = font;   }
 
     // public
     public String getName()                   { return name;                   }

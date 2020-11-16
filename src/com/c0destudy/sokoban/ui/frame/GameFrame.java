@@ -57,8 +57,6 @@ public class GameFrame extends JFrame
             } else {
                 // 최고 기록 업데이트
                 final int bestScore = LevelManager.getBestScore(level.getName());
-                System.out.println(bestScore);
-                System.out.println(level.getScore());
                 if (bestScore < level.getScore() || bestScore == 0) {
                     LevelManager.setBestScore(level.getName(), level.getScore());
                 }
@@ -87,7 +85,7 @@ public class GameFrame extends JFrame
                 }
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
                     SoundManager.playPlayerMoveSound(); // 이동 사운드
-                    level.movePlayerAndBaggage(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
+                    level.movePlayer(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
                     boardPanel.repaint();
                     replayTime = System.currentTimeMillis();
                     replayIndex++;
@@ -169,7 +167,7 @@ public class GameFrame extends JFrame
                     break;
             }
 
-            level.movePlayerAndBaggage(playerIndex, direction); // 플레이어 이동
+            level.movePlayer(playerIndex, direction); // 플레이어 이동
             SoundManager.playPlayerMoveSound(); // 이동 사운드
             boardPanel.repaint(); // 다시 그리기
 

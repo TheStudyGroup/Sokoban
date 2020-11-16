@@ -111,12 +111,11 @@ public class MainFrame extends JFrame
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
                 case "NO LEVELS":
-                    break;
                 case "Back":
                     selectPanel(mainPanel);
                     break;
                 default:
-                    FrameManager.showGameFrame(LevelManager.getNewLevel(button.getText()));
+                    FrameManager.showGameFrame(LevelManager.createLevelFromFile(button.getText()));
                     closeUI();
                     break;
             }
@@ -130,7 +129,6 @@ public class MainFrame extends JFrame
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
                 case "NO RECORDINGS":
-                    break;
                 case "Back":
                     selectPanel(mainPanel);
                     break;
@@ -158,7 +156,7 @@ public class MainFrame extends JFrame
                     selectPanel(mainPanel);
                     break;
                 default:
-                    final Level level = LevelManager.getNewLevel(button.getText());
+                    final Level level = LevelManager.createLevelFromFile(button.getText());
                     FrameManager.showEditorFrame(level);
                     closeUI();
                     break;
@@ -172,6 +170,7 @@ public class MainFrame extends JFrame
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
             switch (button.getText()) {
+                case "NO SKIN":
                 case "Back":
                     selectPanel(mainPanel);
                     break;
@@ -184,7 +183,7 @@ public class MainFrame extends JFrame
                     SoundManager.setBackgroundEnabled(true);
                     break;
                 default:
-                    FrameManager.setSkin(new Skin(button.getText()));
+                    Resource.setSkin(new Skin(button.getText()));
                     FrameManager.showMainFrame();
                     closeUI();
                     break;

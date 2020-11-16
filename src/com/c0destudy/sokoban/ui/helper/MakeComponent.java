@@ -1,8 +1,10 @@
 package com.c0destudy.sokoban.ui.helper;
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.List;
 
 public class MakeComponent
@@ -120,5 +122,49 @@ public class MakeComponent
         }
         components.forEach(panel::add);
         return scroll;
+    }
+
+    public static JTextField makeTextBox(
+            final int     width,
+            final int     height,
+            final boolean isCenter,
+            final Font    font,
+            final String  defaultText,
+            final int     textAlignment
+    ) {
+        final JTextField text = new JTextField(defaultText, 20);
+        final Dimension  size = new Dimension(width, height);
+        text.setMaximumSize(size);
+        text.setPreferredSize(size);
+        text.setFont(font);
+        text.setHorizontalAlignment(textAlignment);
+        if (isCenter) text.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return text;
+    }
+
+    public static JFormattedTextField makeNumberTextBox(
+            final int     width,
+            final int     height,
+            final boolean isCenter,
+            final Font    font,
+            final int     defaultValue,
+            final int     textAlignment
+    ) {
+        final NumberFormat    format    = NumberFormat.getInstance();
+        final NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(0);
+        formatter.setMaximum(Integer.MAX_VALUE);
+        formatter.setAllowsInvalid(false);
+        formatter.setCommitsOnValidEdit(true);
+        final JFormattedTextField text = new JFormattedTextField(formatter);
+        final Dimension           size = new Dimension(width, height);
+        text.setValue(defaultValue);
+        text.setMaximumSize(size);
+        text.setPreferredSize(size);
+        text.setFont(font);
+        text.setHorizontalAlignment(textAlignment);
+        if (isCenter) text.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return text;
     }
 }

@@ -1,8 +1,10 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.Level;
+import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
-import com.c0destudy.sokoban.tile.Tile;
+import com.c0destudy.sokoban.tile.*;
+import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.ui.frame.FrameManager;
 
 import java.awt.*;
@@ -25,14 +27,16 @@ public class BoardPanel extends JPanel
     private final BoardMouseListener listener;
     private final boolean            isReplay;
     private boolean                  isEditable;
+    private boolean                  isBoundaryVisible;
     private final boolean            showInfo;
     private int                      mouseTileX;
     private int                      mouseTileY;
+    private String                   tileBrush;
 
     public BoardPanel(final Level level, final boolean isReplay, final boolean showInfo) {
         super();
         this.level    = level;
-        this.skin     = FrameManager.getSkin();
+        this.skin     = Resource.getSkin();
         this.listener = new BoardMouseListener();
         this.isReplay = isReplay;
         this.showInfo = showInfo;
@@ -43,13 +47,15 @@ public class BoardPanel extends JPanel
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         setEditable(false);
+        setBoundaryVisible(false);
     }
 
-    public void setEditable(final boolean isEditable) {
-        this.isEditable = isEditable;
+    public void setEditable(final boolean value) {
+        isEditable = value;
         if (isEditable) {
             mouseTileX = -1;
             mouseTileY = -1;
+            tileBrush  = "";
             addMouseListener(listener);
             addMouseMotionListener(listener);
         } else {
@@ -58,11 +64,31 @@ public class BoardPanel extends JPanel
         }
     }
 
+    public void setBoundaryVisible(final boolean value) {
+        isBoundaryVisible = value;
+    }
+
+    public void setTileBrush(final String tileName) {
+        tileBrush = tileName;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(skin.getColor(Skin.COLORS.Background));
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, width, height);
+
+        // 보드 경계 그리기
+        if (isBoundaryVisible) {
+            g.setColor(Color.BLACK);
+            final int rectX = MARGIN - 20;
+            final int rectY = MARGIN - 20;
+            final int rectW = level.getWidth()  * skin.getImageSize() + 20 * 2;
+            final int rectH = level.getHeight() * skin.getImageSize() + 20 * 2;
+            g.fillRect(rectX, rectY, rectW, rectH);
+            g.setColor(skin.getColor(Skin.COLORS.Background));
+            g.fillRect(rectX + 5, rectY + 5, rectW - 10, rectH - 10);
+        }
 
         // 타일 그리기
         drawTiles(g, level.getWalls(),    skin.getImage(Skin.IMAGES.Wall));
@@ -70,7 +96,7 @@ public class BoardPanel extends JPanel
         drawTiles(g, level.getTriggers(), skin.getImage(Skin.IMAGES.Trigger));
         drawTiles(g, level.getBaggages(), skin.getImage(Skin.IMAGES.Baggage));
 
-        // 플레이어
+        // 플레이어 그리기
         switch (level.getPlayers().size()) {
             case 2:
                 drawTile(g, level.getPlayer(1), skin.getImage(Skin.IMAGES.Player2));
@@ -78,6 +104,7 @@ public class BoardPanel extends JPanel
                 drawTile(g, level.getPlayer(0), skin.getImage(Skin.IMAGES.Player1));
         }
 
+        // 포인터 그리기 (편집 모드)
         if (isEditable && mouseTileX != -1) {
             drawImage(g, mouseTileX, mouseTileY, skin.getImage(Skin.IMAGES.Pointer));
         }
@@ -123,8 +150,46 @@ public class BoardPanel extends JPanel
         }
     }
 
-    private void setTile(final int x, final int y) {
-        // TODO
+    private void setTile(final Point point) {
+        switch (tileBrush) {
+            case "Eraser":
+                level.removeTileAt(point);
+                break;
+            case "Wall":
+                if (level.isWallAt(point)) break;
+                level.removeTileAt(point);
+                level.addTile(new Wall(point));
+                break;
+            case "Baggage":
+                if (level.isBaggageAt(point)) break;
+                if (!level.addTile(new Baggage(point))) {
+                    level.removeTileAt(point);
+                    level.addTile(new Baggage(point));
+                }
+                break;
+            case "Goal":
+                if (level.isGoalAt(point)) break;
+                if (!level.addTile(new Goal(point))) {
+                    level.removeTileAt(point);
+                    level.addTile(new Goal(point));
+                }
+                break;
+            case "Trigger":
+                if (level.isTriggerAt(point)) break;
+                level.removeTileAt(point);
+                level.addTile(new Trigger(point));
+                break;
+            case "Player":
+                if (!level.addTile(new Player(point))) {
+                    level.removeTileAt(point);
+                    level.addTile(new Player(point));
+                }
+                // 플레이어가 2명을 초과할 경우 먼저 추가된 플레이어 제거
+                if (level.getPlayers().size() > 2) {
+                    level.getPlayers().remove(0);
+                }
+                break;
+        }
     }
 
     class BoardMouseListener implements MouseListener, MouseMotionListener
@@ -135,7 +200,7 @@ public class BoardPanel extends JPanel
         private final int endY   = MARGIN + level.getHeight() * skin.getImageSize();
 
         private boolean isInRange(final int x, final int y) {
-            return (x >= startX && x <= endX && y >= startY && y <= endY);
+            return (x >= startX && x < endX && y >= startY && y < endY);
         }
 
         private void setTilePosition(int x, int y, final boolean isClicked, final boolean isDragged) {
@@ -146,13 +211,14 @@ public class BoardPanel extends JPanel
                 x = y = -1;
             }
             if (isClicked && x != -1) {
-                setTile(x, y);
+                setTile(new Point(x, y));
+                repaint();
             }
             if (x != mouseTileX || y != mouseTileY) {
                 mouseTileX = x;
                 mouseTileY = y;
                 if (isDragged && x != -1) {
-                    setTile(x, y);
+                    setTile(new Point(x, y));
                 }
                 repaint();
             }
