@@ -23,6 +23,4 @@
 hs_err_pid*
 
 out/*
-# data/*
-data/bestscores.txt
-data/pause.dat
+data/*
