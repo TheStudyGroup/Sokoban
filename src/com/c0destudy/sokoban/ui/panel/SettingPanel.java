@@ -1,16 +1,15 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.resource.Resource;
-import com.c0destudy.sokoban.resource.SoundManager;
+import com.c0destudy.sokoban.resource.Sound;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeButton;
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeScroll;
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeVSpace;
 
 public class SettingPanel extends BasePanel
 {
@@ -30,7 +29,7 @@ public class SettingPanel extends BasePanel
             skinBox.add(makeButton("NO SKIN", 400, 30, true));
         }
 
-        final String soundText = SoundManager.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
+        final String soundText = Sound.getBackgroundEnabled() ? "BGM: ON" : "BGM: OFF";
         Arrays.asList(
             makeVSpace(50),
             makeTitleLabel("S E T T I N G S", true),

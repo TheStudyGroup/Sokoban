@@ -1,6 +1,5 @@
 package com.c0destudy.sokoban.level;
 
-import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.tile.*;
 
 import java.io.Serializable;
@@ -303,10 +302,10 @@ public class Level implements Serializable
         final Point  position  = record.getPosition();
         final Point  direction = record.getDirection();
 
-        // 역방향 이동
+        // 플레이어 역방향 이동
         player.moveDelta(Point.reverse(direction));
 
-        // 물건을 민 경우 물건도 역방향으로 이동시킨다
+        // 물건을 민 경우 => 물건도 역방향 이동
         if (record.isBaggageMoved()) {
             final Baggage baggage = getBaggageAt(Point.add(position, direction, direction));
             moveBaggage(baggage, Point.reverse(direction));

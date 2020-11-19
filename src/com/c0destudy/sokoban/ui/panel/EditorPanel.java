@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeScroll;
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeVSpace;
 
 public class EditorPanel extends BasePanel
 {

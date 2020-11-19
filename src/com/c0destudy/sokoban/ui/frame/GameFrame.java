@@ -3,34 +3,45 @@ package com.c0destudy.sokoban.ui.frame;
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.level.Record;
-import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.resource.Resource;
-import com.c0destudy.sokoban.resource.SoundManager;
+import com.c0destudy.sokoban.resource.Sound;
+import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.ui.panel.BoardPanel;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameFrame extends JFrame
 {
-    private final Level     level;
-    private BoardPanel      boardPanel = null;
-    private final boolean   isReplay;
-    private final Timer     replayTimer = new Timer();
-    private TimerTask       replayTask;
-    private long            replayTime;
-    private int             replayIndex;
+    private final Level      level;
+    private final BoardPanel boardPanel;
+    private final boolean    isReplay;
+    private final Timer      replayTimer = new Timer();
+    private TimerTask        replayTask;
+    private long             replayTime;
+    private int              replayIndex;
 
     public GameFrame(final Level level, final boolean isReplay) {
         super();
-        this.level    = level;
-        this.isReplay = isReplay;
+        this.level      = level;
+        this.isReplay   = isReplay;
+        this.boardPanel = new BoardPanel(level, isReplay, true);
+        boardPanel.addKeyListener(new TKeyAdapter());
+        getContentPane().add(boardPanel);
+        setSize(boardPanel.getSize());
+        pack();                      // 프레임 사이즈 맞추기
+        setLocationRelativeTo(null); // 화면 중앙으로 이동
+
         setTitle("Sokoban - " + level.getName());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new TWindowAdapter());
-        initUI();
+        Sound.playBackgroundMusic();
+
         if (isReplay) {
             setTitle(getTitle() + " (replay mode)");
             level.setRecordEnabled(false);
@@ -38,35 +49,28 @@ public class GameFrame extends JFrame
             boardPanel.repaint();
             startReplay();
         }
-        SoundManager.playBackgroundMusic();
-    }
-
-    private void initUI() {
-        boardPanel = new BoardPanel(level, isReplay, true);
-        boardPanel.addKeyListener(new TKeyAdapter());
-        getContentPane().add(boardPanel);
-        setSize(boardPanel.getSize());
-        pack();                      // 프레임 사이즈 맞추기
-        setLocationRelativeTo(null); // 화면 중앙으로 이동
     }
 
     private void closeUI() {
         if (!isReplay || !level.isFailed()) {
             if (!level.isCompleted()) {
-                LevelManager.saveLevelToFile(level, Resource.PATH_LEVEL_PAUSE);
+                // 아직 클리어하지 않은 경우 일시 정지 파일 저장 (Continue 기능)
+                LevelManager.saveLevelToFile(level, Resource.getPausedPath());
             } else {
                 // 최고 기록 업데이트
                 final int bestScore = LevelManager.getBestScore(level.getName());
+                System.out.println(bestScore);
+                System.out.println(level.getScore());
                 if (bestScore < level.getScore() || bestScore == 0) {
                     LevelManager.setBestScore(level.getName(), level.getScore());
                 }
                 // 리플레이용 파일 저장
-                final String fileName = String.format(Resource.PATH_RECORDING_FILE, level.getName(), level.getScore(), level.getMoveCount());
-                LevelManager.saveLevelToFile(level, fileName);
+                final String path = Resource.getRecordingPath(level.getName(), level.getScore(), level.getMoveCount());
+                LevelManager.saveLevelToFile(level, path);
             }
         }
         stopReplay();
-        SoundManager.stopBackgroundMusic();
+        Sound.stopBackgroundMusic();
         FrameManager.showMainFrame();
         dispose();
     }
@@ -84,7 +88,7 @@ public class GameFrame extends JFrame
                     return;
                 }
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
-                    SoundManager.playPlayerMoveSound(); // 이동 사운드
+                    Sound.playPlayerMoveSound(); // 이동 사운드
                     level.movePlayer(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
                     boardPanel.repaint();
                     replayTime = System.currentTimeMillis();
@@ -97,7 +101,7 @@ public class GameFrame extends JFrame
 
     private void stopReplay() {
         if (level.isCompleted() || level.isFailed()) {
-            SoundManager.stopBackgroundMusic();
+            Sound.stopBackgroundMusic();
         }
         if (replayTask != null) {
             replayTask.cancel();
@@ -168,11 +172,11 @@ public class GameFrame extends JFrame
             }
 
             level.movePlayer(playerIndex, direction); // 플레이어 이동
-            SoundManager.playPlayerMoveSound(); // 이동 사운드
+            Sound.playPlayerMoveSound(); // 이동 사운드
             boardPanel.repaint(); // 다시 그리기
 
             if (level.isCompleted() || level.isFailed()) {
-                SoundManager.stopBackgroundMusic();
+                Sound.stopBackgroundMusic();
             }
         }
     }

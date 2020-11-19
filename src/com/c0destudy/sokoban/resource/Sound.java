@@ -1,13 +1,12 @@
 package com.c0destudy.sokoban.resource;
 
-import java.io.File;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import java.io.File;
 
-public class SoundManager
+public class Sound
 {
     private static Clip backgroundClip;
     private static boolean isBackgroundEnabled = true;

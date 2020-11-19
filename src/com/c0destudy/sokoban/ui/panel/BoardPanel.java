@@ -1,18 +1,16 @@
 package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.Level;
-import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
-import com.c0destudy.sokoban.tile.*;
 import com.c0destudy.sokoban.tile.Point;
-import com.c0destudy.sokoban.ui.frame.FrameManager;
+import com.c0destudy.sokoban.tile.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 
 public class BoardPanel extends JPanel
 {
@@ -36,7 +34,7 @@ public class BoardPanel extends JPanel
     public BoardPanel(final Level level, final boolean isReplay, final boolean showInfo) {
         super();
         this.level    = level;
-        this.skin     = Resource.getSkin();
+        this.skin     = Skin.getCurrentSkin();
         this.listener = new BoardMouseListener();
         this.isReplay = isReplay;
         this.showInfo = showInfo;

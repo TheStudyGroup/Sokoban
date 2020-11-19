@@ -8,48 +8,38 @@ import java.util.Arrays;
 
 public class Resource
 {
-    private static final String PATH_MAIN_ICON         = "src/resources/icons/icon.png";
-    private static final String PATH_LEVEL_ROOT        = "src/resources/levels/";
-    private static final String PATH_SKIN_ROOT         = "src/resources/skins/";
-    private static final String PATH_FONT_ROOT         = "src/resources/fonts/";
-    private static final String PATH_DATA_ROOT         = "data/";
-    public  static final String PATH_LEVEL_PAUSE       = PATH_DATA_ROOT + "pause.dat";
-    public  static final String PATH_LEVEL_BEST_SCORES = PATH_DATA_ROOT + "bestscores.txt";
-    private static final String PATH_USER_LEVEL_ROOT   = PATH_DATA_ROOT + "userlevels/";
-    public  static final String PATH_RECORDING_ROOT    = PATH_DATA_ROOT + "recordings/";
-    public  static final String PATH_RECORDING_FILE    = PATH_RECORDING_ROOT + "%s (%d pts) (%d moves).dat";
+    private static final String PATH_RESOURCE_ROOT     = "src/resources/";
+    private static final String PATH_MAIN_ICON         = PATH_RESOURCE_ROOT + "icons/icon.png";
+    private static final String PATH_LEVEL_ROOT        = PATH_RESOURCE_ROOT + "levels/";
+    private static final String PATH_SKIN_ROOT         = PATH_RESOURCE_ROOT + "skins/";
+    private static final String PATH_FONT_ROOT         = PATH_RESOURCE_ROOT + "fonts/";
+    public  static final String PATH_SOUND_BACKGROUND  = PATH_RESOURCE_ROOT + "sounds/game.wav";
+    public  static final String PATH_SOUND_PLAYER_MOVE = PATH_RESOURCE_ROOT + "sounds/move.wav";
 
-    public static final String PATH_SOUND_BACKGROUND  = "src/resources/sounds/game.wav";
-    public static final String PATH_SOUND_PLAYER_MOVE = "src/resources/sounds/move.wav";
+    private static final String PATH_DATA_ROOT         = "data/";
+    private static final String PATH_USER_LEVEL_ROOT   = PATH_DATA_ROOT + "userlevels/";
+    private static final String PATH_RECORDING_ROOT    = PATH_DATA_ROOT + "recordings/";
+    private static final String PATH_LEVEL_PAUSE       = PATH_DATA_ROOT + "pause.dat";
+    public  static final String PATH_LEVEL_BEST_SCORES = PATH_DATA_ROOT + "bestscores.txt";
 
     private static Image icon;
-    private static Skin  skin;
 
-    public static void initResource() {
+    public static void init() {
         createDirectory(PATH_DATA_ROOT);
         createDirectory(PATH_RECORDING_ROOT);
         createDirectory(PATH_USER_LEVEL_ROOT);
         icon = new ImageIcon(PATH_MAIN_ICON).getImage();
-        skin = new Skin("Builder");
     }
-    public static Image getIcon()                { return icon;          }
-    public static Skin  getSkin()                { return skin;          }
-    public static void  setSkin(final Skin skin) { Resource.skin = skin; }
-    private static void createDirectory(final String path) {
-        final File dir = new File(path);
-        if (!dir.exists()) {
-            try {
-                dir.mkdir();
-            } catch(Exception e) {
-                e.getStackTrace();
-            }
-        }
+
+    public static Image getIcon() {
+        return icon;
     }
+
 
     // Font
     public static void loadFontFromResource(final String name) {
         try {
-            final String path = Resource.PATH_FONT_ROOT + name + ".ttf";
+            final String path = PATH_FONT_ROOT + name + ".ttf";
             final File   file = new File(path);
             final Font   font = Font.createFont(Font.TRUETYPE_FONT, file);
             final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -65,7 +55,7 @@ public class Resource
 
     // Skin
     public static String getSkinResourcePath(final String skinName, final String fileName)  {
-        return Resource.PATH_SKIN_ROOT + skinName + "/" + fileName;
+        return PATH_SKIN_ROOT + skinName + "/" + fileName;
     }
     public static Image getSkinImage(final String skinName, final String imageName) {
         if (imageName == null || "".equals(imageName)) return null;
@@ -93,10 +83,43 @@ public class Resource
         }
         return new String[0];
     }
-    public static String[] getLevelList()     { return getDirectoryList(Resource.PATH_LEVEL_ROOT,     "txt"); }
-    public static String[] getRecordingList() { return getDirectoryList(Resource.PATH_RECORDING_ROOT, "dat"); }
-    public static String[] getSkinList()      { return getDirectoryList(Resource.PATH_SKIN_ROOT,      null);  }
+    public static String[] getLevelList()     { return getDirectoryList(PATH_LEVEL_ROOT,     "txt"); }
+    public static String[] getRecordingList() { return getDirectoryList(PATH_RECORDING_ROOT, "dat"); }
+    public static String[] getSkinList()      { return getDirectoryList(PATH_SKIN_ROOT,      null);  }
+
+    private static void createDirectory(final String path) {
+        final File dir = new File(path);
+        if (!dir.exists()) {
+            try {
+                dir.mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+    }
+
 
     // Path
-    public static String getLevelPath(final String levelName) { return PATH_LEVEL_ROOT + levelName + ".txt"; }
+    public static String getLevelPath(final String levelName) {
+        return PATH_LEVEL_ROOT + levelName + ".txt";
+    }
+    public static String getRecordingPath(final String name) {
+        return PATH_RECORDING_ROOT + name + ".dat";
+    }
+    public static String getRecordingPath(final String levelName, final int score, final int moveCount) {
+        return getRecordingPath(levelName + " (" + score + " pts) (" + moveCount + " moves)");
+    }
+    public static String getPausedPath() {
+        return PATH_LEVEL_PAUSE;
+    }
+    public static boolean isPausedLevelExisting() {
+        final File file = new File(getPausedPath());
+        return file.exists();
+    }
+    public static void removePausedLevel() {
+        final File file = new File(getPausedPath());
+        if (file.exists()) {
+            file.delete();
+        }
+    }
 }

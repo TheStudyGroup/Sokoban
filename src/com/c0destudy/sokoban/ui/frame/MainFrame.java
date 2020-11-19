@@ -4,7 +4,7 @@ import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
-import com.c0destudy.sokoban.resource.SoundManager;
+import com.c0destudy.sokoban.resource.Sound;
 import com.c0destudy.sokoban.ui.panel.*;
 
 import javax.swing.*;
@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainFrame extends JFrame
@@ -34,7 +33,7 @@ public class MainFrame extends JFrame
         panels.add(editorPanel    = new EditorPanel   (new EditorActionListener()));
         panels.add(settingPanel   = new SettingPanel  (new SettingActionListener()));
         panels.add(aboutPanel     = new AboutPanel    (new AboutActionListener()));
-        if (!LevelManager.isPausedLevelExisting()) {
+        if (!Resource.isPausedLevelExisting()) {
             mainPanel.setContinueButtonEnabled(false);
         }
 
@@ -53,7 +52,6 @@ public class MainFrame extends JFrame
             panel.add(e);
         });
         selectPanel(mainPanel);
-//        mainPanel.setBackground(new Color(255, 255, 255, 100));
         add(panel);
         setSize(mainPanel.getSize()); // 크기 설정
         pack();                       // 크기 맞추기
@@ -81,8 +79,9 @@ public class MainFrame extends JFrame
                     selectPanel(levelPanel);
                     break;
                 case "Continue":
-                    FrameManager.showGameFrame(LevelManager.readLevelFromFile(Resource.PATH_LEVEL_PAUSE));
-                    (new File(Resource.PATH_LEVEL_PAUSE)).delete();
+                    final Level level = LevelManager.readLevelFromFile(Resource.getPausedPath());
+                    Resource.removePausedLevel();
+                    FrameManager.showGameFrame(level);
                     closeUI();
                     break;
                 case "Recordings":
@@ -115,7 +114,8 @@ public class MainFrame extends JFrame
                     selectPanel(mainPanel);
                     break;
                 default:
-                    FrameManager.showGameFrame(LevelManager.createLevelFromFile(button.getText()));
+                    final Level level = LevelManager.createLevelFromFile(button.getText());
+                    FrameManager.showGameFrame(level);
                     closeUI();
                     break;
             }
@@ -133,7 +133,8 @@ public class MainFrame extends JFrame
                     selectPanel(mainPanel);
                     break;
                 default:
-                    final Level level = LevelManager.readLevelFromFile(Resource.PATH_RECORDING_ROOT + "/" + button.getText() + ".dat");
+                    final String path  = Resource.getRecordingPath(button.getText());
+                    final Level  level = LevelManager.readLevelFromFile(path);
                     FrameManager.showGameFrame(level, true);
                     closeUI();
                     break;
@@ -176,14 +177,14 @@ public class MainFrame extends JFrame
                     break;
                 case "BGM: ON":
                     button.setText("BGM: OFF");
-                    SoundManager.setBackgroundEnabled(false);
+                    Sound.setBackgroundEnabled(false);
                     break;
                 case "BGM: OFF":
                     button.setText("BGM: ON");
-                    SoundManager.setBackgroundEnabled(true);
+                    Sound.setBackgroundEnabled(true);
                     break;
                 default:
-                    Resource.setSkin(new Skin(button.getText()));
+                    Skin.setCurrentSkin(new Skin(button.getText()));
                     FrameManager.showMainFrame();
                     closeUI();
                     break;

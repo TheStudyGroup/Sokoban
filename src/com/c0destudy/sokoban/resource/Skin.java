@@ -1,7 +1,5 @@
 package com.c0destudy.sokoban.resource;
 
-import com.c0destudy.sokoban.resource.Resource;
-
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +8,12 @@ import java.util.Properties;
 
 public class Skin
 {
+    // Static
+    private static Skin skin;
+    public static Skin getCurrentSkin() { return skin; }
+    public static void setCurrentSkin(final Skin skin) { Skin.skin = skin; }
+
+    // Instance
     public enum IMAGES {
         Wall, Baggage, Goal, Player1, Player2, Trigger, Pointer,
         Background,
@@ -72,7 +76,7 @@ public class Skin
         setColor(COLORS.ButtonSelected, getColorProp("color_button_select", ""));
     }
 
-    // prop
+    // Props
     private String getStringProp(final String key) {
         return properties.getProperty(key, "");
     }
@@ -99,13 +103,13 @@ public class Skin
         }
     }
 
-    // private
+    // Private
     private Image getImage(final String imageName) { return Resource.getSkinImage(name, imageName); }
-    private void  setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
-    private void  setColor(final COLORS type, final Color color) { colors[type.ordinal()] = color; }
-    private void  setFont (final FONTS type,  final Font font)   { fonts[type.ordinal()] = font;   }
+    private void setImage(final IMAGES type, final Image image) { images[type.ordinal()] = image; }
+    private void setColor(final COLORS type, final Color color) { colors[type.ordinal()] = color; }
+    private void setFont (final FONTS type,  final Font font)   { fonts[type.ordinal()] = font;   }
 
-    // public
+    // Public
     public String getName()                   { return name;                   }
     public Image  getImage(final IMAGES type) { return images[type.ordinal()]; }
     public Color  getColor(final COLORS type) { return colors[type.ordinal()]; }

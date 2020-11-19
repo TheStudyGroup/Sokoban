@@ -2,14 +2,16 @@ package com.c0destudy.sokoban.ui.frame;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
-import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
 import com.c0destudy.sokoban.ui.panel.BoardPanel;
 import com.c0destudy.sokoban.ui.panel.EditorControlPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EditorFrame extends JFrame
 {
@@ -38,7 +40,7 @@ public class EditorFrame extends JFrame
         // Layout
         final JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBackground(Resource.getSkin().getColor(Skin.COLORS.Background));
+        panel.setBackground(Skin.getCurrentSkin().getColor(Skin.COLORS.Background));
         panel.add(boardPanel);
         panel.add(controlPanel);
         boardPanel.setAlignmentY(Component.TOP_ALIGNMENT);

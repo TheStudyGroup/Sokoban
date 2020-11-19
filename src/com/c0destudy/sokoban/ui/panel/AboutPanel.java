@@ -3,7 +3,7 @@ package com.c0destudy.sokoban.ui.panel;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
+import static com.c0destudy.sokoban.ui.helper.MakeComponent.makeVSpace;
 
 public class AboutPanel extends BasePanel
 {

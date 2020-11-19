@@ -91,12 +91,10 @@ public class MakeComponent
     }
 
     public static Component makeVSpace(final int size) {
-//        return Box.createRigidArea(new Dimension(1, size));
         return Box.createVerticalStrut(size);
     }
 
     public static Component makeHSpace(final int size) {
-//        return Box.createRigidArea(new Dimension(size, 1));
         return Box.createHorizontalStrut(size);
     }
 

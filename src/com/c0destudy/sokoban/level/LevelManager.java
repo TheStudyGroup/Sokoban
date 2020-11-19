@@ -1,12 +1,7 @@
 package com.c0destudy.sokoban.level;
 
-import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.resource.Resource;
-import com.c0destudy.sokoban.tile.Baggage;
-import com.c0destudy.sokoban.tile.Goal;
-import com.c0destudy.sokoban.tile.Player;
-import com.c0destudy.sokoban.tile.Wall;
-import com.c0destudy.sokoban.tile.Trigger;
+import com.c0destudy.sokoban.tile.*;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -14,8 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -149,15 +146,6 @@ public class LevelManager
             return false;
         }
         return true;
-    }
-
-    /**
-     * 일시 정지된 레벨 데이터가 존재하는지 확인합니다.
-     *
-     * @return boolean 존재 여부
-     */
-    public static boolean isPausedLevelExisting() {
-        return (new File(Resource.PATH_LEVEL_PAUSE)).exists();
     }
 
     /**

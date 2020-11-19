@@ -1,8 +1,6 @@
 package com.c0destudy.sokoban.ui.panel;
 
-import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
-import com.c0destudy.sokoban.ui.frame.FrameManager;
 import com.c0destudy.sokoban.ui.helper.MakeComponent;
 
 import javax.swing.*;
@@ -16,7 +14,7 @@ public class BasePanel extends JPanel
 
     public BasePanel(final ActionListener listener, final int width, final int height) {
         super();
-        this.skin     = Resource.getSkin();
+        this.skin     = Skin.getCurrentSkin();
         this.listener = listener;
 
         setMaximumSize(new Dimension(width, height));
@@ -77,23 +75,11 @@ public class BasePanel extends JPanel
     }
 
     // Text
-    public JTextField makeTextBox(
-            final int     width,
-            final int     height,
-            final boolean isCenter,
-            final String  defaultText,
-            final int     textAlignment
-    ) {
+    protected JTextField makeTextBox(final int width, final int height, final boolean isCenter, final String defaultText, final int textAlignment) {
         return MakeComponent.makeTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultText, textAlignment);
     }
 
-    public JFormattedTextField makeNumberTextBox(
-            final int     width,
-            final int     height,
-            final boolean isCenter,
-            final int     defaultValue,
-            final int     textAlignment
-    ) {
+    protected JFormattedTextField makeNumberTextBox(final int width, final int height, final boolean isCenter, final int defaultValue, final int textAlignment) {
         return MakeComponent.makeNumberTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultValue, textAlignment);
     }
 }
