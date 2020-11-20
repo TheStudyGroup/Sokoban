@@ -229,8 +229,4 @@ public class LevelManager
         }
         return true;
     }
-
-
-    // String Helper
-
 }
