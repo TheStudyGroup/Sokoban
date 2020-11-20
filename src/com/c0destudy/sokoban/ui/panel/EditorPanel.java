@@ -14,10 +14,7 @@ public class EditorPanel extends BasePanel
 {
     public EditorPanel(final ActionListener listener) {
         super(listener);
-        initUI();
-    }
 
-    private void initUI() {
         final String[]             levels   = Resource.getLevelList();
         final ArrayList<Component> levelBox = new ArrayList<>();
         levelBox.add(makeButton("CREATE NEW", 350, 30, true));
@@ -29,7 +26,7 @@ public class EditorPanel extends BasePanel
 
         Arrays.asList(
             makeVSpace(50),
-            makeTitleLabel("E D I T O R", true),
+            makeTitleLabel("E D I T O R"),
             makeVSpace(40),
             makeScroll(450, 240, false, true, levelBox),
             makeVSpace(20),

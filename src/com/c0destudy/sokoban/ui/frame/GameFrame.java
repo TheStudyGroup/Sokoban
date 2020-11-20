@@ -4,51 +4,70 @@ import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.level.LevelManager;
 import com.c0destudy.sokoban.level.Record;
 import com.c0destudy.sokoban.resource.Resource;
+import com.c0destudy.sokoban.resource.Skin;
 import com.c0destudy.sokoban.resource.Sound;
 import com.c0destudy.sokoban.tile.Point;
 import com.c0destudy.sokoban.ui.panel.BoardPanel;
+import com.c0destudy.sokoban.ui.panel.GameControlPanel;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameFrame extends JFrame
 {
-    private final Level      level;
-    private final BoardPanel boardPanel;
-    private final boolean    isReplay;
-    private final Timer      replayTimer = new Timer();
-    private TimerTask        replayTask;
-    private long             replayTime;
-    private int              replayIndex;
+    private final Level            level;
+    private final BoardPanel       boardPanel;
+    private final GameControlPanel controlPanel;
+    private final boolean          isReplay;
+    private final Timer            replayTimer = new Timer();
+    private TimerTask              replayTask;
+    private long                   replayTime;
+    private int                    replayIndex;
 
     public GameFrame(final Level level, final boolean isReplay) {
         super();
-        this.level      = level;
-        this.isReplay   = isReplay;
-        this.boardPanel = new BoardPanel(level, isReplay, true);
-        boardPanel.addKeyListener(new TKeyAdapter());
-        getContentPane().add(boardPanel);
-        setSize(boardPanel.getSize());
-        pack();                      // 프레임 사이즈 맞추기
-        setLocationRelativeTo(null); // 화면 중앙으로 이동
+        this.level        = level;
+        this.isReplay     = isReplay;
+        this.boardPanel   = new BoardPanel(level);
+        this.controlPanel = new GameControlPanel(new ControlActionListener(), level, isReplay);
+        boardPanel.addKeyListener(new BoardKeyAdapter());
 
         setTitle("Sokoban - " + level.getName());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new TWindowAdapter());
+        initUI();
         Sound.playBackgroundMusic();
-
         if (isReplay) {
             setTitle(getTitle() + " (replay mode)");
             level.setRecordEnabled(false);
             level.resetWithoutRecords();
-            boardPanel.repaint();
             startReplay();
         }
+        updateScreen();
+    }
+
+    private void initUI() {
+        // Layout
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setBackground(Skin.getCurrentSkin().getColor(Skin.COLORS.Background));
+        panel.add(boardPanel);
+        panel.add(controlPanel);
+        boardPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        controlPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        add(panel);
+        pack();
+
+        // Size
+        int width  = boardPanel.getWidth() + controlPanel.getWidth();
+        int height = Math.max(boardPanel.getHeight(), controlPanel.getHeight());
+        panel.setPreferredSize(new Dimension(width, height));
+        setSize(panel.getSize());    // 크기 설정
+        pack();                      // 크기 맞추기
+        setLocationRelativeTo(null); // 화면 중앙으로 이동
     }
 
     private void closeUI() {
@@ -90,7 +109,7 @@ public class GameFrame extends JFrame
                 if (System.currentTimeMillis() - replayTime >= record.getTime()) {
                     Sound.playPlayerMoveSound(); // 이동 사운드
                     level.movePlayer(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
-                    boardPanel.repaint();
+                    updateScreen();
                     replayTime = System.currentTimeMillis();
                     replayIndex++;
                 }
@@ -108,7 +127,22 @@ public class GameFrame extends JFrame
         }
     }
 
-    private class TKeyAdapter extends KeyAdapter
+    private void updateScreen() {
+        boardPanel.repaint();
+        controlPanel.update();
+    }
+
+    private void resetLevel() {
+        level.reset();
+        updateScreen();
+    }
+
+    private void undoLevel() {
+        level.undoMove();
+        updateScreen();
+    }
+
+    private class BoardKeyAdapter extends KeyAdapter
     {
         @Override
         public void keyPressed(KeyEvent e) {
@@ -117,8 +151,7 @@ public class GameFrame extends JFrame
             final int keyCode = e.getKeyCode();
             switch (keyCode) {
                 case KeyEvent.VK_R: // 재시작
-                    level.reset();
-                    boardPanel.repaint();
+                    resetLevel();
                     return;
                 case KeyEvent.VK_ESCAPE:
                     closeUI();
@@ -132,8 +165,7 @@ public class GameFrame extends JFrame
             int playerIndex;
             switch (keyCode) {
                 case KeyEvent.VK_U: // undo
-                    level.undoMove();
-                    boardPanel.repaint();
+                    undoLevel();
                     return;
                 case KeyEvent.VK_LEFT: // Player1
                 case KeyEvent.VK_RIGHT:
@@ -171,13 +203,33 @@ public class GameFrame extends JFrame
                     break;
             }
 
-            level.movePlayer(playerIndex, direction); // 플레이어 이동
-            Sound.playPlayerMoveSound(); // 이동 사운드
-            boardPanel.repaint(); // 다시 그리기
-
+            level.movePlayer(playerIndex, direction);
+            updateScreen();
+            Sound.playPlayerMoveSound();
             if (level.isCompleted() || level.isFailed()) {
                 Sound.stopBackgroundMusic();
             }
+        }
+    }
+
+    private class ControlActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final JButton button = (JButton) e.getSource();
+            final String  text   = button.getText();
+            switch (text) {
+                case "Exit":
+                    closeUI();
+                    return;
+                case "Undo":
+                    undoLevel();
+                    break;
+                case "Reset":
+                    resetLevel();
+                    break;
+            }
+            boardPanel.requestFocus();
         }
     }
 

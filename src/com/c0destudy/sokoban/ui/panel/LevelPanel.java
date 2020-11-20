@@ -15,22 +15,15 @@ public class LevelPanel extends BasePanel
 {
     public LevelPanel(final ActionListener listener) {
         super(listener);
-        initUI();
-    }
 
-    private void initUI() {
         final Map<String, Integer> bestScores = LevelManager.getBestScores();
+        // final int    bestScore = bestScores.getOrDefault(levelName, 0);
+
         final String[]             levels   = Resource.getLevelList();
         final ArrayList<Component> levelBox = new ArrayList<>();
         for (final String level : levels) {
-            final int bestScore = bestScores.getOrDefault(level, 0);
-            Arrays.asList(
-                makeHBox(400, 30, true, Arrays.asList(
-                    makeButton(level, 230, 30, false),
-                    makeHSpace(20),
-                    makeLargeLabel("Best: " + (bestScore == 0 ? "none" : bestScore), false))),
-                makeVSpace(10)
-            ).forEach(levelBox::add);
+            levelBox.add(makeButton(level, 220, 30, false));
+            levelBox.add(makeVSpace(10));
         }
         if (levels.length == 0) {
             levelBox.add(makeButton("NO LEVELS", 220, 30, false));
@@ -38,9 +31,12 @@ public class LevelPanel extends BasePanel
 
         Arrays.asList(
             makeVSpace(50),
-            makeTitleLabel("L E V E L S", true),
+            makeTitleLabel("L E V E L S"),
             makeVSpace(40),
-            makeScroll(450, 240, true, true, levelBox),
+            makeHBox(450, 240, true, Arrays.asList(
+                makeScroll(250, 240, false, true, levelBox),
+                makeHSpace(10),
+                makeButton("TODO", 200, 240, false))),
             makeVSpace(20),
             makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);

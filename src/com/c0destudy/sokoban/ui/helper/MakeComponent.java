@@ -41,17 +41,7 @@ public class MakeComponent
         if (backgroundColor == null || foregroundColor == null) {
             return makeButton(text, width, height, isCenter, font, listener);
         }
-        final JButton button = new JButton(text) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                if (!isOpaque() && getBackground().getAlpha() < 255) {
-                    g.setColor(getBackground());
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                    g.setColor(getForeground());
-                }
-                super.paintComponent(g);
-            }
-        };
+        final JButton button = new RichJButton(text);
         final Dimension size = new Dimension(width, height);
         button.setMaximumSize(size);   // for BoxLayout
         button.setMinimumSize(size);   // for BoxLayout
@@ -62,26 +52,43 @@ public class MakeComponent
         button.setBackground(backgroundColor);
         button.setForeground(foregroundColor);
         button.setFocusPainted(false); // 포커스 테두리 제거
-        if (backgroundColor.getAlpha() < 255) button.setOpaque(false);
+
         return button;
     }
 
-    public static JLabel makeLabel(final String  text,
-                                   final boolean isCenter,
-                                   final Font    font
+    public static JLabel makeLabel(
+            final String  text,
+            final boolean isCenter,
+            final Font    font
     ) {
-        final RichJLabel label = new RichJLabel(text);
-        label.setForeground(Color.GRAY);
-        label.setRightShadow(font.getSize() / 15, font.getSize() / 15, Color.BLACK);
+        return makeLabel(text, isCenter, true, font, null, null);
+    }
+
+    public static JLabel makeLabel(
+            final String  text,
+            final boolean isCenter,
+            final boolean isShadow,
+            final Font    font,
+            final Color   foregroundColor,
+            final Color   backgroundColor
+    ) {
+        final RichJLabel label = new RichJLabel(text, isShadow);
+        if (isShadow) {
+            label.setForeground(Color.GRAY);
+            label.setRightShadow(font.getSize() / 15, font.getSize() / 15, Color.BLACK);
+        }
+        if (backgroundColor != null) label.setBackground(backgroundColor);
+        if (foregroundColor != null) label.setForeground(foregroundColor);
         if (isCenter) label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setFont(font);
         return label;
     }
 
-    public static Box makeHBox(final int             width,
-                               final int             height,
-                               final boolean         isCenter,
-                               final List<Component> components
+    public static Box makeHBox(
+            final int             width,
+            final int             height,
+            final boolean         isCenter,
+            final List<Component> components
     ) {
         final Box box = Box.createHorizontalBox();
         box.setMaximumSize(new Dimension(width, height));
@@ -98,12 +105,12 @@ public class MakeComponent
         return Box.createHorizontalStrut(size);
     }
 
-    public static JScrollPane makeScroll(final int             width,
-                                         final int             height,
-                                         final boolean         isCenter,
-                                         final boolean         isTransparent,
-                                         final List<Component> components
-
+    public static JScrollPane makeScroll(
+            final int             width,
+            final int             height,
+            final boolean         isCenter,
+            final boolean         isTransparent,
+            final List<Component> components
     ) {
         final JPanel      panel  = new JPanel();
         final JScrollPane scroll = new JScrollPane(panel);

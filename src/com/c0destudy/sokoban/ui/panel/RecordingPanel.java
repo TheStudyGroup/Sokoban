@@ -14,23 +14,20 @@ public class RecordingPanel extends BasePanel
 {
     public RecordingPanel(final ActionListener listener) {
         super(listener);
-        initUI();
-    }
 
-    private void initUI() {
         final String[]             recordings   = Resource.getRecordingList();
         final ArrayList<Component> recordingBox = new ArrayList<>();
         for (final String recording : recordings) {
-            recordingBox.add(makeButton(recording, 350, 30, true));
+            recordingBox.add(makeButton(recording, 420, 30, true));
             recordingBox.add(makeVSpace(10));
         }
         if (recordings.length == 0) {
-            recordingBox.add(makeButton("NO RECORDINGS", 400, 30, true));
+            recordingBox.add(makeButton("NO RECORDINGS", 420, 30, true));
         }
 
         Arrays.asList(
             makeVSpace(50),
-            makeTitleLabel("R E C O R D I N G S", true),
+            makeTitleLabel("R E C O R D I N G S"),
             makeVSpace(40),
             makeScroll(450, 240, true, true, recordingBox),
             makeVSpace(20),

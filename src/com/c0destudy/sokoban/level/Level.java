@@ -180,13 +180,11 @@ public class Level implements Serializable
     }
 
     public void resetWithoutRecords() {
-        for (final Movable movable : getMovables()) {
-            movable.setPosition(movable.getOriginalPosition());
-        }
+        getMovables().forEach(e -> e.setPosition(e.getOriginalPosition()));
+        updateRemainingBaggages();
         timeLastMove = System.currentTimeMillis();
         moveCount    = 0;
         hp           = 3;
-        updateRemainingBaggages();
     }
 
     public void resetAndResize(final int width, final int height) {

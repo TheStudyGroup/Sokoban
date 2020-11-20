@@ -8,17 +8,14 @@ import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
 
 public class MainPanel extends BasePanel
 {
-    private JButton btnContinue;
+    private final JButton btnContinue;
 
     public MainPanel(final ActionListener listener) {
         super(listener);
-        initUI();
-    }
 
-    private void initUI() {
         Arrays.asList(
             makeVSpace(50),
-            makeTitleLabel("S O K O B A N", true),
+            makeTitleLabel("S O K O B A N"),
             makeVSpace(40),
             makeLargeButton("New Game", 450, 45, true),
             makeVSpace(20),

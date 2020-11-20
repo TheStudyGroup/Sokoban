@@ -12,6 +12,10 @@ public class BasePanel extends JPanel
     protected final Skin           skin;
     private   final ActionListener listener;
 
+    public BasePanel(final ActionListener listener) {
+        this(listener, 800, 500);
+    }
+
     public BasePanel(final ActionListener listener, final int width, final int height) {
         super();
         this.skin     = Skin.getCurrentSkin();
@@ -20,10 +24,6 @@ public class BasePanel extends JPanel
         setMaximumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    }
-
-    public BasePanel(final ActionListener listener) {
-        this(listener, 800, 500);
     }
 
     @Override
@@ -60,18 +60,22 @@ public class BasePanel extends JPanel
         return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Large));
     }
 
+
     // Label
-    protected JLabel makeLabel(final String text, final boolean isCenter) {
-        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Medium));
+    protected JLabel makeTitleLabel(final String text) {
+        return MakeComponent.makeLabel(text, true, skin.getFont(Skin.FONTS.Title));
     }
-    protected JLabel makeTitleLabel(final String text, final boolean isCenter) {
-        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Title));
+    protected JLabel makeLargeLabel(final String text) {
+        return MakeComponent.makeLabel(text, true, skin.getFont(Skin.FONTS.Large));
     }
-    protected JLabel makeLargeLabel(final String text, final boolean isCenter) {
-        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Large));
+    protected JLabel makeSmallLabel(final String text) {
+        return MakeComponent.makeLabel(text, true, skin.getFont(Skin.FONTS.Small));
     }
-    protected JLabel makeSmallLabel(final String text, final boolean isCenter) {
-        return MakeComponent.makeLabel(text, isCenter, skin.getFont(Skin.FONTS.Small));
+    protected JLabel makeTransLabel(final String text) {
+        return MakeComponent.makeLabel(text, true, false, skin.getFont(Skin.FONTS.Medium), skin.getColor(Skin.COLORS.Text), new Color(255, 255, 255, 180));
+    }
+    protected JLabel makeTransLargeLabel(final String text) {
+        return MakeComponent.makeLabel(text, true, false, skin.getFont(Skin.FONTS.Large), skin.getColor(Skin.COLORS.Text), new Color(255, 255, 255, 110));
     }
 
     // Text

@@ -32,17 +32,17 @@ public class EditorControlPanel extends BasePanel
         // UI Components
         Arrays.asList(
             makeVSpace(20),
-            makeLargeLabel("< LEVEL EDITOR >", true),
+            makeLargeLabel("< LEVEL EDITOR >"),
             makeVSpace(20),
-            makeSmallLabel("== Level Name ==", true),
+            makeSmallLabel("== Level Name =="),
             makeVSpace(5),
             txtLevelName = makeTextBox(220, 30, true, "", SwingConstants.CENTER),
             makeVSpace(20),
-            makeSmallLabel("== Difficulty ==", true),
+            makeSmallLabel("== Difficulty =="),
             makeVSpace(5),
             txtLevelDifficulty = makeNumberTextBox(220, 30, true, 0, SwingConstants.CENTER),
             makeVSpace(15),
-            makeSmallLabel("== Select Brush ==", true),
+            makeSmallLabel("== Select Brush =="),
             makeVSpace(10)
         ).forEach(this::add);
         brushes.forEach(e -> {

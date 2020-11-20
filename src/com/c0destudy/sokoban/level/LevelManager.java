@@ -1,5 +1,6 @@
 package com.c0destudy.sokoban.level;
 
+import com.c0destudy.sokoban.helper.StringHelper;
 import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.tile.*;
 
@@ -130,10 +131,10 @@ public class LevelManager
             for (int x = 0; x < level.getWidth(); x++) {
                 line.append(getLevelSymbolAt(level, x, y));
             }
-            lines.append(trimRight(line.toString()));
+            lines.append(StringHelper.trimRight(line.toString()));
             lines.append("\n");
         }
-        return trimVertical(lines.toString());
+        return StringHelper.trimVertical(lines.toString());
     }
 
     public static boolean saveLevelToTextFile(final Level level) {
@@ -231,24 +232,5 @@ public class LevelManager
 
 
     // String Helper
-    public static String trimLeft    (final String string) { return string.replaceAll("^\\s+",""); }
-    public static String trimRight   (final String string) { return string.replaceAll("\\s+$",""); }
-    public static String trimVertical(final String string) {
-        final String[] lines = string.split("\\n");
-        int start = 0, end = lines.length - 1;
-        for (; start < lines.length; start++) {
-            if (!lines[start].trim().equals("")) break;
-        }
-        for (; end >= 0; end--) {
-            if (!lines[end].trim().equals("")) break;
-        }
-        final StringBuilder result = new StringBuilder();
-        for (int i = start; i <= end; i++) {
-            result.append(lines[i]);
-            if (i != end) {
-                result.append("\n");
-            }
-        }
-        return result.toString();
-    }
+
 }

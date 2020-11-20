@@ -23,7 +23,7 @@ public class EditorFrame extends JFrame
         super();
         this.level = level;
         level.resetAndResize(Math.max(level.getWidth(), 15), Math.max(level.getHeight(), 15));
-        this.boardPanel   = new BoardPanel(level, false, false);
+        this.boardPanel   = new BoardPanel(level);
         this.controlPanel = new EditorControlPanel(new ControlActionListener());
         boardPanel.setEditable(true);
         boardPanel.setBoundaryVisible(true);
