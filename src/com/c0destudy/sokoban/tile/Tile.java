@@ -1,5 +1,7 @@
 package com.c0destudy.sokoban.tile;
 
+import com.c0destudy.sokoban.helper.Point;
+
 import java.io.Serializable;
 
 public class Tile implements Serializable

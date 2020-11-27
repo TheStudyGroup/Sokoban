@@ -62,6 +62,28 @@ public class EditorFrame extends JFrame
         dispose();
     }
 
+    private boolean saveLevel() {
+        String error = null;
+        if (level.getPlayers().size() == 0) {
+            error = "At least one player is required.";
+        } else if (level.getBaggages().size() == 0) {
+            error = "At least one baggage is required.";
+        } else if (level.getGoals().size() == 0) {
+            error = "At least one goal is required.";
+        } else if (level.getBaggages().size() > level.getGoals().size()) {
+            error = "Too few goals. Please add more.";
+        }
+        if (error != null) {
+            JOptionPane.showMessageDialog(null, error, getTitle(), JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        level.setName(controlPanel.getLevelName());
+        level.setDifficulty(controlPanel.getLevelDifficulty());
+        LevelManager.saveLevelToTextFile(level);
+        return true;
+    }
+
     private class ControlActionListener implements ActionListener
     {
         @Override
@@ -73,10 +95,9 @@ public class EditorFrame extends JFrame
                     closeUI();
                     break;
                 case "Save":
-                    level.setName(controlPanel.getLevelName());
-                    level.setDifficulty(controlPanel.getLevelDifficulty());
-                    LevelManager.saveLevelToTextFile(level);
-                    closeUI();
+                    if (saveLevel()) {
+                        closeUI();
+                    }
                     break;
                 default:
                     boardPanel.setTileBrush(text);

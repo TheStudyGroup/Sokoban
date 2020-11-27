@@ -1,5 +1,6 @@
 package com.c0destudy.sokoban.level;
 
+import com.c0destudy.sokoban.helper.Point;
 import com.c0destudy.sokoban.tile.*;
 
 import java.io.Serializable;
@@ -23,7 +24,7 @@ public class Level implements Serializable
     private int                      undoCount         = 0;
     private int                      remainingBaggages = 0;
     private long                     timeLastMove      = 0;
-    private int                      hp                = 3;
+    private int                      hp                = 7;
 
     public Level(final String name, final int width, final int height, final int difficulty) {
         this.name       = name;

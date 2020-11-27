@@ -84,7 +84,7 @@ public class MakeComponent
         return label;
     }
 
-    public static Box makeHBox(
+    public static Box makeHorizontalBox(
             final int             width,
             final int             height,
             final boolean         isCenter,
@@ -97,11 +97,11 @@ public class MakeComponent
         return box;
     }
 
-    public static Component makeVSpace(final int size) {
+    public static Component makeVerticalSpace(final int size) {
         return Box.createVerticalStrut(size);
     }
 
-    public static Component makeHSpace(final int size) {
+    public static Component makeHorizontalSpace(final int size) {
         return Box.createHorizontalStrut(size);
     }
 

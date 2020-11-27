@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
-
 public class EditorControlPanel extends BasePanel
 {
     private final ArrayList<JButton>  brushes = new ArrayList<>();
@@ -29,31 +27,31 @@ public class EditorControlPanel extends BasePanel
         brushes.add(makeButton("Player",  220, 30, true));
         brushes.forEach(e -> e.addActionListener(brushListener));
 
-        // UI Components
+        // UI Component
         Arrays.asList(
-            makeVSpace(20),
+            makeVerticalSpace(20),
             makeLargeLabel("< LEVEL EDITOR >"),
-            makeVSpace(20),
+            makeVerticalSpace(20),
             makeSmallLabel("== Level Name =="),
-            makeVSpace(5),
+            makeVerticalSpace(5),
             txtLevelName = makeTextBox(220, 30, true, "", SwingConstants.CENTER),
-            makeVSpace(20),
+            makeVerticalSpace(20),
             makeSmallLabel("== Difficulty =="),
-            makeVSpace(5),
+            makeVerticalSpace(5),
             txtLevelDifficulty = makeNumberTextBox(220, 30, true, 0, SwingConstants.CENTER),
-            makeVSpace(15),
+            makeVerticalSpace(15),
             makeSmallLabel("== Select Brush =="),
-            makeVSpace(10)
+            makeVerticalSpace(10)
         ).forEach(this::add);
         brushes.forEach(e -> {
             this.add(e);
-            this.add(makeVSpace(10));
+            this.add(makeVerticalSpace(10));
         });
         Arrays.asList(
-            makeVSpace(10),
-            makeHBox(250, 30, true, Arrays.asList(
+            makeVerticalSpace(10),
+            makeHorizontalBox(250, 30, true, Arrays.asList(
                 makeButton("Cancel", 120, 30, false),
-                makeHSpace(10),
+                makeHorizontalSpace(10),
                 makeButton("Save",   120, 30, false)))
         ).forEach(this::add);
     }

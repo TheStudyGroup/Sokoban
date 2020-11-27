@@ -1,5 +1,6 @@
 package com.c0destudy.sokoban.level;
 
+import com.c0destudy.sokoban.helper.Point;
 import com.c0destudy.sokoban.helper.StringHelper;
 import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.tile.*;

@@ -2,7 +2,7 @@ package com.c0destudy.sokoban.ui.panel;
 
 import com.c0destudy.sokoban.level.Level;
 import com.c0destudy.sokoban.resource.Skin;
-import com.c0destudy.sokoban.tile.Point;
+import com.c0destudy.sokoban.helper.Point;
 import com.c0destudy.sokoban.tile.*;
 
 import javax.swing.*;

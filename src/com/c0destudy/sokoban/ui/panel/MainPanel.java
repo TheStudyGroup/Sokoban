@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
-
 public class MainPanel extends BasePanel
 {
     private final JButton btnContinue;
@@ -14,23 +12,23 @@ public class MainPanel extends BasePanel
         super(listener);
 
         Arrays.asList(
-            makeVSpace(50),
+            makeVerticalSpace(50),
             makeTitleLabel("S O K O B A N"),
-            makeVSpace(40),
+            makeVerticalSpace(40),
             makeLargeButton("New Game", 450, 45, true),
-            makeVSpace(20),
+            makeVerticalSpace(20),
             btnContinue = makeLargeButton("Continue", 450, 45, true),
-            makeVSpace(20),
-            makeHBox(450, 45, true, Arrays.asList(
+            makeVerticalSpace(20),
+            makeHorizontalBox(450, 45, true, Arrays.asList(
                 makeLargeButton("Recordings", 215, 45, false),
-                makeHSpace(20),
+                makeHorizontalSpace(20),
                 makeLargeButton("Editor", 215, 45, false))),
-            makeVSpace(20),
-            makeHBox(450, 45, true, Arrays.asList(
+            makeVerticalSpace(20),
+            makeHorizontalBox(450, 45, true, Arrays.asList(
                 makeLargeButton("Settings", 215, 45, false),
-                makeHSpace(20),
+                makeHorizontalSpace(20),
                 makeLargeButton("About", 215, 45, false))),
-            makeVSpace(20),
+            makeVerticalSpace(20),
             makeLargeButton("Exit Game", 450, 45, true)
         ).forEach(this::add);
     }

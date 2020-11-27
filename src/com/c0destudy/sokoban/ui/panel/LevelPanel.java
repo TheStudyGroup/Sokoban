@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import static com.c0destudy.sokoban.ui.helper.MakeComponent.*;
-
 public class LevelPanel extends BasePanel
 {
     public LevelPanel(final ActionListener listener) {
@@ -22,11 +20,11 @@ public class LevelPanel extends BasePanel
         for (final String level : levels) {
             final int bestScore = bestScores.getOrDefault(level, 0);
             Arrays.asList(
-                makeHBox(400, 30, true, Arrays.asList(
+                makeHorizontalBox(400, 30, true, Arrays.asList(
                     makeButton(level, 230, 30, false),
-                    makeHSpace(20),
+                    makeHorizontalSpace(20),
                     makeLargeLabel("Best: " + (bestScore == 0 ? "none" : bestScore)))),
-                makeVSpace(10)
+                makeVerticalSpace(10)
             ).forEach(levelBox::add);
         }
         if (levels.length == 0) {
@@ -34,11 +32,11 @@ public class LevelPanel extends BasePanel
         }
 
         Arrays.asList(
-            makeVSpace(50),
+            makeVerticalSpace(50),
             makeTitleLabel("L E V E L S"),
-            makeVSpace(40),
+            makeVerticalSpace(40),
             makeScroll(450, 240, true, true, levelBox),
-            makeVSpace(20),
+            makeVerticalSpace(20),
             makeLargeButton("Back", 450, 45, true)
         ).forEach(this::add);
     }

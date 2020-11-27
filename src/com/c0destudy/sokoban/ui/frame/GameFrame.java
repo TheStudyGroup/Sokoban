@@ -6,7 +6,7 @@ import com.c0destudy.sokoban.level.Record;
 import com.c0destudy.sokoban.resource.Resource;
 import com.c0destudy.sokoban.resource.Skin;
 import com.c0destudy.sokoban.resource.Sound;
-import com.c0destudy.sokoban.tile.Point;
+import com.c0destudy.sokoban.helper.Point;
 import com.c0destudy.sokoban.ui.panel.BoardPanel;
 import com.c0destudy.sokoban.ui.panel.GameControlPanel;
 
@@ -22,17 +22,20 @@ public class GameFrame extends JFrame
     private final BoardPanel       boardPanel;
     private final GameControlPanel controlPanel;
     private final boolean          isReplay;
+    private long                   playTime;
+    private final Timer            gameTimer = new Timer();
+    private TimerTask              gameTimerTask;
     private final Timer            replayTimer = new Timer();
-    private TimerTask              replayTask;
-    private long                   replayTime;
-    private int                    replayIndex;
+    private TimerTask              replayTimerTask;
+    private long                   replayLastTime;
+    private int                    replayRecordIndex;
 
     public GameFrame(final Level level, final boolean isReplay) {
         super();
         this.level        = level;
         this.isReplay     = isReplay;
         this.boardPanel   = new BoardPanel(level);
-        this.controlPanel = new GameControlPanel(new ControlActionListener(), level, isReplay);
+        this.controlPanel = new GameControlPanel(new ControlActionListener(), level);
         boardPanel.addKeyListener(new BoardKeyAdapter());
 
         setTitle("Sokoban - " + level.getName());
@@ -40,12 +43,17 @@ public class GameFrame extends JFrame
         addWindowListener(new TWindowAdapter());
         initUI();
         Sound.playBackgroundMusic();
+
         if (isReplay) {
             setTitle(getTitle() + " (replay mode)");
             level.setRecordEnabled(false);
             level.resetWithoutRecords();
+            controlPanel.setReplayMode(true);
+            controlPanel.setControlEnabled(false);
             startReplay();
         }
+
+        startTimer();
         updateScreen();
     }
 
@@ -71,59 +79,80 @@ public class GameFrame extends JFrame
     }
 
     private void closeUI() {
-        if (!isReplay || !level.isFailed()) {
-            if (!level.isCompleted()) {
-                // 아직 클리어하지 않은 경우 일시 정지 파일 저장 (Continue 기능)
-                LevelManager.saveLevelToFile(level, Resource.getPausedPath());
-            } else {
-                // 최고 기록 업데이트
-                final int bestScore = LevelManager.getBestScore(level.getName());
-                System.out.println(bestScore);
-                System.out.println(level.getScore());
-                if (bestScore < level.getScore() || bestScore == 0) {
-                    LevelManager.setBestScore(level.getName(), level.getScore());
-                }
-                // 리플레이용 파일 저장
-                final String path = Resource.getRecordingPath(level.getName(), level.getScore(), level.getMoveCount());
-                LevelManager.saveLevelToFile(level, path);
+        if (isReplay) { // 리플레이
+            stopReplay();
+        } else if (level.isCompleted()) { // 게임 클리어
+            // 최고 기록 업데이트
+            final int bestScore = LevelManager.getBestScore(level.getName());
+            if (bestScore < level.getScore() || bestScore == 0) {
+                LevelManager.setBestScore(level.getName(), level.getScore());
             }
+            // 리플레이용 파일 저장
+            final String path = Resource.getRecordingPath(level.getName(), level.getScore(), level.getMoveCount());
+            LevelManager.saveLevelToFile(level, path);
+        } else if (!level.isFailed()) { // 아직 플레이중인 경우 (클리어도 아니고 게임 오버도 아닌 경우)
+            // 일시 정지 파일 저장 (Continue 기능)
+            LevelManager.saveLevelToFile(level, Resource.getPausedPath());
         }
-        stopReplay();
         Sound.stopBackgroundMusic();
+        stopTimer();
         FrameManager.showMainFrame();
         dispose();
     }
 
-    private void startReplay() {
-        if (replayTask != null) return;
-        replayTime  = System.currentTimeMillis();
-        replayIndex = 0;
-        replayTask  = new TimerTask() {
+    private void startTimer() {
+        if (gameTimerTask != null) return;
+        playTime = 0;
+        gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                final Record record = level.getRecord(replayIndex);
+                playTime++;
+                controlPanel.setPlayTime(playTime);
+                controlPanel.update();
+            }
+        };
+        gameTimer.scheduleAtFixedRate(gameTimerTask, 0, 1000);
+    }
+
+    private void stopTimer() {
+        if (gameTimerTask != null) {
+            gameTimerTask.cancel();
+            gameTimerTask = null;
+        }
+    }
+
+    private void startReplay() {
+        if (replayTimerTask != null) return;
+        replayLastTime = System.currentTimeMillis();
+        replayRecordIndex = 0;
+        replayTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                final Record record = level.getRecord(replayRecordIndex);
                 if (record == null) {
                     stopReplay();
+                    stopTimer();
                     return;
                 }
-                if (System.currentTimeMillis() - replayTime >= record.getTime()) {
+                if (System.currentTimeMillis() - replayLastTime >= record.getTime()) {
                     Sound.playPlayerMoveSound(); // 이동 사운드
                     level.movePlayer(record.getPlayerIndex(), record.getDirection()); // 플레이어 이동
                     updateScreen();
-                    replayTime = System.currentTimeMillis();
-                    replayIndex++;
+                    replayLastTime = System.currentTimeMillis();
+                    replayRecordIndex++;
                 }
             }
         };
-        replayTimer.schedule(replayTask, 0, 10);
+        replayTimer.schedule(replayTimerTask, 0, 10);
     }
 
     private void stopReplay() {
         if (level.isCompleted() || level.isFailed()) {
             Sound.stopBackgroundMusic();
         }
-        if (replayTask != null) {
-            replayTask.cancel();
+        if (replayTimerTask != null) {
+            replayTimerTask.cancel();
+            replayTimerTask = null;
         }
     }
 
@@ -135,6 +164,8 @@ public class GameFrame extends JFrame
     private void resetLevel() {
         level.reset();
         updateScreen();
+        stopTimer();
+        startTimer();
     }
 
     private void undoLevel() {
@@ -146,28 +177,16 @@ public class GameFrame extends JFrame
     {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (isReplay) return;
-
             final int keyCode = e.getKeyCode();
-            switch (keyCode) {
-                case KeyEvent.VK_R: // 재시작
-                    resetLevel();
-                    return;
-                case KeyEvent.VK_ESCAPE:
-                    closeUI();
-                    return;
-            }
-
-            if (level.isCompleted() || level.isFailed()) {
-                return;
-            }
+            if (keyCode == KeyEvent.VK_ESCAPE)           { closeUI();    return; } // Exit
+            if (isReplay)                                { return;               }
+            if (level.isCompleted() || level.isFailed()) { return;               }
+            if (keyCode == KeyEvent.VK_R)                { resetLevel(); return; } // Reset
+            if (keyCode == KeyEvent.VK_U)                { undoLevel();  return; } // Undo
 
             int playerIndex;
             switch (keyCode) {
-                case KeyEvent.VK_U: // undo
-                    undoLevel();
-                    return;
-                case KeyEvent.VK_LEFT: // Player1
+                case KeyEvent.VK_LEFT: // Player 1
                 case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_DOWN:
@@ -205,9 +224,15 @@ public class GameFrame extends JFrame
 
             level.movePlayer(playerIndex, direction);
             updateScreen();
-            Sound.playPlayerMoveSound();
+
             if (level.isCompleted() || level.isFailed()) {
+                controlPanel.setControlEnabled(false);
+                stopTimer();
                 Sound.stopBackgroundMusic();
+                // TODO: 클리어 효과음
+                // TODO: 게임 오버 효과음
+            } else {
+                Sound.playPlayerMoveSound();
             }
         }
     }

@@ -41,7 +41,7 @@ public class Skin
         this.colors = new Color[COLORS.values().length];
         this.fonts  = new Font[FONTS.values().length];
 
-        // 이미지
+        // Image
         imageSize = prop.getInteger("image_size", 20);
         setImage(IMAGES.Wall,       getImage(prop.getString("image_wall"      )));
         setImage(IMAGES.Baggage,    getImage(prop.getString("image_baggage"   )));
@@ -52,7 +52,7 @@ public class Skin
         setImage(IMAGES.Pointer,    getImage(prop.getString("image_pointer"   )));
         setImage(IMAGES.Background, getImage(prop.getString("image_background")));
 
-        // 폰트
+        // Font
         final String fontName = prop.getString("font", "FORCED SQUARE");
         Resource.loadFontFromResource(fontName);
         setFont(FONTS.Title,  Resource.getFont(fontName, false, prop.getInteger("font_size_title",  60)));
@@ -60,7 +60,7 @@ public class Skin
         setFont(FONTS.Medium, Resource.getFont(fontName, false, prop.getInteger("font_size_medium", 23)));
         setFont(FONTS.Small,  Resource.getFont(fontName, false, prop.getInteger("font_size_small",  20)));
 
-        // 색깔
+        // Color
         setColor(COLORS.Background,     prop.getColor("color_background",    "255,255,255"));
         setColor(COLORS.Title,          prop.getColor("color_title",         "0,0,0"));
         setColor(COLORS.Text,           prop.getColor("color_text",          "0,0,0"));

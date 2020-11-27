@@ -6,6 +6,7 @@ import com.c0destudy.sokoban.ui.helper.MakeComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class BasePanel extends JPanel
 {
@@ -44,6 +45,9 @@ public class BasePanel extends JPanel
         }
     }
 
+
+
+
     // UI helper methods
 
     // Button
@@ -59,7 +63,6 @@ public class BasePanel extends JPanel
     protected JButton makeLargeButton(final String text, final int width, final int height, final boolean isCenter) {
         return makeButton(text, width, height, isCenter, skin.getFont(Skin.FONTS.Large));
     }
-
 
     // Label
     protected JLabel makeTitleLabel(final String text) {
@@ -82,8 +85,21 @@ public class BasePanel extends JPanel
     protected JTextField makeTextBox(final int width, final int height, final boolean isCenter, final String defaultText, final int textAlignment) {
         return MakeComponent.makeTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultText, textAlignment);
     }
-
     protected JFormattedTextField makeNumberTextBox(final int width, final int height, final boolean isCenter, final int defaultValue, final int textAlignment) {
         return MakeComponent.makeNumberTextBox(width, height, isCenter, skin.getFont(Skin.FONTS.Large), defaultValue, textAlignment);
+    }
+
+    // Box
+    protected Box makeHorizontalBox(final int width, final int height, final boolean isCenter, final List<Component> components) {
+        return MakeComponent.makeHorizontalBox(width, height, isCenter, components);
+    }
+    protected Component makeVerticalSpace(final int size) {
+        return MakeComponent.makeVerticalSpace(size);
+    }
+    protected Component makeHorizontalSpace(final int size) {
+        return MakeComponent.makeHorizontalSpace(size);
+    }
+    protected JScrollPane makeScroll(final int width, final int height, final boolean isCenter, final boolean isTransparent, final List<Component> components) {
+        return MakeComponent.makeScroll(width, height, isCenter, isTransparent, components);
     }
 }

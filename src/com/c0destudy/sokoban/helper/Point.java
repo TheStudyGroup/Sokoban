@@ -1,4 +1,4 @@
-package com.c0destudy.sokoban.tile;
+package com.c0destudy.sokoban.helper;
 
 import java.io.Serializable;
 
